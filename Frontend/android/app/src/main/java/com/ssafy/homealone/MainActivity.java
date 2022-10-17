@@ -1,4 +1,4 @@
-package com.ssafy.com.homealone;
+package com.ssafy.homealone;
 
 import io.flutter.embedding.android.FlutterActivity;
 
