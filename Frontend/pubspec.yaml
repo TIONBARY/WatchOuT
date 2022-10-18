@@ -38,8 +38,11 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_sign_in: ^5.4.2
   firebase_auth: ^3.11.2
+  fluttertoast: ^8.0.8
+  flutter_screenutil: ^5.5.4
   flutter_signin_button: ^2.0.0
   firebase_core: ^1.24.0
+  persistent_bottom_nav_bar: ^5.0.2
 
 dev_dependencies:
   flutter_test:

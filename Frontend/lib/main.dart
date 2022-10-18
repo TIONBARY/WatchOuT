@@ -1,18 +1,16 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/loading_page.dart';
+import 'package:homealone/googleLogin/loading_page.dart';
 
-import 'root_page.dart';
+import 'googleLogin/root_page.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    print('MyApp created');
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'KT',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         primaryColor: Colors.white,
