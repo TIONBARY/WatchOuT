@@ -1,5 +1,5 @@
-import "package:flutter/material.dart";
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:homealone/components/utils/double_click_pop.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/chat_page.dart';
@@ -11,6 +11,10 @@ import "package:persistent_bottom_nav_bar/persistent_tab_view.dart";
 PersistentTabController controller = PersistentTabController(initialIndex: 0);
 
 class BottomNavBar extends StatefulWidget {
+  final User user;
+
+  BottomNavBar(this.user);
+
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
 }
@@ -18,12 +22,14 @@ class BottomNavBar extends StatefulWidget {
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
-  List<Widget> _screens = <Widget>[
+  late List<Widget> _screens = <Widget>[
     MainPage(),
     ChatPage(),
     UserInfoPage(),
     SetPage(),
   ];
+
+  // 일단 구글 로그인 성공만 확인하고 넘김 페이지 구현 필요(빨간 에러 뜸)
 
   @override
   void initState() {
@@ -67,11 +73,16 @@ class _BottomNavBarState extends State<BottomNavBar> {
         screens: _screens,
         items: _items(),
         onItemSelected: (index) {},
-        backgroundColor: pColor,
-        navBarHeight: 48.h,
+        // backgroundColor: pColor,
         navBarStyle: NavBarStyle.style13,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 }
 
@@ -82,8 +93,8 @@ PersistentBottomNavBarItem _btnItem({
   return PersistentBottomNavBarItem(
     title: title,
     icon: Icon(icon),
-    activeColorPrimary: sColor,
-    inactiveColorPrimary: tColor,
-    activeColorSecondary: fColor,
+    // activeColorPrimary: sColor,
+    // inactiveColorPrimary: tColor,
+    // activeColorSecondary: fColor,
   );
 }
