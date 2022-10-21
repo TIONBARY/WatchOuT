@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.passivedata
+package com.ssafy.homealone
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

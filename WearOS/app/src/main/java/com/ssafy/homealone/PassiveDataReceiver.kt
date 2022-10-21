@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.passivedata
+package com.ssafy.homealone
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -62,6 +62,8 @@ class PassiveDataReceiver : BroadcastReceiver() {
 
         val latestHeartRate = latestDataPoint.value.asDouble() // HEART_RATE_BPM is a Float type.
         Log.d(TAG, "Received latest heart rate in background: $latestHeartRate")
+
+        print("찍기 $latestHeartRate")
 
         runBlocking {
             repository.storeLatestHeartRate(latestHeartRate)

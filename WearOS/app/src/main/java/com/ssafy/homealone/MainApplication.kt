@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.passivedata
+package com.ssafy.homealone
 
 import android.app.Application
 import android.content.Context
@@ -23,7 +23,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
-import com.example.passivedata.PassiveDataRepository.Companion.PREFERENCES_FILENAME
+import com.ssafy.homealone.PassiveDataRepository.Companion.PREFERENCES_FILENAME
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 

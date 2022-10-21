@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.passivedata
+package com.ssafy.homealone
 
 import android.content.ComponentName
 import android.content.Context

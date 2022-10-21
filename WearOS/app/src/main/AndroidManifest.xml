@@ -18,7 +18,7 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.passivedata">
+    package="com.ssafy.homealone">
 
     <uses-feature android:name="android.hardware.type.watch" />
 
@@ -37,7 +37,7 @@
     </queries>
 
     <application
-        android:name="com.example.passivedata.MainApplication"
+        android:name="com.ssafy.homealone.MainApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -53,7 +53,7 @@
             android:value="true" />
 
         <activity
-            android:name="com.example.passivedata.MainActivity"
+            android:name="com.ssafy.homealone.MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -64,7 +64,7 @@
 
         <!-- Receiver that gets notified of new data in the background. -->
         <receiver
-            android:name="com.example.passivedata.PassiveDataReceiver"
+            android:name="com.ssafy.homealone.PassiveDataReceiver"
             android:exported="true"
             tools:ignore="ExportedReceiver">
             <intent-filter>

@@ -16,8 +16,8 @@
   -->
 
 <resources>
-    <string name="app_name">Passive Data Sample</string>
-    <string name="enable">Enable</string>
-    <string name="last_measured">Last measured:</string>
-    <string name="not_available">Not available on this device</string>
+    <string name="app_name">미어스</string>
+    <string name="enable">활성화</string>
+    <string name="last_measured">마지막 측정:</string>
+    <string name="not_available">이 디바이스에서는 사용 불가능합니다.</string>
 </resources>

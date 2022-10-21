@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.passivedata
+package com.ssafy.homealone
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
