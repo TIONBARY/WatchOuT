@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/utils/double_click_pop.dart';
-import 'package:homealone/constants.dart';
 import 'package:homealone/pages/chat_page.dart';
 import 'package:homealone/pages/main_page.dart';
 import 'package:homealone/pages/set_page.dart';
@@ -21,6 +20,8 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
+  final _authentication = FirebaseAuth.instance;
+  late final User? loggedUser;
 
   late List<Widget> _screens = <Widget>[
     MainPage(),
@@ -34,7 +35,20 @@ class _BottomNavBarState extends State<BottomNavBar> {
   @override
   void initState() {
     super.initState();
+    getCurrentUser();
     controller = PersistentTabController(initialIndex: 0);
+  }
+
+  void getCurrentUser() {
+    try {
+      final user = _authentication.currentUser;
+      if (user != null) {
+        loggedUser = user;
+        print(loggedUser!.email);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   List<PersistentBottomNavBarItem> _items() {
