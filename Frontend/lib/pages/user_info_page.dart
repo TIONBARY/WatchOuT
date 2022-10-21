@@ -10,6 +10,9 @@ class UserInfoPage extends StatefulWidget {
 class _UserInfoPageState extends State<UserInfoPage> {
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Text('유저'),
+    );
     // TODO: implement build
     throw UnimplementedError();
   }

@@ -43,6 +43,7 @@ dependencies:
   flutter_signin_button: ^2.0.0
   firebase_core: ^1.24.0
   persistent_bottom_nav_bar: ^5.0.2
+  cloud_firestore: ^3.5.1
 
 dev_dependencies:
   flutter_test:

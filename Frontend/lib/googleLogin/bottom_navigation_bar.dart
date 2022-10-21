@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/utils/double_click_pop.dart';
-import 'package:homealone/constants.dart';
 import 'package:homealone/pages/chat_page.dart';
 import 'package:homealone/pages/main_page.dart';
 import 'package:homealone/pages/set_page.dart';

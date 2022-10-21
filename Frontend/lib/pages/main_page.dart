@@ -10,6 +10,9 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Text('메인'),
+    );
     // TODO: implement build
     throw UnimplementedError();
   }

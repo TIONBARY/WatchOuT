@@ -10,6 +10,9 @@ class SetPage extends StatefulWidget {
 class _SetPageState extends State<SetPage> {
   @override
   Widget build(BuildContext context) {
+    return Scaffold(
+      body: Text('설정'),
+    );
     throw UnimplementedError();
   }
 }
