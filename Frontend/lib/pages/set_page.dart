@@ -191,7 +191,7 @@ class onoff extends StatefulWidget {
 class _onoffState extends State<onoff> {
   @override
   Widget build(BuildContext context) {
-    String _title = widget.title;
+    final String _title = widget.title;
     bool _isUsed = widget.isUsed;
 
     return Container(
