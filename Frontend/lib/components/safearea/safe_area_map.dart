@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:homealone/api/api_kakao.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -22,9 +25,40 @@ class SafeAreaMap extends StatefulWidget {
 }
 
 class _SafeAreaMapState extends State<SafeAreaMap> {
+  ApiKakao apiKakao = ApiKakao();
+
+  List<Map<String, dynamic>> searchList = [];
+
+  int idx = 0;
+
   @override
   void initState() {
     super.initState();
+  }
+
+  Future _future() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    WidgetsFlutterBinding.ensureInitialized();
+    Position pos = await Geolocator.getCurrentPosition();
+    // await dotenv.load(fileName: ".env");
+    await dotenv.load();
+    kakaoMapKey = dotenv.get('kakaoMapAPIKey');
+    // debugPrint("어싱크 내부");
+    initLat = pos.latitude;
+    initLon = pos.longitude;
+    await _search();
+    return kakaoMapKey; // 5초 후 '짜잔!' 리턴
+  }
+
+  Future<void> _search() async {
+    if (widget.name == "안심 택배" || widget.name == "비상벨") return;
+    Map<String, dynamic> result = await apiKakao.searchArea(
+        widget.name, initLat.toString(), initLon.toString());
+    if (result['documents'] != null) {
+      searchList = [];
+      result['documents'].forEach((value) => {searchList.add(value)});
+    }
+    print(searchList);
   }
 
   @override
@@ -59,41 +93,79 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
                       flex: 1,
                       fit: FlexFit.loose,
                       child: KakaoMapView(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        // height: size.height * 7 / 10,
-                        // height: size.height - appBarHeight - 130,
-                        // height: 1.sh,
-                        kakaoMapKey: kakaoMapKey,
-                        lat: initLat,
-                        lng: initLon,
-                        // zoomLevel: 1,
-                        showMapTypeControl: false,
-                        showZoomControl: false,
-                        draggableMarker: false,
-                        // mapType: MapType.TERRAIN,
-                        mapController: (controller) {
-                          _mapController = controller;
-                        },
-                      ),
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          // height: size.height * 7 / 10,
+                          // height: size.height - appBarHeight - 130,
+                          // height: 1.sh,
+                          kakaoMapKey: kakaoMapKey,
+                          lat: initLat,
+                          lng: initLon,
+                          // zoomLevel: 1,
+                          showMapTypeControl: false,
+                          showZoomControl: false,
+                          draggableMarker: false,
+                          // mapType: MapType.TERRAIN,
+                          mapController: (controller) {
+                            _mapController = controller;
+                          },
+                          customScript: '''
+    var markers = [];
+
+    function addMarker(position) {
+
+      var marker = new kakao.maps.Marker({position: position});
+
+      marker.setMap(map);
+
+      markers.push(marker);
+    }
+    
+    function addCurrMarker(position) {
+      var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다    
+          imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+          imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+      
+      // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption); // 마커가 표시될 위치입니다
+      
+      // 마커를 생성합니다
+      var marker = new kakao.maps.Marker({
+          position: position, 
+          image: markerImage // 마커이미지 설정 
+      });
+
+      marker.setMap(map);
+
+      markers.push(marker);
+    }
+    
+    addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+    _searchList = ${json.encode({"list": searchList})}["list"];
+    for(var i = 0 ; i < ${searchList.length} ; i++){
+      addMarker(new kakao.maps.LatLng(_searchList[i]['y'], _searchList[i]['x']));
+
+      kakao.maps.event.addListener(markers[i], 'click', (function(i) {
+        return function(){
+          onTapMarker.postMessage(_searchList[i]['place_name']);
+        };
+      })(i));
+    }
+
+		  var zoomControl = new kakao.maps.ZoomControl();
+      map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+      var mapTypeControl = new kakao.maps.MapTypeControl();
+      map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+              ''',
+                          onTapMarker: (message) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(message.message)));
+                          }),
                     );
                   }
                 })
           ],
         ));
   }
-}
-
-Future _future() async {
-  LocationPermission permission = await Geolocator.requestPermission();
-  WidgetsFlutterBinding.ensureInitialized();
-  Position pos = await Geolocator.getCurrentPosition();
-  // await dotenv.load(fileName: ".env");
-  await dotenv.load();
-  kakaoMapKey = dotenv.get('kakaoMapAPIKey');
-  // debugPrint("어싱크 내부");
-  initLat = pos.latitude;
-  initLon = pos.longitude;
-  print(initLat.toString() + " " + initLon.toString());
-  return kakaoMapKey; // 5초 후 '짜잔!' 리턴
 }
