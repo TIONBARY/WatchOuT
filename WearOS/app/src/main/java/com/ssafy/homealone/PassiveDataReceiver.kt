@@ -20,12 +20,64 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+import com.google.android.gms.tasks.Tasks
+import com.google.android.gms.tasks.Task
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.HrAccuracy
 import androidx.health.services.client.data.PassiveMonitoringUpdate
+import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.CapabilityInfo
+import com.google.android.gms.wearable.Node
+
+
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+
+private const val HEART_RATE_CAPABILITY_NAME = "heart_rate_bpm"
+
+private fun setupHeartRateTranscription() {
+    val capabilityInfo: CapabilityInfo = Tasks.await(
+        Wearable.getCapabilityClient(context)
+            .getCapability(
+                HEART_RATE_CAPABILITY_NAME,
+                CapabilityClient.FILTER_REACHABLE
+            )
+    )
+    // capabilityInfo has the reachable nodes with the transcription capability
+    updateTranscriptionCapability(capabilityInfo)
+}
+
+private var transcriptionNodeId: String? = null
+
+private fun updateTranscriptionCapability(capabilityInfo: CapabilityInfo) {
+    transcriptionNodeId = pickBestNodeId(capabilityInfo.nodes)
+}
+
+private fun pickBestNodeId(nodes: Set<Node>): String? {
+    // Find a nearby node or pick one arbitrarily
+    return nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
+}
+
+const val HEART_TRANSCRIPTION_MESSAGE_PATH = "/heart_transcription"
+
+private fun requestTranscription(BPM_data: ByteArray) {
+    transcriptionNodeId?.also { nodeId ->
+        val sendTask: Task<*> = Wearable.getMessageClient(context).sendMessage(
+            nodeId,
+            HEART_TRANSCRIPTION_MESSAGE_PATH,
+            BPM_data
+        ).apply {
+            addOnSuccessListener {
+
+            }
+            addOnFailureListener {
+
+            }
+        }
+    }
+}
 
 /**
  * Receives heart rate updates passively and saves it to the repository.
@@ -61,10 +113,10 @@ class PassiveDataReceiver : BroadcastReceiver() {
             ?: return
 
         val latestHeartRate = latestDataPoint.value.asDouble() // HEART_RATE_BPM is a Float type.
-        Log.d(TAG, "Received latest heart rate in background: $latestHeartRate")
-
+        Log.d(TAG, "마지막 심박수 데이터를 백그라운드에서 가져왔습니다: $latestHeartRate")
+        setupHeartRateTranscription()
         print("찍기 $latestHeartRate")
-
+        requestTranscription(latestHeartRate as ByteArray)
         runBlocking {
             repository.storeLatestHeartRate(latestHeartRate)
         }

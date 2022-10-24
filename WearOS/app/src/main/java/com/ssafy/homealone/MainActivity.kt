@@ -50,11 +50,11 @@ class MainActivity : AppCompatActivity() {
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
                 when (result) {
                     true -> {
-                        Log.i(TAG, "Body sensors permission granted")
+                        Log.i(TAG, "신체 센서 권한이 허가되었습니다.")
                         viewModel.togglePassiveData(true)
                     }
                     false -> {
-                        Log.i(TAG, "Body sensors permission not granted")
+                        Log.i(TAG, "신체 센서 권한이 허가되지 않았습니다.")
                         viewModel.togglePassiveData(false)
                     }
                 }

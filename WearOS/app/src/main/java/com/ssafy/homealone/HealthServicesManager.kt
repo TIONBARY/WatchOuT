@@ -43,7 +43,7 @@ class HealthServicesManager @Inject constructor(
     }
 
     suspend fun registerForHeartRateData() {
-        Log.i(TAG, "Registering for background data.")
+        Log.i(TAG, "백그라운드 데이터를 가져옵니다.")
         val componentName = ComponentName(context, PassiveDataReceiver::class.java)
         val config = PassiveMonitoringConfig.builder()
             .setDataTypes(dataTypes)
@@ -53,7 +53,7 @@ class HealthServicesManager @Inject constructor(
     }
 
     suspend fun unregisterForHeartRateData() {
-        Log.i(TAG, "Unregistering for background data.")
+        Log.i(TAG, "백그라운드 데이터를 가져오지 않습니다.")
         passiveMonitoringClient.unregisterDataCallback().await()
     }
 }
