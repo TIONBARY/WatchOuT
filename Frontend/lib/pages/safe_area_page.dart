@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+class SafeAreaPage extends StatefulWidget {
+  const SafeAreaPage({Key? key}) : super(key: key);
 
   @override
-  State<MainPage> createState() => _MainPageState();
+  State<SafeAreaPage> createState() => _SafeAreaPageState();
 }
 
-class _MainPageState extends State<MainPage> {
+class _SafeAreaPageState extends State<SafeAreaPage> {
   final _authentication = FirebaseAuth.instance;
 
   @override
