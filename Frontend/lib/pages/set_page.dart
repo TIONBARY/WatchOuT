@@ -156,6 +156,12 @@ class _SetPageState extends State<SetPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text('비상 연락망 전송'),
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () {
+
+                },
+              ),
               DropdownButton(
                 value: _selectedAlert,
                 items: _valueList.map((value) {
@@ -173,6 +179,7 @@ class _SetPageState extends State<SetPage> {
             ],
           ),
         ),
+        contact('엄마 010-4321-5678'),
         onoff(title: '버튼', isUsed: false),
       ],
     );
@@ -217,6 +224,26 @@ class _onoffState extends State<onoff> {
           )
         ],
       ),
+    );
+  }
+}
+
+class contact extends StatelessWidget {
+  const contact(this.who, {Key? key}) : super(key: key);
+  final String who;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 30,
+      width: 300,
+      decoration: BoxDecoration(
+          color: pColor,
+          borderRadius: BorderRadius.circular(20)
+      ),
+      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: Text(who, textAlign: TextAlign.start)
     );
   }
 }
