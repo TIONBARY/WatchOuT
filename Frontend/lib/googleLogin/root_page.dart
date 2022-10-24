@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
-import 'package:homealone/pages/main_page.dart';
+import 'package:homealone/googleLogin/tab_bar_page.dart';
 
 import 'login_page.dart';
 
@@ -20,7 +20,7 @@ class RootPage extends StatelessWidget {
           return LoadingPage();
         } else {
           if (snapshot.hasData) {
-            return MainPage(snapshot.data);
+            return TabNavBar(snapshot.data);
           }
           return LoginPage();
         }
