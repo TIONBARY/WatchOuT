@@ -2,7 +2,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({Key? key}) : super(key: key);
+  final User user;
+
+  MainPage(this.user);
 
   @override
   State<MainPage> createState() => _MainPageState();
@@ -10,6 +12,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   final _authentication = FirebaseAuth.instance;
+  late final User? loggedUser;
 
   @override
   Widget build(BuildContext context) {
