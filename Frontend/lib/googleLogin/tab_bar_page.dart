@@ -22,6 +22,7 @@ class _TabNavBarState extends State<TabNavBar> {
     return DefaultTabController(
         length: 4,
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             title: Text('WatchOut'),
             actions: [
