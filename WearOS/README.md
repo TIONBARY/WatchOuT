@@ -1,53 +1,51 @@
-# Passive Data Sample
 
-This sample demonstrates receiving passive data updates in the background using the
-`PassiveMonitoringClient` API.
+Android DataLayer Sample
+========================
 
-### Running the sample
+This sample demonstrates how to work with a WearableListenerService,
+to produce and consume DataEvents and effectively work with the DataLayer.
 
-You will need a Wear device or emulator with Health Services installed. Open the sample project in
-Android Studio and launch the app on your device or emulator.
+Introduction
+------------
 
-On startup, the app checks whether heart rate data is available. If it is, you will see a screen
-like this:
+This sample demonstrates how to make a handheld and an Wear device communicate
+using the [DataClient][2].
+It does this by sending a picture between connected devices.
 
-![heart rate available screenshot](screenshots/whs_passive_data_available.png)
+An Activity is being used for both the connected devices which implement their parts of
+the required interfaces using Jetpack Compose.
 
-Use the switch to enable or disable passive data updates. The most recent measurement received is
-shown below that.
+It showcases how to use an [WearableListenerService][1] to consume DataEvents
+as well as implementations for various required listeners when using the [DataClient][2],
+[MessageClient][3] and [NodeClient][4].
 
-On devices where heart rate data is not available, you will see a screen like this:
+[1]: https://developers.google.com/android/reference/com/google/android/gms/wearable/WearableListenerService
+[2]: https://developers.google.com/android/reference/com/google/android/gms/wearable/DataClient
+[3]: https://developers.google.com/android/reference/com/google/android/gms/wearable/MessageClient
+[4]: https://developers.google.com/android/reference/com/google/android/gms/wearable/NodeClient
 
-![heart rate unavailable screenshot](screenshots/whs_passive_data_not_available.png)
+Pre-requisites
+--------------
 
-### Try it with synthetic data
+- Android SDK 32
 
-With the sample running, you can turn on the sythetic data tracker by running the below command from
-a shell. This will mimic the user performing an activity and generating heart rate data. Check the
-app UI or logcat messages to see these data updates.
+Screenshots
+-------------
 
-```shell
-adb shell am broadcast \
--a "whs.USE_SYNTHETIC_PROVIDERS" \
-com.google.android.wearable.healthservices
-```
+<img src="screenshots/phone_image.png" height="400" alt="Screenshot"/> <img src="screenshots/wearable_background_image.png" height="400" alt="Screenshot"/> 
 
-To see different heart rate values, try simulating different exercises:
-```shell
-# walking
-adb shell am broadcast \
--a "whs.synthetic.user.START_WALKING" \
-com.google.android.wearable.healthservices
+Getting Started
+---------------
 
-# running
-adb shell am broadcast \
--a "whs.synthetic.user.START_RUNNING" \
-com.google.android.wearable.healthservices
-```
+This sample uses the Gradle build system. To build this project, use the
+"gradlew build" command or use "Import Project" in Android Studio.
 
-To stop using the synthetic tracker, run this command:
-```shell
-adb shell am broadcast -a \
-"whs.USE_SENSOR_PROVIDERS" \
-com.google.android.wearable.healthservices
-```
+Support
+-------
+
+- Stack Overflow: http://stackoverflow.com/questions/tagged/android
+
+If you've found an error in this sample, please file an issue in the issue tracker.
+
+Patches are encouraged, and may be submitted by forking this project and
+submitting a pull request through GitHub. Please see CONTRIBUTING.md for more details.
