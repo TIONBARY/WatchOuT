@@ -173,7 +173,50 @@ class _SetPageState extends State<SetPage> {
             ],
           ),
         ),
+        onoff(title: '버튼', isUsed: false),
       ],
+    );
+  }
+}
+
+class onoff extends StatefulWidget {
+  onoff({Key? key, required this.title, required this.isUsed}) : super(key: key);
+  final String title;
+  bool isUsed;
+
+  @override
+  State<onoff> createState() => _onoffState();
+}
+
+class _onoffState extends State<onoff> {
+  @override
+  Widget build(BuildContext context) {
+    String _title = widget.title;
+    bool _isUsed = widget.isUsed;
+
+    return Container(
+      height: 50,
+      width: 300,
+      decoration: BoxDecoration(
+          color: pColor,
+          borderRadius: BorderRadius.circular(20)
+      ),
+      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(_title),
+          Switch(
+              value: _isUsed,
+              onChanged: (value) {
+                setState(() {
+                  _isUsed = value;
+                });
+              }
+          )
+        ],
+      ),
     );
   }
 }
