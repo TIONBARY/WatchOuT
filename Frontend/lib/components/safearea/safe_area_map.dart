@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/components/utils/safe_area_dialog.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -16,6 +17,7 @@ String kakaoMapKey = "";
 double initLat = 0.0;
 double initLon = 0.0;
 Timer? timer;
+Timer? tempTimer;
 
 class SafeAreaMap extends StatefulWidget {
   const SafeAreaMap(this.name, {Key? key}) : super(key: key);
@@ -105,7 +107,8 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
                   else {
                     // debugPrint(snapshot.data); Container(
                     // child: Text(snapshot.data),
-                    Timer(Duration(seconds: 1), () {
+                    tempTimer = Timer(Duration(seconds: 1), () {
+                      if (timer != null && timer!.isActive) return;
                       timer = Timer.periodic(new Duration(seconds: 1), (timer) {
                         _updateCurrLocation();
                       });
@@ -164,7 +167,7 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
       bounds.extend(new kakao.maps.LatLng(_searchList[i]['y'], _searchList[i]['x']));
       kakao.maps.event.addListener(markers[i], 'click', (function(i) {
         return function(){
-          onTapMarker.postMessage(_searchList[i]['place_name']);
+          onTapMarker.postMessage(JSON.stringify({"place_name": _searchList[i]['place_name'], "phone": _searchList[i]['phone']}));
         };
       })(i));
     }
@@ -177,8 +180,16 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
               ''',
                           onTapMarker: (message) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(message.message)));
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return SafeAreaDialog(
+                                      widget.name,
+                                      json.decode(
+                                          message.message)['place_name'],
+                                      json.decode(message.message)['phone'],
+                                      null);
+                                });
                           }),
                     );
                   }
@@ -190,6 +201,7 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
   @override
   void dispose() {
     timer!.cancel();
+    tempTimer!.cancel();
     super.dispose();
   }
 }
