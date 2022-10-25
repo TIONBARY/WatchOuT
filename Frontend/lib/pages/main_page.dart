@@ -1,5 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:homealone/components/main/carousel.dart';
+import 'package:homealone/components/main/main_button_down.dart';
+import 'package:homealone/components/main/main_button_up.dart';
 import 'package:homealone/components/main/profile_bar.dart';
 
 class MainPage extends StatefulWidget {
@@ -23,7 +27,19 @@ class _MainPageState extends State<MainPage> {
           children: [
             Flexible(
               child: ProfileBar(),
-              flex: 1,
+              flex: 2,
+            ),
+            Flexible(
+              child: MainButtonUp(),
+              flex: 3,
+            ),
+            Flexible(
+              child: MainButtonDown(),
+              flex: 3,
+            ),
+            Flexible(
+              child: Carousel(),
+              flex: 4,
             ),
           ],
         ),

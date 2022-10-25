@@ -34,6 +34,7 @@ dependencies:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
+  carousel_slider: ^4.1.1
   cupertino_icons: ^1.0.2
   google_sign_in: ^5.4.2
   firebase_auth: ^3.11.2
@@ -75,6 +76,10 @@ flutter:
   assets:
     - .env
     - assets/icons/
+  fonts:
+    - family: HanSan
+      fonts:
+        - asset: fonts/BlackHanSans-Regular.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
