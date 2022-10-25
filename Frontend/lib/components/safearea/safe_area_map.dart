@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
@@ -14,6 +15,7 @@ String addrName = "";
 String kakaoMapKey = "";
 double initLat = 0.0;
 double initLon = 0.0;
+Timer? timer;
 
 class SafeAreaMap extends StatefulWidget {
   const SafeAreaMap(this.name, {Key? key}) : super(key: key);
@@ -61,6 +63,20 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
     print(searchList);
   }
 
+  Future<void> _updateCurrLocation() async {
+    Position pos = await Geolocator.getCurrentPosition();
+    // await dotenv.load(fileName: ".env");
+    await dotenv.load();
+    kakaoMapKey = dotenv.get('kakaoMapAPIKey');
+    // debugPrint("어싱크 내부");
+    initLat = pos.latitude;
+    initLon = pos.longitude;
+    _mapController!.runJavascript('''
+      markers[markers.length-1].setMap(null);
+      addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+    ''');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -89,6 +105,12 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
                   else {
                     // debugPrint(snapshot.data); Container(
                     // child: Text(snapshot.data),
+                    Timer(Duration(seconds: 1), () {
+                      timer = Timer.periodic(new Duration(seconds: 1), (timer) {
+                        _updateCurrLocation();
+                      });
+                    });
+
                     return Flexible(
                       flex: 1,
                       fit: FlexFit.loose,
@@ -113,50 +135,46 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
     var markers = [];
 
     function addMarker(position) {
-
       var marker = new kakao.maps.Marker({position: position});
-
       marker.setMap(map);
-
       markers.push(marker);
     }
-    
     function addCurrMarker(position) {
-      var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다    
-          imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
-          imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+      var imageSrc = 'https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/currMarker.png?alt=media&token=140772c4-fac1-4619-a7d2-0f3c03153cbb', // 마커이미지의 주소입니다    
+          imageSize = new kakao.maps.Size(30, 45); // 마커이미지의 크기입니다
+          // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
       
       // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption); // 마커가 표시될 위치입니다
+      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); // 마커가 표시될 위치입니다
       
       // 마커를 생성합니다
       var marker = new kakao.maps.Marker({
           position: position, 
           image: markerImage // 마커이미지 설정 
       });
-
       marker.setMap(map);
-
       markers.push(marker);
     }
     
-    addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+    
     _searchList = ${json.encode({"list": searchList})}["list"];
+    var bounds = new kakao.maps.LatLngBounds();
     for(var i = 0 ; i < ${searchList.length} ; i++){
       addMarker(new kakao.maps.LatLng(_searchList[i]['y'], _searchList[i]['x']));
-
+      bounds.extend(new kakao.maps.LatLng(_searchList[i]['y'], _searchList[i]['x']));
       kakao.maps.event.addListener(markers[i], 'click', (function(i) {
         return function(){
           onTapMarker.postMessage(_searchList[i]['place_name']);
         };
       })(i));
     }
+    addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+    map.setBounds(bounds);
+		var zoomControl = new kakao.maps.ZoomControl();
+    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-		  var zoomControl = new kakao.maps.ZoomControl();
-      map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-
-      var mapTypeControl = new kakao.maps.MapTypeControl();
-      map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+    var mapTypeControl = new kakao.maps.MapTypeControl();
+    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
               ''',
                           onTapMarker: (message) {
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -167,5 +185,11 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
                 })
           ],
         ));
+  }
+
+  @override
+  void dispose() {
+    timer!.cancel();
+    super.dispose();
   }
 }
