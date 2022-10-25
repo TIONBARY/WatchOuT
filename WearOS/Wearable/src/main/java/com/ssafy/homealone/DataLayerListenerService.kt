@@ -21,13 +21,13 @@ import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.launch
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
+import org.json.JSONObject
 
 class DataLayerListenerService : WearableListenerService() {
 
@@ -45,7 +45,7 @@ class DataLayerListenerService : WearableListenerService() {
                     scope.launch {
                         try {
                             val nodeId = uri.host!!
-                            val payload = uri.toString().toByteArray()
+                            val payload = objectToBytes(uri)
                             messageClient.sendMessage(
                                 nodeId,
                                 DATA_ITEM_RECEIVED_PATH,
@@ -70,11 +70,39 @@ class DataLayerListenerService : WearableListenerService() {
         when (messageEvent.path) {
             START_ACTIVITY_PATH -> {
                 startActivity(
-                    Intent(this, DataMainActivity::class.java)
+                    Intent(this, MainActivity::class.java)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 )
             }
+            DATA_ITEM_RECEIVED_PATH -> {
+//                Log.d("워치 수령", String(messageEvent.data))
+                var msg = objectFromBytes(messageEvent.data)
+                Log.d("워치 수령", msg.toString())
+
+                val jsonObject: JSONObject = JSONObject(msg.toString())
+
+                Log.d("워치 수령 내부 값", jsonObject["HEART_RATE"].toString())
+                var received_heart_rate = jsonObject["HEART_RATE"].toString().toInt()
+
+            }
+            else -> {
+                Log.d("패스", messageEvent.path)
+                Log.d("아무거나", String(messageEvent.data))
+            }
         }
+    }
+
+    private fun objectToBytes(`object`: Any): ByteArray {
+        val baos = ByteArrayOutputStream()
+        val oos = ObjectOutputStream(baos)
+        oos.writeObject(`object`)
+        return baos.toByteArray()
+    }
+
+    private fun objectFromBytes(bytes: ByteArray): Any {
+        val bis = ByteArrayInputStream(bytes)
+        val ois = ObjectInputStream(bis)
+        return ois.readObject()
     }
 
     override fun onDestroy() {
@@ -86,7 +114,7 @@ class DataLayerListenerService : WearableListenerService() {
         private const val TAG = "DataLayerService"
 
         private const val START_ACTIVITY_PATH = "/start-activity"
-        private const val DATA_ITEM_RECEIVED_PATH = "/data-item-received"
+        private const val DATA_ITEM_RECEIVED_PATH = "watch_connectivity"
         const val COUNT_PATH = "/count"
         const val IMAGE_PATH = "/image"
         const val IMAGE_KEY = "photo"
