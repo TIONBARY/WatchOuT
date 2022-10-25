@@ -1,4 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:homealone/components/main/carousel.dart';
+import 'package:homealone/components/main/main_button_down.dart';
+import 'package:homealone/components/main/main_button_up.dart';
+import 'package:homealone/components/main/profile_bar.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -8,12 +14,36 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  final _authentication = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Text('메인'),
+      appBar: AppBar(
+        toolbarHeight: 0,
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Flexible(
+              child: ProfileBar(),
+              flex: 2,
+            ),
+            Flexible(
+              child: MainButtonUp(),
+              flex: 3,
+            ),
+            Flexible(
+              child: MainButtonDown(),
+              flex: 3,
+            ),
+            Flexible(
+              child: Carousel(),
+              flex: 4,
+            ),
+          ],
+        ),
+      ),
     );
-    // TODO: implement build
-    throw UnimplementedError();
   }
 }
