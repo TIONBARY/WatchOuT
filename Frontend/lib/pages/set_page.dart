@@ -10,7 +10,7 @@ class SetPage extends StatefulWidget {
 }
 
 class _SetPageState extends State<SetPage> {
-  TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _textFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
   bool _useWearOS = false;
   bool _useScreen = false;
@@ -214,7 +214,7 @@ class _SetPageState extends State<SetPage> {
         builder: (context) {
           return AlertDialog(
             title: Text('연락처를 입력해 주세요.'),
-            content: Container(
+            content: SizedBox(
               height: 100,
               child: Column(
                 children: [
@@ -241,13 +241,13 @@ class _SetPageState extends State<SetPage> {
             ),
             actions: [
               ElevatedButton(
-                child: Text('cancel'),
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 onPressed: () {
                   setState(() {
                     Navigator.pop(context);
                   });
                 },
+                child: Text('cancel'),
               ),
               ElevatedButton(
                 child: Text('confirm'),
@@ -289,6 +289,8 @@ class _onoffState extends State<onoff> {
           color: yColor,
           borderRadius: BorderRadius.circular(20)
       ),
+      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
