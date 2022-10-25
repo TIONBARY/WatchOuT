@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/pages/main_page.dart';
 import 'package:homealone/pages/record_page.dart';
-import 'package:homealone/pages/safe_area_page.dart';
+import 'package:homealone/pages/safe_area_choice_page.dart';
 import 'package:homealone/pages/set_page.dart';
 
 class TabNavBar extends StatefulWidget {
@@ -48,7 +48,7 @@ class _TabNavBarState extends State<TabNavBar> {
           body: TabBarView(
             children: [
               MainPage(),
-              SafeAreaPage(),
+              SafeAreaChoicePage(),
               RecordPage(),
               SetPage(),
             ],
