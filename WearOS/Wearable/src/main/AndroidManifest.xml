@@ -38,9 +38,10 @@
         android:fullBackupOnly="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:name=".MainApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.DeviceDefault">
+        android:theme="@style/AppTheme">
 
         <meta-data
             android:name="com.google.android.wearable.standalone"
@@ -58,29 +59,41 @@
                 <action android:name="com.google.android.gms.wearable.DATA_CHANGED" />
                 <data
                     android:host="*"
-                    android:pathPrefix="/count"
+                    android:pathPrefix="/watch_connectivity"
                     android:scheme="wear" />
             </intent-filter>
             <intent-filter>
                 <action android:name="com.google.android.gms.wearable.MESSAGE_RECEIVED" />
                 <data
                     android:host="*"
-                    android:pathPrefix="/start-activity"
+                    android:pathPrefix="/watch_connectivity"
                     android:scheme="wear" />
             </intent-filter>
         </service>
         <activity
-            android:name=".DataMainActivity"
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.ssafy.homealone.EXAMPLE" />
+                <action android:name="com.ssafy.homealone" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+<!--        <activity-->
+<!--            android:name=".DataMainActivity"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+<!--            <intent-filter>-->
+<!--                <action android:name="com.ssafy.homealone.EXAMPLE" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
         <!-- Receiver that gets notified of new data in the background. -->
         <receiver
             android:name=".PassiveDataReceiver"
