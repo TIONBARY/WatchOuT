@@ -1,16 +1,51 @@
-# homealone
 
-HomeAloneFlutterProject
+Android DataLayer Sample
+========================
 
-## Getting Started
+This sample demonstrates how to work with a WearableListenerService,
+to produce and consume DataEvents and effectively work with the DataLayer.
 
-This project is a starting point for a Flutter application.
+Introduction
+------------
 
-A few resources to get you started if this is your first Flutter project:
+This sample demonstrates how to make a handheld and an Wear device communicate
+using the [DataClient][2].
+It does this by sending a picture between connected devices.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+An Activity is being used for both the connected devices which implement their parts of
+the required interfaces using Jetpack Compose.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+It showcases how to use an [WearableListenerService][1] to consume DataEvents
+as well as implementations for various required listeners when using the [DataClient][2],
+[MessageClient][3] and [NodeClient][4].
+
+[1]: https://developers.google.com/android/reference/com/google/android/gms/wearable/WearableListenerService
+[2]: https://developers.google.com/android/reference/com/google/android/gms/wearable/DataClient
+[3]: https://developers.google.com/android/reference/com/google/android/gms/wearable/MessageClient
+[4]: https://developers.google.com/android/reference/com/google/android/gms/wearable/NodeClient
+
+Pre-requisites
+--------------
+
+- Android SDK 32
+
+Screenshots
+-------------
+
+<img src="screenshots/phone_image.png" height="400" alt="Screenshot"/> <img src="screenshots/wearable_background_image.png" height="400" alt="Screenshot"/> 
+
+Getting Started
+---------------
+
+This sample uses the Gradle build system. To build this project, use the
+"gradlew build" command or use "Import Project" in Android Studio.
+
+Support
+-------
+
+- Stack Overflow: http://stackoverflow.com/questions/tagged/android
+
+If you've found an error in this sample, please file an issue in the issue tracker.
+
+Patches are encouraged, and may be submitted by forking this project and
+submitting a pull request through GitHub. Please see CONTRIBUTING.md for more details.
