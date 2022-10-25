@@ -34,7 +34,7 @@ class SafeAreaDialog extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Title(
-                color: fColor,
+                color: nColor,
                 child: Text(emoji[title]! + " " + name,
                     style: TextStyle(fontSize: 18.sp, fontFamily: "Sub")),
               ),
@@ -49,22 +49,22 @@ class SafeAreaDialog extends StatelessWidget {
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets.all(0),
-                                backgroundColor: Colors.grey,
+                                backgroundColor: yColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               ),
-                              onPressed: () {},
+                              onPressed: null,
                               child: Text(
                                 "통화",
                                 style:
-                                    TextStyle(color: fColor, fontFamily: "Sub"),
+                                    TextStyle(color: nColor, fontFamily: "Sub"),
                               ))
                           : ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 padding: EdgeInsets.all(0),
-                                backgroundColor: fColor,
+                                backgroundColor: yColor,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(5.0),
                                 ),
@@ -77,13 +77,13 @@ class SafeAreaDialog extends StatelessWidget {
                               child: Text(
                                 "통화",
                                 style:
-                                    TextStyle(color: pColor, fontFamily: "Sub"),
+                                    TextStyle(color: nColor, fontFamily: "Sub"),
                               ),
                             ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.all(0),
-                          backgroundColor: pColor,
+                          backgroundColor: n25Color,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5.0),
                           ),
@@ -99,7 +99,7 @@ class SafeAreaDialog extends StatelessWidget {
                         },
                         child: Text(
                           "취소",
-                          style: TextStyle(color: fColor, fontFamily: "Sub"),
+                          style: TextStyle(color: nColor, fontFamily: "Sub"),
                         ),
                       ),
                     ],
