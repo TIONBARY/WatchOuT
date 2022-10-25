@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:homealone/components/main/carousel.dart';
+import 'package:flutter/materiaart';
 import 'package:homealone/components/main/main_button_down.dart';
 import 'package:homealone/components/main/main_button_up.dart';
 import 'package:homealone/components/main/profile_bar.dart';

@@ -10,6 +10,7 @@ class SetPage extends StatefulWidget {
 }
 
 class _SetPageState extends State<SetPage> {
+  final TextEditingController _textFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
   bool _useWearOS = false;
   bool _useScreen = false;
@@ -18,6 +19,11 @@ class _SetPageState extends State<SetPage> {
   bool _useDzone = false;
   final List<String> _valueList = ['문자', '전화', 'X'];
   String _selectedAlert = '문자';
+  List<String> _contactList = ['010123456768', '01043218765'];
+  List<String> _nameList = ['엄마', '아빠'];
+  String _selectedContact = '엄마';
+  String _addContact = '';
+  String _addName = '';
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +33,9 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: n25Color, borderRadius: BorderRadius.circular(20)),
+              color: yColor,
+              borderRadius: BorderRadius.circular(20)
+          ),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -40,7 +48,8 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useWearOS = value;
                     });
-                  })
+                  }
+              )
             ],
           ),
         ),
@@ -48,7 +57,9 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: n25Color, borderRadius: BorderRadius.circular(20)),
+              color: yColor,
+              borderRadius: BorderRadius.circular(20)
+          ),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -61,7 +72,8 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useScreen = value;
                     });
-                  })
+                  }
+              )
             ],
           ),
         ),
@@ -69,7 +81,9 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: n25Color, borderRadius: BorderRadius.circular(20)),
+              color: yColor,
+              borderRadius: BorderRadius.circular(20)
+          ),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -82,7 +96,8 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useGPS = value;
                     });
-                  })
+                  }
+              )
             ],
           ),
         ),
@@ -90,7 +105,9 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: n25Color, borderRadius: BorderRadius.circular(20)),
+              color: yColor,
+              borderRadius: BorderRadius.circular(20)
+          ),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -103,7 +120,8 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useSiren = value;
                     });
-                  })
+                  }
+              )
             ],
           ),
         ),
@@ -111,7 +129,9 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: n25Color, borderRadius: BorderRadius.circular(20)),
+              color: yColor,
+              borderRadius: BorderRadius.circular(20)
+          ),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -124,7 +144,8 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useDzone = value;
                     });
-                  })
+                  }
+              )
             ],
           ),
         ),
@@ -132,40 +153,122 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: n25Color, borderRadius: BorderRadius.circular(20)),
+              color: yColor,
+              borderRadius: BorderRadius.circular(20)
+          ),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Column(
             children: [
-              Text('비상 연락망 전송'),
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () {},
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  _contactList.isEmpty ? Text('비상연락처를 등록해주세요.') :
+                  DropdownButton(
+                      value: _selectedContact,
+                      items: _nameList.map((value) {
+                        return DropdownMenuItem(
+                            value: value,
+                            child: Text(value)
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedContact = value!;
+                        });
+                      }
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.add),
+                    onPressed: () {
+                      _displayTextInputDiaLog(context);
+                    },
+                  ),
+                  DropdownButton(
+                      value: _selectedAlert,
+                      items: _valueList.map((value) {
+                        return DropdownMenuItem(
+                            value: value,
+                            child: Text(value)
+                        );
+                      }).toList(),
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedAlert = value!;
+                        });
+                      }
+                  ),
+                ],
               ),
-              DropdownButton(
-                  value: _selectedAlert,
-                  items: _valueList.map((value) {
-                    return DropdownMenuItem(value: value, child: Text(value));
-                  }).toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedAlert = value!;
-                    });
-                  }),
             ],
           ),
         ),
-        contact('엄마 010-4321-5678'),
-        onoff(title: '버튼', isUsed: false),
+        onoff(title: '임시버튼', isUsed: _useSiren,)
       ],
+    );
+  }
+
+  Future<void> _displayTextInputDiaLog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('연락처를 입력해 주세요.'),
+            content: SizedBox(
+              height: 100,
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        _addName = value;
+                      });
+                    },
+                    controller: _textFieldController,
+                    decoration: InputDecoration(hintText: '별명을 입력하세요.'),
+                  ),
+                  TextField(
+                    onChanged: (value) {
+                      setState(() {
+                        _addContact = value;
+                      });
+                    },
+                    controller: _textFieldController,
+                    decoration: InputDecoration(hintText: '연락처를 입력하세요.'),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+                child: Text('cancel'),
+              ),
+              ElevatedButton(
+                child: Text('confirm'),
+                onPressed: () {
+                  setState(() {
+                    _contactList.add(_addContact);
+                    _nameList.add(_addName);
+                    print(_contactList.first);
+                    Navigator.pop(context);
+                  });
+                },
+              )
+            ],
+          );
+        }
     );
   }
 }
 
 class onoff extends StatefulWidget {
-  onoff({Key? key, required this.title, required this.isUsed})
-      : super(key: key);
+  onoff({Key? key, required this.title, required this.isUsed}) : super(key: key);
   final String title;
   bool isUsed;
 
@@ -183,7 +286,9 @@ class _onoffState extends State<onoff> {
       height: 50,
       width: 300,
       decoration: BoxDecoration(
-          color: n25Color, borderRadius: BorderRadius.circular(20)),
+          color: yColor,
+          borderRadius: BorderRadius.circular(20)
+      ),
       margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
@@ -196,26 +301,11 @@ class _onoffState extends State<onoff> {
                 setState(() {
                   _isUsed = value;
                 });
-              })
+                print(_isUsed);
+              }
+          )
         ],
       ),
     );
-  }
-}
-
-class contact extends StatelessWidget {
-  const contact(this.who, {Key? key}) : super(key: key);
-  final String who;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-        height: 30,
-        width: 300,
-        decoration: BoxDecoration(
-            color: n25Color, borderRadius: BorderRadius.circular(20)),
-        margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-        child: Text(who, textAlign: TextAlign.start));
   }
 }
