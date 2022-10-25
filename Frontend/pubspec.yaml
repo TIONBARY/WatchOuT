@@ -47,6 +47,7 @@ dependencies:
   kakaomap_webview: ^0.6.2
   flutter_dotenv: ^5.0.2
   permission_handler: ^10.0.1
+  watch_connectivity: ^0.1.4
 dev_dependencies:
   flutter_test:
     sdk: flutter
