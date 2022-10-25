@@ -27,9 +27,7 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-            color: pColor,
-            borderRadius: BorderRadius.circular(20)
-          ),
+              color: n25Color, borderRadius: BorderRadius.circular(20)),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -42,8 +40,7 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useWearOS = value;
                     });
-                  }
-              )
+                  })
             ],
           ),
         ),
@@ -51,9 +48,7 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: pColor,
-              borderRadius: BorderRadius.circular(20)
-          ),
+              color: n25Color, borderRadius: BorderRadius.circular(20)),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -66,8 +61,7 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useScreen = value;
                     });
-                  }
-              )
+                  })
             ],
           ),
         ),
@@ -75,9 +69,7 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: pColor,
-              borderRadius: BorderRadius.circular(20)
-          ),
+              color: n25Color, borderRadius: BorderRadius.circular(20)),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -90,8 +82,7 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useGPS = value;
                     });
-                  }
-              )
+                  })
             ],
           ),
         ),
@@ -99,9 +90,7 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: pColor,
-              borderRadius: BorderRadius.circular(20)
-          ),
+              color: n25Color, borderRadius: BorderRadius.circular(20)),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -114,8 +103,7 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useSiren = value;
                     });
-                  }
-              )
+                  })
             ],
           ),
         ),
@@ -123,9 +111,7 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: pColor,
-              borderRadius: BorderRadius.circular(20)
-          ),
+              color: n25Color, borderRadius: BorderRadius.circular(20)),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -138,8 +124,7 @@ class _SetPageState extends State<SetPage> {
                     setState(() {
                       _useDzone = value;
                     });
-                  }
-              )
+                  })
             ],
           ),
         ),
@@ -147,9 +132,7 @@ class _SetPageState extends State<SetPage> {
           height: 50,
           width: 300,
           decoration: BoxDecoration(
-              color: pColor,
-              borderRadius: BorderRadius.circular(20)
-          ),
+              color: n25Color, borderRadius: BorderRadius.circular(20)),
           margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
           child: Row(
@@ -158,24 +141,18 @@ class _SetPageState extends State<SetPage> {
               Text('비상 연락망 전송'),
               IconButton(
                 icon: Icon(Icons.add),
-                onPressed: () {
-
-                },
+                onPressed: () {},
               ),
               DropdownButton(
-                value: _selectedAlert,
-                items: _valueList.map((value) {
-                  return DropdownMenuItem(
-                    value: value,
-                    child: Text(value)
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedAlert = value!;
-                  });
-                }
-              ),
+                  value: _selectedAlert,
+                  items: _valueList.map((value) {
+                    return DropdownMenuItem(value: value, child: Text(value));
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedAlert = value!;
+                    });
+                  }),
             ],
           ),
         ),
@@ -187,7 +164,8 @@ class _SetPageState extends State<SetPage> {
 }
 
 class onoff extends StatefulWidget {
-  onoff({Key? key, required this.title, required this.isUsed}) : super(key: key);
+  onoff({Key? key, required this.title, required this.isUsed})
+      : super(key: key);
   final String title;
   bool isUsed;
 
@@ -205,9 +183,7 @@ class _onoffState extends State<onoff> {
       height: 50,
       width: 300,
       decoration: BoxDecoration(
-          color: pColor,
-          borderRadius: BorderRadius.circular(20)
-      ),
+          color: n25Color, borderRadius: BorderRadius.circular(20)),
       margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
       padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
       child: Row(
@@ -220,8 +196,7 @@ class _onoffState extends State<onoff> {
                 setState(() {
                   _isUsed = value;
                 });
-              }
-          )
+              })
         ],
       ),
     );
@@ -235,15 +210,12 @@ class contact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 30,
-      width: 300,
-      decoration: BoxDecoration(
-          color: pColor,
-          borderRadius: BorderRadius.circular(20)
-      ),
-      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-      padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-      child: Text(who, textAlign: TextAlign.start)
-    );
+        height: 30,
+        width: 300,
+        decoration: BoxDecoration(
+            color: n25Color, borderRadius: BorderRadius.circular(20)),
+        margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+        child: Text(who, textAlign: TextAlign.start));
   }
 }

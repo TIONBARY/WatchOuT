@@ -18,34 +18,34 @@ class _MainButtonUpState extends State<MainButtonUp> {
       child: Row(
         children: [
           Flexible(
+              flex: 2,
+              child: Container(
+                margin: EdgeInsets.fromLTRB(10.w, 5.h, 5.w, 5.h),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                    color: Colors.green),
+              )),
+          Flexible(
               flex: 1,
               child: Column(
                 children: [
                   Flexible(
                     child: Container(
-                      margin: EdgeInsets.fromLTRB(10.w, 10.h, 5.w, 5.h),
+                      margin: EdgeInsets.fromLTRB(5.w, 10.h, 10.w, 5.h),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(25)),
-                          color: Colors.red),
+                          color: Colors.blue),
                     ),
                   ),
                   Flexible(
                     child: Container(
-                      margin: EdgeInsets.fromLTRB(10.w, 5.h, 5.w, 10.h),
+                      margin: EdgeInsets.fromLTRB(5.w, 5.h, 10.w, 10.h),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(25)),
-                          color: Colors.orange),
+                          color: Colors.purple),
                     ),
                   ),
                 ],
-              )),
-          Flexible(
-              flex: 2,
-              child: Container(
-                margin: EdgeInsets.fromLTRB(5.w, 5.h, 10.w, 5.h),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                    color: Colors.yellow),
               ))
         ],
       ),

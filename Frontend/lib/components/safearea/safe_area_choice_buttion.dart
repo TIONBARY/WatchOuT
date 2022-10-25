@@ -15,9 +15,9 @@ class SafeAreaChoiceButton extends StatelessWidget {
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => SafeAreaMapPage(name)));
       },
-      child: Text(name, style: TextStyle(fontSize: 20, color: fColor)),
+      child: Text(name, style: TextStyle(fontSize: 20)),
       style: ElevatedButton.styleFrom(
-          backgroundColor: sColor,
+          backgroundColor: n25Color,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(25.0),
           )),
