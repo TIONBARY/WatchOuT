@@ -203,7 +203,7 @@ class _SetPageState extends State<SetPage> {
             ],
           ),
         ),
-        onoff(title: '임시버튼', isUsed: true,)
+        onoff(title: '임시버튼', isUsed: _useSiren,)
       ],
     );
   }
@@ -301,6 +301,7 @@ class _onoffState extends State<onoff> {
                 setState(() {
                   _isUsed = value;
                 });
+                print(_isUsed);
               }
           )
         ],
