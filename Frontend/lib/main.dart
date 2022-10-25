@@ -43,6 +43,7 @@ class HomePage extends StatelessWidget {
         return MaterialApp(
           title: 'WatchOut',
           theme: ThemeData(
+            fontFamily: 'HanSan',
             primarySwatch: Colors.blue,
             primaryColor: Colors.white,
             accentColor: Colors.black,
