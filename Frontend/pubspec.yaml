@@ -80,8 +80,7 @@ flutter:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
   assets:
-    - env
-    - assets/icons/
+    - .env
   fonts:
     - family: HanSan
       fonts:
