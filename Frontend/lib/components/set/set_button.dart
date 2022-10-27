@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/constants.dart';
+import 'package:provider/provider.dart';
+import 'package:homealone/providers/switch_provider.dart';
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -14,11 +16,6 @@ class SetButton extends StatefulWidget {
 class _SetButtonState extends State<SetButton> {
   final TextEditingController _textFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
-  bool _useWearOS = false;
-  bool _useScreen = false;
-  bool _useGPS = false;
-  bool _useSiren = false;
-  bool _useDzone = false;
   final List<String> _valueList = ['문자', '전화', 'X'];
   String _selectedAlert = '문자';
   List<String> _contactList = ['010123456768', '01043218765'];
@@ -34,46 +31,46 @@ class _SetButtonState extends State<SetButton> {
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(5.w, 10.h, 2.5.w, 10.h),
             texts: 'WearOS 사용',
-            values: _useWearOS,
+            values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
             onchangeds: (value) {
               setState(() {
-                _useWearOS = value;
+                Provider.of<SwitchBools>(context, listen: false).useWearOS = value;
               });
             }),
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
             texts: '스크린 사용 감지',
-            values: _useScreen,
+            values: Provider.of<SwitchBools>(context, listen: false).useScreen,
             onchangeds: (value) {
               setState(() {
-                _useScreen = value;
+                Provider.of<SwitchBools>(context, listen: false).useScreen = value;
               });
             }),
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
             texts: '위치 정보 전송',
-            values: _useGPS,
+            values: Provider.of<SwitchBools>(context, listen: false).useGPS,
             onchangeds: (value) {
               setState(() {
-                _useGPS = value;
+                Provider.of<SwitchBools>(context, listen: false).useGPS = value;
               });
             }),
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
             texts: '경보음 사용',
-            values: _useSiren,
+            values: Provider.of<SwitchBools>(context, listen: false).useSiren,
             onchangeds: (value) {
               setState(() {
-                _useSiren = value;
+                Provider.of<SwitchBools>(context, listen: false).useSiren = value;
               });
             }),
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
             texts: '위험 지대 알림',
-            values: _useDzone,
+            values: Provider.of<SwitchBools>(context, listen: false).useDzone,
             onchangeds: (value) {
               setState(() {
-                _useDzone = value;
+                Provider.of<SwitchBools>(context, listen: false).useDzone = value;
               });
             }),
         Flexible(
