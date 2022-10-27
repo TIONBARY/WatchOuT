@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/pages/safe_area_cctv_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MainButtonDown extends StatefulWidget {
@@ -48,7 +49,12 @@ class _MainButtonDownState extends State<MainButtonDown> {
             flexs: 2,
             margins: EdgeInsets.fromLTRB(5.w, 5.h, 10.w, 5.h),
             boxcolors: nColor,
-            onpresseds: () {},
+            onpresseds: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SafeAreaCCTVMapPage()));
+            },
             texts: '',
             textcolors: Colors.white,
             fontsizes: 50.sp),
