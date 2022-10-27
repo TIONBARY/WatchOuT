@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/materiaart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:homealone/components/main/main_button_down.dart';
 import 'package:homealone/components/main/main_button_up.dart';
 import 'package:homealone/components/main/profile_bar.dart';
+
+import '../components/main/carousel.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);

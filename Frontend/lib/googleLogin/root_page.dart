@@ -1,11 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
-import 'package:homealone/googleLogin/tab_bar_page.dart';
 
 import 'login_page.dart';
 
-class RootPage extends StatelessWidget {
+class RootPage extends StatefulWidget {
+  @override
+  State<RootPage> createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+  final FirebaseAuth _authentication = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
     print('root_page created');
@@ -20,7 +26,9 @@ class RootPage extends StatelessWidget {
           return LoadingPage();
         } else {
           if (snapshot.hasData) {
-            return TabNavBar(snapshot.data);
+            print("snapshot data ㄱ------------------");
+            print(snapshot.data);
+            return LoginPage();
           }
           return LoginPage();
         }
