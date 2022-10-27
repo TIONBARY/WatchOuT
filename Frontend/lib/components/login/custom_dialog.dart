@@ -48,7 +48,7 @@ class CustomDialog extends StatelessWidget {
                   },
                   child: Text(
                     "확인",
-                    style: TextStyle(color: Colors.blue),
+                    style: TextStyle(color: Colors.black),
                   ),
                 ),
               )
