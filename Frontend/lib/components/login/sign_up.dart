@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/pages/main_page.dart';
 
+import '../../googleLogin/tab_bar_page.dart';
 import 'custom_dialog.dart';
 
 class SignUpForm extends StatefulWidget {
@@ -179,7 +179,9 @@ class _SignupFormState extends State<SignUpForm> {
                       context: context,
                       builder: (BuildContext context) {
                         return CustomDialog(
-                            "회원가입에 성공했습니다.", (context) => MainPage());
+                            "회원가입에 성공했습니다.",
+                            (context) =>
+                                TabNavBar(FirebaseAuth.instance.currentUser!));
                       });
                 },
                 child: Text('회원가입'),

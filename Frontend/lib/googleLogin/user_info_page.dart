@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/login/sign_up.dart';
-import 'package:homealone/pages/main_page.dart';
+import 'package:homealone/googleLogin/tab_bar_page.dart';
 
 class userInfoPage extends StatefulWidget {
   const userInfoPage({Key? key}) : super(key: key);
@@ -23,6 +23,7 @@ class _userInfoPageState extends State<userInfoPage> {
     // TODO: implement initState
     super.initState();
     getCurrentUser();
+    login();
   }
 
   void getCurrentUser() {
@@ -37,8 +38,7 @@ class _userInfoPageState extends State<userInfoPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
+  void login() {
     List<Map<String, dynamic>> userData;
     final userQuery = db
         .collection("user")
@@ -50,9 +50,16 @@ class _userInfoPageState extends State<userInfoPage> {
           userData = value.docs.map((e) => e.data()).toList();
           print("userData의 정보는 아래와 같다.");
           print(userData);
-          if (userData[0]["activated"] == true) return MainPage();
-          print("유저 상세 정보가 입력되지 않았습니다.");
+
+          if (userData[0]["activated"] == true) {
+            print("메인 페이지로 넘어갑니다.");
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => TabNavBar(loggedUser!)));
+          }
         } else {
+          print("유저 상세 정보가 입력되지 않았습니다.");
           // //db에 등록이 안되어있으므로
           db.collection("user").doc("${loggedUser!.uid}").set({
             "googleUID": loggedUser!.uid,
@@ -68,6 +75,10 @@ class _userInfoPageState extends State<userInfoPage> {
         }
       },
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('상세 정보 입력'),

@@ -1,7 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
-import 'package:homealone/googleLogin/user_info_page.dart';
 
 import 'login_page.dart';
 
@@ -27,7 +26,9 @@ class _RootPageState extends State<RootPage> {
           return LoadingPage();
         } else {
           if (snapshot.hasData) {
-            return userInfoPage();
+            print("snapshot data ㄱ------------------");
+            print(snapshot.data);
+            return LoginPage();
           }
           return LoginPage();
         }
