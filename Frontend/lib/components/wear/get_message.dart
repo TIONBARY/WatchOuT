@@ -15,12 +15,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var _watch = WatchConnectivity();
   var _count = 0;
+  var heartRate = 0.0;
+  var minValue = 80.0;
+  var maxValue = 120.0;
+  var marginValue = 10.0;
 
   var _supported = false;
   var _paired = false;
   var _reachable = false;
   var _context = <String, dynamic>{};
-  var _length = 0;
   // var _receivedContexts = <Map<String, dynamic>>[];
   var _receivedContexts = <Map<String, dynamic>>[];
   final _log = <String>[];
@@ -34,8 +37,26 @@ class _MyAppState extends State<MyApp> {
     _watch = WatchConnectivity();
     _watch.isPaired.then((value) => _paired = value);
     _watch.isReachable.then((value) => _reachable = value);
+    _watch.messageStream.listen((e) => debugPrint(e.toString()));
+    _watch.contextStream.listen((e) => updateHeartRate(e.values.last));
 
     initPlatformState();
+  }
+
+  // 워치 접근 가능하고, 심박수 갱신시 실행
+  void updateHeartRate(value) {
+    debugPrint(value + " 심박수");
+    if (_reachable) {
+      setState(() {
+        heartRate = double.parse(value);
+        if (heartRate < (minValue - marginValue) ||
+            heartRate >= (maxValue + marginValue)) {
+          debugPrint("이상 상황 $heartRate");
+        } else {
+          debugPrint("정상범위 심박수 $heartRate");
+        }
+      });
+    }
   }
 
   // Platform messages are asynchronous, so we initialize in an async method.
@@ -49,10 +70,7 @@ class _MyAppState extends State<MyApp> {
 
     // _watch.contextStream
     //     .listen((e) => setState(() => _log.add('Received context: $e')));
-    _watch.messageStream.listen((e) => debugPrint(e.toString()));
-    _watch.contextStream.listen((e) => debugPrint(e.toString()));
 
-    debugPrint(_length.toString());
     debugPrint(_receivedContexts.last.values.last);
     if (_reachable) {}
     setState(() {});
@@ -73,8 +91,8 @@ class _MyAppState extends State<MyApp> {
                   Text('Paired: $_paired'),
                   Text('Reachable: $_reachable'),
                   if (_reachable) ...[
-                    Text('Context: $_context'),
-                    Text('Received 메세지: $_receivedContexts'),
+                    Text('현재 심박수: $heartRate'),
+                    // Text('Received 메세지: $_receivedContexts'),
                   ],
                   TextButton(
                     onPressed: initPlatformState,
