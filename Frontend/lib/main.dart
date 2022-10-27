@@ -3,10 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:homealone/providers/switch_provider.dart';
 
 import 'googleLogin/root_page.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<SwitchBools>(create: (_) => SwitchBools())
+      ],
+      child: MyApp(),
+    )
+  );
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -18,6 +29,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'WatchOut',
       theme: ThemeData(
+        fontFamily: 'HanSan',
         primarySwatch: Colors.blue,
         primaryColor: Colors.white,
         accentColor: Colors.black,
