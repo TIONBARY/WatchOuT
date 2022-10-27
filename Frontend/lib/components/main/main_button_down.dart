@@ -27,7 +27,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   flexs: 1,
                   margins: EdgeInsets.fromLTRB(10.w, 10.h, 5.w, 5.h),
                   boxcolors: Colors.black12,
-                  onpresseds: () => launch("tel://00000000000"),
+                  onpresseds: () {},
                   texts: '안심귀가\n서비스',
                   textcolors: nColor,
                   fontsizes: 15.sp),
