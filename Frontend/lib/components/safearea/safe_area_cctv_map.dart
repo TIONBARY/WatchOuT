@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math' show cos, sqrt, asin;
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +13,11 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakaomap_webview/kakaomap_webview.dart';
+import 'package:native_screenshot/native_screenshot.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
@@ -22,6 +29,12 @@ double initLat = 0.0;
 double initLon = 0.0;
 Timer? timer;
 Timer? tempTimer;
+
+List<Position> positionList = [];
+StreamSubscription<Position>? _positionStreamSubscription;
+bool pressWalkBtn = false;
+DateTime startTime = DateTime.now();
+DateTime endTime = DateTime.now();
 
 class SafeAreaCCTVMap extends StatefulWidget {
   const SafeAreaCCTVMap({Key? key}) : super(key: key);
@@ -41,6 +54,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   String api_url = "";
 
   String area = "";
+
+  ScreenshotController screenshotController = ScreenshotController();
 
   @override
   void initState() {
@@ -117,6 +132,232 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
       markers[markers.length-1].setMap(null);
       addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
     ''');
+  }
+
+  Future<void> _capturePng() async {
+    String? path = await NativeScreenshot.takeScreenshot();
+    print("찍음");
+    debugPrint(path);
+    String fileName = formatDateTime(endTime.toIso8601String()) + ".png";
+    String topFolder = await getDirectory();
+    moveFile(File(path!), topFolder + "/" + fileName);
+  }
+
+  String formatDateTime(String inputTime) {
+    String converted = inputTime.trim().split(".").first;
+    converted = converted.replaceAll("-", "");
+    converted = converted.replaceAll(":", "");
+    converted = converted.replaceAll("T", "");
+    return converted;
+  }
+
+  Future<File> moveFile(File sourceFile, String newPath) async {
+    try {
+      // prefer using rename as it is probably faster
+      return await sourceFile.rename(newPath);
+    } on FileSystemException catch (e) {
+      // if rename fails, copy the source file and then delete it
+      debugPrint(e.message);
+      final newFile = await sourceFile.copy(newPath);
+      Directory tempDir = sourceFile.parent;
+      await sourceFile.delete();
+      tempDir.deleteSync();
+      return newFile;
+    }
+  }
+
+  Future<String> getDirectory() async {
+    Directory? directory =
+        await getExternalStorageDirectory(); //from path_provide package
+    if (directory != null) {
+      debugPrint(directory.toString());
+      String path = directory.path + '/' + 'walk';
+      new Directory(path).create(recursive: true)
+// The created directory is returned as a Future.
+          .then((Directory newDirectory) {
+        print('Path of New Dir: ' + newDirectory.path);
+      });
+      return path;
+    }
+    return "null";
+  }
+
+  /// 기능 functions
+  /// 디바이스의 현재 위치 결정
+  /// 위치 서비스가 활성화 되어있지 않거나 권한이 없는 경우 `Future` 에러
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('위치 서비스 비활성화');
+    }
+
+    // 백그라운드 GPS 권한 요청
+    permission = await _geolocatorPlatform.checkPermission();
+    // permission = await Permission.locationAlways.status;
+    if (permission == LocationPermission.denied) {
+      Permission.locationAlways.request();
+      permission = await _geolocatorPlatform.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('위치 정보 권한이 없음');
+      }
+    }
+
+    if (permission == PermissionStatus.granted) {
+      return await _geolocatorPlatform.getCurrentPosition();
+    } else if (permission == PermissionStatus.permanentlyDenied) {
+      return Future.error('백그라운드 위치정보 권한이 영구적으로 거부되어 권한을 요청할 수 없습니다.');
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error('위치정보 권한이 영구적으로 거부되어 권한을 요청할 수 없습니다.');
+    }
+
+    return await _geolocatorPlatform.getCurrentPosition();
+  }
+
+  void startWalk(Position position, _mapController) {
+    // 연속적인 위치 정보 기록에 사용될 설정
+    LocationSettings locationSettings;
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      locationSettings = AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 1,
+          intervalDuration: const Duration(milliseconds: 1000),
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText: "백그라운드에서 위치정보를 받아오고 있습니다.",
+            notificationTitle: "WatchOut이 백그라운드에서 실행중입니다.",
+          ));
+    } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        activityType: ActivityType.fitness,
+        distanceFilter: 10,
+        pauseLocationUpdatesAutomatically: true,
+        showBackgroundLocationIndicator: false,
+      );
+    } else {
+      locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      );
+    }
+
+    var lat = position.latitude, // 위도
+        lon = position.longitude; // 경도
+    positionList = [];
+
+    _mapController.runJavascript('''
+                  map.setDraggable(false);
+                  map.setZoomable(false);
+  ''');
+
+    _positionStreamSubscription = _geolocatorPlatform
+        .getPositionStream(locationSettings: locationSettings)
+        .listen((Position? position) {
+      if (!positionList.contains(position)) {
+        if (positionList.length > 0) {
+          drawLine(_mapController, position!, positionList.last);
+        }
+        positionList.add(position!);
+      }
+    });
+    if (positionList.length == 0) {
+      _mapController.runJavascript('''
+                  if ('$position') {
+                  // 
+                  if (polylineList) {
+                      for (i = 0; i < polylineList.length; i++) {
+                          // 기존 기록된 경로 삭제
+                          polylineList[i].setMap(null);
+                      }
+                  } 
+                  
+                  // GeoLocator을 이용해서 얻어온 접속 위치로 이동합니다
+                    var lat = parseFloat('$lat'), // 위도
+                        lon = parseFloat('$lon'); // 경도
+                    var locPosition = new kakao.maps.LatLng(lat, lon);
+                    map.setCenter(locPosition);
+                      
+                  } else { // 위치정보를 사용할 수 없을때 이동할 위치를 설정합니다
+                  
+                    var locPosition = new kakao.maps.LatLng(37.5013068, 127.0396597); // 멀티캠퍼스 위치
+                    map.setCenter(locPosition);
+                  }
+                  var polylineList = [];
+                  var boundList = [];
+            ''');
+    }
+  }
+
+  void drawLine(
+      WebViewController _mapController, Position position, Position beforePos) {
+    var lat = 0.0, lon = 0.0;
+    var beforeLat = 0.0, beforeLon = 0.0;
+
+    lat = position.latitude;
+    lon = position.longitude;
+    beforeLat = beforePos.latitude;
+    beforeLon = beforePos.longitude;
+    // 한 번에 너무 먼 거리 이동(오류/차량 등등) 제외
+    // if ((lat * 1000).round() == (beforeLat * 1000).round() ||
+    //     (lon * 1000).round() == (beforeLon * 1000).round()) {
+    // }
+
+    debugPrint('그리는 중');
+    _mapController.runJavascript('''
+                    var lat = parseFloat('$lat'), // 위도
+                        lon = parseFloat('$lon'); // 경도
+                    var beforeLat = parseFloat('$beforeLat'), // 위도
+                        beforeLon = parseFloat('$beforeLon'); // 경도
+                    var locPosition = new kakao.maps.LatLng(lat, lon);
+                    var beforeLocPosition = new kakao.maps.LatLng(beforeLat, beforeLon);
+                    var linePath = [];
+                    
+                    boundList.push(locPosition); // 바운드 영역 계산용 위치 추가
+                    
+                    map.setCenter(locPosition);
+                    linePath.push(beforeLocPosition);
+                    linePath.push(locPosition);
+                    
+                    // 지도에 표시할 선을 생성합니다
+                    var polyline = new kakao.maps.Polyline({
+                        path: linePath, // 선을 구성하는 좌표배열 입니다
+                        strokeWeight: 5, // 선의 두께 입니다
+                        strokeColor: '#FFAE00', // 선의 색깔입니다
+                        strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+                        strokeStyle: 'solid' // 선의 스타일입니다
+                    });
+                    
+                    // 지도에 선을 표시합니다 
+                    polyline.setMap(map);
+                    polylineList.push(polyline);
+            ''');
+  }
+
+  void stopWalk(WebViewController _mapController) {
+    _positionStreamSubscription?.cancel(); // 위치 기록 종료
+    _mapController.runJavascript('''
+                     map.setDraggable(true);
+                     map.setZoomable(true);
+                     var bounds = new kakao.maps.LatLngBounds();    
+                      for (i = 0; i < boundList.length; i++) {                          
+                          // LatLngBounds 객체에 좌표를 추가합니다
+                          bounds.extend(boundList[i]);
+                      }
+                      if ( boundList.length > 1) {
+                        map.setBounds(bounds);                      
+                      }
+                     // bounds[, paddingTop, paddingRight, paddingBottom, paddingLeft]
+                     // map.setCenter(new kakao.maps.LatLng(latitude,longitude));
+  ''');
+
+    positionList = [];
+    debugPrint('산책 끝');
   }
 
   @override
@@ -240,7 +481,77 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                   backgroundColor: nColor,
                                   onPressed: () {
                                     getSortedCCTVList();
-                                  }))
+                                  })),
+                          Positioned(
+                              left: 10.w,
+                              bottom: 10.h,
+                              child: FloatingActionButton(
+                                  child: Icon(Icons.emergency_share),
+                                  elevation: 5,
+                                  hoverElevation: 10,
+                                  tooltip: "CCTV 리스트 갱신",
+                                  backgroundColor: Colors.red,
+                                  onPressed: () {
+                                    UrlLauncher.launchUrl(Uri.parse("tel:112"));
+                                  })),
+                          Positioned(
+                              left: 0,
+                              right: 0,
+                              bottom: 10.h,
+                              child: Container(
+                                  margin:
+                                      EdgeInsets.fromLTRB(100.w, 0, 100.w, 0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        if (pressWalkBtn == false) {
+                                          // 버튼 변경
+                                          pressWalkBtn = true;
+                                          debugPrint(pressWalkBtn.toString());
+
+                                          // 카카오 맵 이동 기록 시작
+                                          Future<Position> future =
+                                              _determinePosition();
+                                          future
+                                              .then((pos) => startWalk(
+                                                  pos, _mapController))
+                                              .catchError(
+                                                  (error) => debugPrint(error));
+                                          startTime = DateTime.now();
+                                        } else if (pressWalkBtn == true) {
+                                          // 버튼 변경
+                                          pressWalkBtn = false;
+                                          debugPrint(pressWalkBtn.toString());
+
+                                          // 카카오 맵 이동 기록 중단
+                                          stopWalk(_mapController!);
+
+                                          // 타이머 정지
+                                          // _stopWatchTimer.dispose();
+                                          endTime = DateTime.now();
+                                          // 백엔드 서버로 전송
+
+                                          sleep(Duration(milliseconds: 500));
+                                          // 스크린샷 저장
+                                          _capturePng();
+                                        }
+                                      });
+                                    },
+                                    child: Text(
+                                        pressWalkBtn ? "귀가 종료" : "귀가 시작",
+                                        style: TextStyle(
+                                            fontSize: 20, color: nColor)),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: yColor,
+                                      padding: EdgeInsets.all(10.w),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                      ),
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                    ),
+                                  )))
                         ]));
                   }
                 })
