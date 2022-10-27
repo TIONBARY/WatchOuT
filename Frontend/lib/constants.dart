@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const pColor = Color(0xFFF4F4F2);
-const sColor = Color(0xFFE8E8E8);
-const tColor = Color(0xFFBBBFCA);
-const fColor = Color(0xFF495464);
+const nColor = Color(0xFF323232);
+const n50Color = Color(0x80323232);
+const n25Color = Color(0x40323232);
+const yColor = Color(0xFFFFC84B);

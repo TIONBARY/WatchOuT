@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/googleLogin/user_info_page.dart';
+import 'package:homealone/googleLogin/tab_bar_page.dart';
 
 import 'login_page.dart';
 

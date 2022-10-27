@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2021 The Android Open Source Project
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+    <string name="app_name">워치 아웃</string>
+    <string name="enable">활성화</string>
+    <string name="last_measured">마지막 측정:</string>
+    <string name="test_btn">전송 테스트</string>
+    <string name="not_available">이 단말기에서는 사용 불가능합니다.</string>
+    <string name="waiting">데이터 도착 대기중\u2026</string>
+    <string name="query_other_devices">다른 장치 탐색</string>
+    <string name="query_mobile_camera">모바일 장치 탐색</string>
+    <string name="no_device">해당하는 당치들이 없습니다.</string>
+    <string name="connected_nodes">노드: %1$s</string>
+    <string name="message">메세지</string>
+    <string name="capability_changed">탐색 조건 변경</string>
+    <string name="photo_placeholder">사진 위치</string>
+    <string name="captured_photo">캡쳐된 사진</string>
+    <string name="data_item_changed">데이터 아이템 변경</string>
+    <string name="data_item_deleted">데이터 아이템 삭제</string>
+    <string name="data_item_unknown">알 수 없는 데이터 아이템</string>
+</resources>

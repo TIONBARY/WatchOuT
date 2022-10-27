@@ -1,5 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/materiaart';
+import 'package:homealone/components/main/main_button_down.dart';
+import 'package:homealone/components/main/main_button_up.dart';
+import 'package:homealone/components/main/profile_bar.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -13,22 +16,31 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('Main Page'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app_sharp,
-              color: Colors.white,
+        toolbarHeight: 0,
+      ),
+      body: Container(
+        child: Column(
+          children: [
+            Flexible(
+              child: ProfileBar(),
+              flex: 2,
             ),
-            onPressed: () {
-              _authentication.signOut();
-              //Navigator.pop(context);
-            },
-          )
-        ],
+            Flexible(
+              child: MainButtonUp(),
+              flex: 3,
+            ),
+            Flexible(
+              child: MainButtonDown(),
+              flex: 3,
+            ),
+            Flexible(
+              child: Carousel(),
+              flex: 4,
+            ),
+          ],
+        ),
       ),
     );
   }
