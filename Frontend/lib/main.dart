@@ -18,6 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'WatchOut',
       theme: ThemeData(
+        fontFamily: 'HanSan',
         primarySwatch: Colors.blue,
         primaryColor: Colors.white,
         accentColor: Colors.black,
