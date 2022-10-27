@@ -23,9 +23,10 @@ import android.util.Log
 import androidx.health.services.client.data.DataType
 import androidx.health.services.client.data.HrAccuracy
 import androidx.health.services.client.data.PassiveMonitoringUpdate
+import com.google.android.gms.wearable.Wearable
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
+import kotlinx.coroutines.runBlocking
 
 /**
  * Receives heart rate updates passively and saves it to the repository.
@@ -52,9 +53,9 @@ class PassiveDataReceiver : BroadcastReceiver() {
                     HrAccuracy.SensorStatus.ACCURACY_HIGH
                 ).contains((it.accuracy as HrAccuracy).sensorStatus)
             }
-            .filter {
-                it.value.asDouble() > 0
-            }
+//            .filter {
+//                it.value.asDouble() > 0
+//            }
             // HEART_RATE_BPM is a SAMPLE type, so start and end times are the same.
             .maxByOrNull { it.endDurationFromBoot }
         // If there were no data points, the previous function returns null.
@@ -66,5 +67,11 @@ class PassiveDataReceiver : BroadcastReceiver() {
         runBlocking {
             repository.storeLatestHeartRate(latestHeartRate)
         }
+
+//        MainActivity.sendHeartRateData(latestHeartRate)
+        MainActivity.sendHeartRateData(Wearable.getDataClient(context), latestHeartRate)
+//        sendHeartRateData(latestHeartRate)
+//        val sendHeartRateData = MainActivity().sendHeartRateData(latestHeartRate)
+//        MainActivity().sendHeartRateData(latestHeartRate)
     }
 }
