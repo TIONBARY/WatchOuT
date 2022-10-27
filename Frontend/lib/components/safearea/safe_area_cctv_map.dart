@@ -10,6 +10,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/components/utils/safe_area_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakaomap_webview/kakaomap_webview.dart';
@@ -48,6 +49,15 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   List<Map<String, dynamic>> cctvList = [];
   List<Map<String, dynamic>> sortedcctvList = [];
+  List<String> safeAreaList = ["편의점", "파출소", "병원", "약국"];
+  List<bool> showSafeArea = [false, false, false, false];
+  List<String> safeAreaImages = [
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/convenience-store.png?alt=media&token=ef353640-b18b-4ab4-8079-f76f37251df2",
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/police-station-pin.png?alt=media&token=67f2f7ed-4196-4980-a6f5-4006f8f9dd5a",
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/hospital.png?alt=media&token=372f6988-95fd-49bb-8ce2-fe65875993ce",
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/pharmacy.png?alt=media&token=b04fb0ca-610a-4559-bebe-b23a4903e6f5"
+  ];
+  List<List<Map<String, dynamic>>> safeAreaCoordList = [[], [], [], []];
 
   int idx = 0;
 
@@ -75,7 +85,38 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     initLon = pos.longitude;
     area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
     await _search();
+    await _searchSafeArea();
+    print("!!!!!");
+    createMarkers();
+    print("?????");
     return kakaoMapKey; // 5초 후 '짜잔!' 리턴
+  }
+
+  void createMarkers() {}
+
+  void showMarkers(int idx) {
+    _mapController!.runJavascript('''
+      showMarkers(${idx});
+    ''');
+  }
+
+  void removeMarkers(int idx) {
+    _mapController!.runJavascript('''
+      removeMarkers(${idx});
+    ''');
+  }
+
+  Future<void> _searchSafeArea() async {
+    for (int i = 0; i < safeAreaList.length; i++) {
+      Map<String, dynamic> result = await apiKakao.searchArea(
+          safeAreaList[i], initLat.toString(), initLon.toString());
+      if (result['documents'] != null) {
+        safeAreaCoordList[i] = [];
+        result['documents']
+            .forEach((value) => {safeAreaCoordList[i].add(value)});
+      }
+    }
+    print(safeAreaCoordList);
   }
 
   Future<void> _search() async {
@@ -400,23 +441,23 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                         fit: FlexFit.loose,
                         child: Stack(children: [
                           KakaoMapView(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height,
-                            // height: size.height * 7 / 10,
-                            // height: size.height - appBarHeight - 130,
-                            // height: 1.sh,
-                            kakaoMapKey: kakaoMapKey,
-                            lat: initLat,
-                            lng: initLon,
-                            // zoomLevel: 1,
-                            showMapTypeControl: false,
-                            showZoomControl: false,
-                            draggableMarker: false,
-                            // mapType: MapType.TERRAIN,
-                            mapController: (controller) {
-                              _mapController = controller;
-                            },
-                            customScript: '''
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height,
+                              // height: size.height * 7 / 10,
+                              // height: size.height - appBarHeight - 130,
+                              // height: 1.sh,
+                              kakaoMapKey: kakaoMapKey,
+                              lat: initLat,
+                              lng: initLon,
+                              // zoomLevel: 1,
+                              showMapTypeControl: false,
+                              showZoomControl: false,
+                              draggableMarker: false,
+                              // mapType: MapType.TERRAIN,
+                              mapController: (controller) {
+                                _mapController = controller;
+                              },
+                              customScript: '''
     var markers = [];
 
     function addMarker(position) {
@@ -468,8 +509,66 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
     var mapTypeControl = new kakao.maps.MapTypeControl();
     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+    
+    var markersList = [[], [], [], []];
+    var _safeAreaCoordList = ${json.encode({
+                                    "list": safeAreaCoordList
+                                  })}["list"];
+    _safeAreaImages = ${json.encode({"list": safeAreaImages})}["list"];
+    function addSafeAreaMarker(idx, position) {
+        var imageSrc = _safeAreaImages[idx], // 마커이미지의 주소입니다    
+            imageSize = new kakao.maps.Size(40, 40); // 마커이미지의 크기입니다
+            // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+        
+        // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+        var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); // 마커가 표시될 위치입니다
+        
+        // 마커를 생성합니다
+        var marker = new kakao.maps.Marker({
+            position: position, 
+            image: markerImage // 마커이미지 설정 
+        });
+        markersList[idx].push(marker);
+      }
+      function createSafeAreaMarkers() {
+        for (var i = 0; i < _safeAreaCoordList.length; i++) {
+          for (var j = 0; j < _safeAreaCoordList[i].length; j++) {
+            addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[i][j]['y'], _safeAreaCoordList[i][j]['x']));
+            kakao.maps.event.addListener(markersList[i][j], 'click', (function(i) {
+              var placeName = _safeAreaCoordList[i][j]['place_name'];
+              var phone = _safeAreaCoordList[i][j]['phone'];
+              return function(){
+                onTapMarker.postMessage(JSON.stringify({"safe_area_idx": i, "place_name": placeName, "phone": phone}));
+              };
+            })(i));
+          }
+        }
+      }
+      createSafeAreaMarkers();
+      function showMarkers(idx) {
+        for (var i = 0; i < markersList[idx].length; i++) {
+          markersList[idx][i].setMap(map);
+        }
+      }
+      function removeMarkers(idx) {
+        for (var i = 0; i < markersList[idx].length; i++) {
+          markersList[idx][i].setMap(null);
+        }
+      }
               ''',
-                          ),
+                              onTapMarker: (message) {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return SafeAreaDialog(
+                                          safeAreaList[json.decode(message
+                                              .message)['safe_area_idx']],
+                                          json.decode(
+                                              message.message)['place_name'],
+                                          json.decode(message.message)['phone'],
+                                          null);
+                                    });
+                              }),
                           Positioned(
                               right: 10.w,
                               bottom: 10.h,
@@ -494,6 +593,50 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                   onPressed: () {
                                     UrlLauncher.launchUrl(Uri.parse("tel:112"));
                                   })),
+                          Positioned(
+                              left: 10.w,
+                              top: 10.h,
+                              child: Row(children: [
+                                for (var i = 0; i < safeAreaList.length; i++)
+                                  showSafeArea[i]
+                                      ? ElevatedButton(
+                                          onPressed: () {
+                                            removeMarkers(i);
+                                            setState(() {
+                                              showSafeArea[i] = false;
+                                            });
+                                          },
+                                          child: Text(safeAreaList[i],
+                                              style: TextStyle(color: nColor)),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: yColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                            tapTargetSize: MaterialTapTargetSize
+                                                .shrinkWrap,
+                                          ),
+                                        )
+                                      : ElevatedButton(
+                                          onPressed: () {
+                                            showMarkers(i);
+                                            setState(() {
+                                              showSafeArea[i] = true;
+                                            });
+                                          },
+                                          child: Text(safeAreaList[i]),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: n50Color,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
+                                            ),
+                                            tapTargetSize: MaterialTapTargetSize
+                                                .shrinkWrap,
+                                          ),
+                                        )
+                              ])),
                           Positioned(
                               left: 0,
                               right: 0,
