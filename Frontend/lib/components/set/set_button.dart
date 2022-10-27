@@ -118,10 +118,6 @@ class _SetButtonState extends State<SetButton> {
             ),
           ),
         ),
-        onoff(
-          title: '임시버튼',
-          isUsed: _useSiren,
-        ),
       ],
     );
   }
@@ -180,34 +176,6 @@ class _SetButtonState extends State<SetButton> {
               )
             ],
           );
-        });
-  }
-}
-
-class onoff extends StatefulWidget {
-  onoff({Key? key, required this.title, required this.isUsed})
-      : super(key: key);
-  final String title;
-  bool isUsed;
-
-  @override
-  State<onoff> createState() => _onoffState();
-}
-
-class _onoffState extends State<onoff> {
-  @override
-  Widget build(BuildContext context) {
-    final String _title = widget.title;
-    bool _isUsed = widget.isUsed;
-
-    return SetPageRadioButton(
-        margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
-        texts: _title,
-        values: _isUsed,
-        onchangeds: (value) {
-          setState(() {
-            _isUsed = value;
-          });
         });
   }
 }

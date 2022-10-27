@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/constants.dart';
 
-class SetPageRadioButton extends StatelessWidget {
+class SetPageRadioButton extends StatefulWidget {
   const SetPageRadioButton({
     Key? key,
     required this.margins,
@@ -16,18 +16,23 @@ class SetPageRadioButton extends StatelessWidget {
   final onchangeds;
 
   @override
+  State<SetPageRadioButton> createState() => _SetPageRadioButtonState();
+}
+
+class _SetPageRadioButtonState extends State<SetPageRadioButton> {
+  @override
   Widget build(BuildContext context) {
     return Flexible(
       child: Container(
         padding: EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h),
-        margin: margins,
+        margin: widget.margins,
         decoration: BoxDecoration(
             color: n25Color, borderRadius: BorderRadius.circular(25)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(texts),
-            Switch(value: values, onChanged: onchangeds),
+            Text(widget.texts),
+            Switch(value: widget.values, onChanged: widget.onchangeds),
           ],
         ),
       ),
