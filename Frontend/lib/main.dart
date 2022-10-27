@@ -2,15 +2,22 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 
+import 'firebase_options.dart';
 import 'googleLogin/root_page.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'KT',
+      title: 'WatchOuT main.dart page',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         primaryColor: Colors.white,
