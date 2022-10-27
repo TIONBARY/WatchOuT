@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/constants.dart';
-import 'package:provider/provider.dart';
+import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
+import 'package:provider/provider.dart';
+
+import '../wear/heart_rate_view.dart';
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -34,16 +37,24 @@ class _SetButtonState extends State<SetButton> {
             values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
             onchangeds: (value) {
               setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useWearOS = value;
+                Provider.of<SwitchBools>(context, listen: false).useWearOS =
+                    value;
               });
             }),
+        Provider.of<SwitchBools>(context, listen: true).useWearOS
+            ? HeartRateView(
+                margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
+                texts: Provider.of<HeartRateProvider>(context, listen: true)
+                    .heartRate)
+            : Container(),
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
             texts: '스크린 사용 감지',
             values: Provider.of<SwitchBools>(context, listen: false).useScreen,
             onchangeds: (value) {
               setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useScreen = value;
+                Provider.of<SwitchBools>(context, listen: false).useScreen =
+                    value;
               });
             }),
         SetPageRadioButton(
@@ -61,7 +72,8 @@ class _SetButtonState extends State<SetButton> {
             values: Provider.of<SwitchBools>(context, listen: false).useSiren,
             onchangeds: (value) {
               setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useSiren = value;
+                Provider.of<SwitchBools>(context, listen: false).useSiren =
+                    value;
               });
             }),
         SetPageRadioButton(
@@ -70,7 +82,8 @@ class _SetButtonState extends State<SetButton> {
             values: Provider.of<SwitchBools>(context, listen: false).useDzone,
             onchangeds: (value) {
               setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useDzone = value;
+                Provider.of<SwitchBools>(context, listen: false).useDzone =
+                    value;
               });
             }),
         Flexible(

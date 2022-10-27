@@ -19,6 +19,7 @@ class _MyAppState extends State<MyApp> {
   var minValue = 80.0;
   var maxValue = 120.0;
   var marginValue = 10.0;
+  var isEmergency = false;
 
   var _supported = false;
   var _paired = false;
@@ -52,8 +53,10 @@ class _MyAppState extends State<MyApp> {
         if (heartRate < (minValue - marginValue) ||
             heartRate >= (maxValue + marginValue)) {
           debugPrint("이상 상황 $heartRate");
+          isEmergency = true;
         } else {
           debugPrint("정상범위 심박수 $heartRate");
+          isEmergency = false;
         }
       });
     }
@@ -73,7 +76,10 @@ class _MyAppState extends State<MyApp> {
 
     debugPrint(_receivedContexts.last.values.last);
     if (_reachable) {}
-    setState(() {});
+    setState(() {
+      // 과거 마지막 기록된 값으로 초기화
+      heartRate = double.parse(_receivedContexts.last.values.last);
+    });
   }
 
   @override
@@ -91,6 +97,7 @@ class _MyAppState extends State<MyApp> {
                   Text('Paired: $_paired'),
                   Text('Reachable: $_reachable'),
                   if (_reachable) ...[
+                    Text('이상여부: $isEmergency'),
                     Text('현재 심박수: $heartRate'),
                     // Text('Received 메세지: $_receivedContexts'),
                   ],
