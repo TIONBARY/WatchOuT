@@ -20,7 +20,7 @@ class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
-  final List<String> _valueList = ['문자', '전화', 'X'];
+  final List<String> _valueList = ['문자', '전화', '사용안함'];
   String _selectedAlert = '문자';
   List<String> _contactList = ['010123456768', '01043218765'];
   List<String> _nameList = ['엄마', '아빠'];
