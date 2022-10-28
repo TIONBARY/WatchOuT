@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/constants.dart';
+import 'package:sizer/sizer.dart';
 
 class BasicDialog extends StatelessWidget {
   String titles = '';

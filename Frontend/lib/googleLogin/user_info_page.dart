@@ -59,15 +59,7 @@ class _userInfoPageState extends State<userInfoPage> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: SingleChildScrollView(
-          child: Row(
-            children: [
-              Expanded(
-                child: SignUpForm(),
-              ),
-            ],
-          ),
-        ),
+        child: SignUpForm(),
       ),
       // SignUpForm(),
     );
