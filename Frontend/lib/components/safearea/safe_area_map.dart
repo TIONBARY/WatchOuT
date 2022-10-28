@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
-import 'package:homealone/components/utils/safe_area_dialog.dart';
+import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -183,7 +183,7 @@ class _SafeAreaMapState extends State<SafeAreaMap> {
                             showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return SafeAreaDialog(
+                                  return CallDialog(
                                       widget.name,
                                       json.decode(
                                           message.message)['place_name'],

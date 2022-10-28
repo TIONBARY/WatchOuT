@@ -4,10 +4,9 @@ import 'package:homealone/constants.dart';
 
 class BasicDialog extends StatelessWidget {
   String titles = '';
-  String texts = '';
   Widget Function(BuildContext)? pageBuilder;
 
-  BasicDialog(this.titles, this.texts, this.pageBuilder);
+  BasicDialog(this.titles, this.pageBuilder);
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class BasicDialog extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: n25Color,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.5),
+                  borderRadius: BorderRadius.circular(7),
                 ),
               ),
               onPressed: () {
@@ -38,7 +37,10 @@ class BasicDialog extends StatelessWidget {
                       context, MaterialPageRoute(builder: pageBuilder!));
                 }
               },
-              child: Text(texts),
+              child: Text(
+                '확인',
+                style: TextStyle(color: nColor),
+              ),
             ),
           ],
         ),

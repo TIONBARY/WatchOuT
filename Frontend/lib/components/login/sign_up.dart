@@ -180,7 +180,6 @@ class _SignupFormState extends State<SignUpForm> {
                       builder: (BuildContext context) {
                         return BasicDialog(
                             "회원가입에 성공했습니다.",
-                            "확인",
                             (context) =>
                                 TabNavBar(FirebaseAuth.instance.currentUser!));
                       });
