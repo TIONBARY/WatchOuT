@@ -62,7 +62,7 @@ class PassiveDataReceiver : BroadcastReceiver() {
             ?: return
 
         val latestHeartRate = latestDataPoint.value.asDouble() // HEART_RATE_BPM is a Float type.
-        Log.d(TAG, "Received latest heart rate in background: $latestHeartRate")
+        Log.d(TAG, "백그라운드에서 기록된 최신 심박수: $latestHeartRate")
 
         runBlocking {
             repository.storeLatestHeartRate(latestHeartRate)
@@ -70,6 +70,12 @@ class PassiveDataReceiver : BroadcastReceiver() {
 
 //        MainActivity.sendHeartRateData(latestHeartRate)
         MainActivity.sendHeartRateData(Wearable.getDataClient(context), latestHeartRate)
+        if (latestHeartRate < 60.0 - 10.0 || latestHeartRate > 120.0 + 10.0) {
+            Log.e("이상", "심박수 이상 $latestHeartRate")
+        } else {
+            Log.d("심박수", latestHeartRate.toString())
+        }
+//        MainActivity().startActivity(intent)
 //        sendHeartRateData(latestHeartRate)
 //        val sendHeartRateData = MainActivity().sendHeartRateData(latestHeartRate)
 //        MainActivity().sendHeartRateData(latestHeartRate)

@@ -43,4 +43,4 @@ class MainApplication : Application(), Configuration.Provider {
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(PREFERENCES_FILENAME)
 
-const val TAG = "Passive Data Sample"
+const val TAG = "워치 아웃"

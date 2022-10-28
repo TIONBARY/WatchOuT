@@ -82,7 +82,7 @@ class DataLayerListenerService : WearableListenerService() {
                 val jsonObject: JSONObject = JSONObject(msg.toString())
 
                 Log.d("워치 수령 내부 값", jsonObject["HEART_RATE"].toString())
-                var received_heart_rate = jsonObject["HEART_RATE"].toString().toInt()
+                var received_heart_rate: Double = jsonObject["HEART_RATE"].toString().toDouble()
 
             }
             else -> {
