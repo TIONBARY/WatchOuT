@@ -10,7 +10,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
-import 'package:homealone/components/utils/safe_area_dialog.dart';
+import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakaomap_webview/kakaomap_webview.dart';
@@ -560,7 +560,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                 showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
-                                      return SafeAreaDialog(
+                                      return CallDialog(
                                           safeAreaList[json.decode(message
                                               .message)['safe_area_idx']],
                                           json.decode(
