@@ -17,7 +17,7 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<SwitchBools>(create: (_) => SwitchBools()),
-      ChangeNotifierProvider<UserInfo>(create: (_) => UserInfo()),
+      ChangeNotifierProvider<MyUserInfo>(create: (_) => MyUserInfo()),
       ChangeNotifierProvider<HeartRateProvider>(
           create: (_) => HeartRateProvider()),
     ],

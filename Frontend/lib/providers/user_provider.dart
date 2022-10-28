@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class UserInfo with ChangeNotifier {
+class MyUserInfo with ChangeNotifier {
   bool isLogin = false;
   String name = '';
   String nickname = '';
-  int age = 0;
+  String age = '';
   String gender = '';
   String phone = '';
   String region = '';
@@ -21,7 +21,7 @@ class UserInfo with ChangeNotifier {
     this.nickname = nickname;
   }
 
-  void setAge(int age) {
+  void setAge(String age) {
     this.age = age;
   }
 
@@ -37,12 +37,14 @@ class UserInfo with ChangeNotifier {
     this.region = region;
   }
 
-  // void setUser(firebasedb db){ //파이어베이스 계정 불러온 다음 데이터를 전역변수에 대입
-  //   setName(db.name);
-  //   setNickname();
-  //   setAge();
-  //   setGender();
-  //   setPhone();
-  //   setRegion();
-  // }
+  void setUser(Map<String, dynamic>? userDoc) {
+    //파이어베이스 계정 불러온 다음 데이터를 전역변수에 대입
+    setName(userDoc?["name"]);
+    setNickname(userDoc?["nickname"]);
+    setAge(userDoc?["age"]);
+    setGender(userDoc?["gender"]);
+    setPhone(userDoc?["phone"]);
+    setRegion(userDoc?["region"]);
+    print("provider 안ㅇ userDoc${nickname}");
+  }
 }
