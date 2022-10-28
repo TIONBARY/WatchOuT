@@ -3,11 +3,11 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math' show cos, sqrt, asin;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
@@ -18,6 +18,7 @@ import 'package:native_screenshot/native_screenshot.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -37,6 +38,34 @@ bool pressWalkBtn = false;
 DateTime startTime = DateTime.now();
 DateTime endTime = DateTime.now();
 
+List<String> guName = [
+  "강남구",
+  "강동구",
+  "강북구",
+  "강서구",
+  "관악구",
+  "광진구",
+  "구로구",
+  "금천구",
+  "도봉구",
+  "동작구",
+  "서대문구",
+  "성동구",
+  "송파구",
+  "영등포구",
+  "은평구",
+  "중구",
+  "노원구",
+  "동대문구",
+  "마포구",
+  "서초구",
+  "성북구",
+  "양천구",
+  "용산구",
+  "종로구",
+  "중랑구"
+];
+
 class SafeAreaCCTVMap extends StatefulWidget {
   const SafeAreaCCTVMap({Key? key}) : super(key: key);
 
@@ -49,15 +78,19 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   List<Map<String, dynamic>> cctvList = [];
   List<Map<String, dynamic>> sortedcctvList = [];
-  List<String> safeAreaList = ["편의점", "파출소", "병원", "약국"];
-  List<bool> showSafeArea = [false, false, false, false];
+  List<String> safeAreaList = ["편의점", "파출소", "병원", "약국", "안심 택배"];
+  List<bool> showSafeArea = [false, false, false, false, false];
   List<String> safeAreaImages = [
     "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/convenience-store.png?alt=media&token=ef353640-b18b-4ab4-8079-f76f37251df2",
     "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/police-station-pin.png?alt=media&token=67f2f7ed-4196-4980-a6f5-4006f8f9dd5a",
     "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/hospital.png?alt=media&token=372f6988-95fd-49bb-8ce2-fe65875993ce",
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/pharmacy.png?alt=media&token=b04fb0ca-610a-4559-bebe-b23a4903e6f5"
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/pharmacy.png?alt=media&token=b04fb0ca-610a-4559-bebe-b23a4903e6f5",
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/box.png?alt=media&token=b683b522-747d-4851-9950-4747347a501d"
   ];
-  List<List<Map<String, dynamic>>> safeAreaCoordList = [[], [], [], []];
+  List<List<Map<String, dynamic>>> safeAreaCoordList = [[], [], [], [], []];
+
+  List<Map<String, dynamic>> safeOpenBoxList = [];
+  List<Map<String, dynamic>> sortedSafeOpenBoxList = [];
 
   int idx = 0;
 
@@ -66,6 +99,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   String area = "";
 
   ScreenshotController screenshotController = ScreenshotController();
+
+  late final Future? myFuture = _future();
 
   @override
   void initState() {
@@ -85,14 +120,61 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     initLon = pos.longitude;
     area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
     await _search();
+    // await registerCCTV();
+    // await registerSafeOpenBox();
     await _searchSafeArea();
-    print("!!!!!");
-    createMarkers();
-    print("?????");
+    await _searchSafeOpenBox();
     return kakaoMapKey; // 5초 후 '짜잔!' 리턴
   }
 
-  void createMarkers() {}
+  Future<void> registerCCTV() async {
+    for (int i = 0; i < guName.length; i++) {
+      cctvList = [];
+      final response = await http.get(Uri.parse(
+          'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/1/1000/${guName[i]}/'));
+      print(response.body);
+      final result = await json.decode(response.body);
+      int count = result['safeOpenCCTV']['list_total_count'];
+      if (result['safeOpenCCTV'] == null) return;
+      if (result['safeOpenCCTV']['row'] != null) {
+        result['safeOpenCCTV']['row'].forEach((value) => {cctvList.add(value)});
+      }
+      for (int i = 1001; i < count; i += 1000) {
+        final response = await http.get(Uri.parse(
+            'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/${i}/${(i + 1000 - 1)}/${area}/'));
+        print(response.body);
+        final result = await json.decode(response.body);
+        if (result['safeOpenCCTV'] == null) return;
+        if (result['safeOpenCCTV']['row'] != null) {
+          result['safeOpenCCTV']['row']
+              .forEach((value) => {cctvList.add(value)});
+        }
+      }
+      print(cctvList);
+      await FirebaseFirestore.instance
+          .collection("cctv")
+          .doc(guName[i])
+          .set({"data": cctvList});
+    }
+  }
+
+  Future<void> registerSafeOpenBox() async {
+    safeOpenBoxList = [];
+    final response = await http.get(Uri.parse(
+        'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenBox/1/300/'));
+    print(response.body);
+    final result = await json.decode(response.body);
+    if (result['safeOpenBox'] == null) return;
+    if (result['safeOpenBox']['row'] != null) {
+      result['safeOpenBox']['row']
+          .forEach((value) => {safeOpenBoxList.add(value)});
+    }
+    print(safeOpenBoxList);
+    await FirebaseFirestore.instance
+        .collection("safeOpenBox")
+        .doc("data")
+        .set({"data": safeOpenBoxList});
+  }
 
   void showMarkers(int idx) {
     _mapController!.runJavascript('''
@@ -107,7 +189,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   }
 
   Future<void> _searchSafeArea() async {
-    for (int i = 0; i < safeAreaList.length; i++) {
+    for (int i = 0; i < 4; i++) {
       Map<String, dynamic> result = await apiKakao.searchArea(
           safeAreaList[i], initLat.toString(), initLon.toString());
       if (result['documents'] != null) {
@@ -121,26 +203,28 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   Future<void> _search() async {
     cctvList = [];
-    final response = await http.get(Uri.parse(
-        'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/1/1000/${area}/'));
-    print(response.body);
-    final result = await json.decode(response.body);
-    int count = result['safeOpenCCTV']['list_total_count'];
-    if (result['safeOpenCCTV'] == null) return;
-    if (result['safeOpenCCTV']['row'] != null) {
-      result['safeOpenCCTV']['row'].forEach((value) => {cctvList.add(value)});
+    final response =
+        await FirebaseFirestore.instance.collection("cctv").doc(area).get();
+    final cctvJson = response.data() as Map<String, dynamic>;
+    for (int i = 0; i < cctvJson['data'].length; i++) {
+      cctvList.add(cctvJson['data'][i]);
     }
-    for (int i = 1001; i < count; i += 1000) {
-      final response = await http.get(Uri.parse(
-          'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/${i}/${(i + 1000 - 1)}/${area}/'));
-      print(response.body);
-      final result = await json.decode(response.body);
-      if (result['safeOpenCCTV'] == null) return;
-      if (result['safeOpenCCTV']['row'] != null) {
-        result['safeOpenCCTV']['row'].forEach((value) => {cctvList.add(value)});
-      }
-    }
+    print(cctvList);
     getSortedCCTVList();
+  }
+
+  Future<void> _searchSafeOpenBox() async {
+    safeOpenBoxList = [];
+    final response = await FirebaseFirestore.instance
+        .collection("safeOpenBox")
+        .doc("data")
+        .get();
+    final safeOpenBoxJson = response.data() as Map<String, dynamic>;
+    for (int i = 0; i < safeOpenBoxJson['data'].length; i++) {
+      safeOpenBoxList.add(safeOpenBoxJson['data'][i]);
+    }
+    print(safeOpenBoxList);
+    getSortedSafeOpenBoxList();
   }
 
   void getSortedCCTVList() {
@@ -150,6 +234,18 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         .compareTo(calculateDistance(initLat, initLon,
             double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
     sortedcctvList = cctvList.sublist(0, 300);
+    print('sort end');
+  }
+
+  void getSortedSafeOpenBoxList() {
+    print('sort safe open box start');
+    safeOpenBoxList.sort((a, b) => (calculateDistance(initLat, initLon,
+            double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
+        .compareTo(calculateDistance(initLat, initLon,
+            double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
+    sortedSafeOpenBoxList = safeOpenBoxList;
+    safeAreaCoordList[4] = sortedSafeOpenBoxList;
+    print('sort end');
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -409,7 +505,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             FutureBuilder(
-                future: _future(),
+                future: myFuture,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   //해당 부분은 data를 아직 받아 오지 못했을 때 실행되는 부분
                   if (snapshot.hasData == false) {
@@ -510,7 +606,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     var mapTypeControl = new kakao.maps.MapTypeControl();
     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
     
-    var markersList = [[], [], [], []];
+    var markersList = [[], [], [], [], []];
     var _safeAreaCoordList = ${json.encode({
                                     "list": safeAreaCoordList
                                   })}["list"];
@@ -531,7 +627,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         markersList[idx].push(marker);
       }
       function createSafeAreaMarkers() {
-        for (var i = 0; i < _safeAreaCoordList.length; i++) {
+        for (var i = 0; i < 4; i++) {
           for (var j = 0; j < _safeAreaCoordList[i].length; j++) {
             addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[i][j]['y'], _safeAreaCoordList[i][j]['x']));
             kakao.maps.event.addListener(markersList[i][j], 'click', (function(i) {
@@ -542,6 +638,9 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
               };
             })(i));
           }
+        }
+        for (var j = 0; j < _safeAreaCoordList[4].length; j++) {
+          addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[4][j]['WGSXPT'], _safeAreaCoordList[4][j]['WGSYPT']));
         }
       }
       createSafeAreaMarkers();
@@ -570,8 +669,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                     });
                               }),
                           Positioned(
-                              right: 10.w,
-                              bottom: 10.h,
+                              right: 3.w,
+                              bottom: 3.h,
                               child: FloatingActionButton(
                                   child: Icon(Icons.refresh),
                                   elevation: 5,
@@ -582,68 +681,81 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                     getSortedCCTVList();
                                   })),
                           Positioned(
-                              left: 10.w,
-                              bottom: 10.h,
+                              left: 3.w,
+                              bottom: 3.h,
                               child: FloatingActionButton(
                                   child: Icon(Icons.emergency_share),
                                   elevation: 5,
                                   hoverElevation: 10,
-                                  tooltip: "CCTV 리스트 갱신",
+                                  tooltip: "긴급 신고",
                                   backgroundColor: Colors.red,
                                   onPressed: () {
                                     UrlLauncher.launchUrl(Uri.parse("tel:112"));
                                   })),
                           Positioned(
-                              left: 10.w,
-                              top: 10.h,
-                              child: Row(children: [
-                                for (var i = 0; i < safeAreaList.length; i++)
-                                  showSafeArea[i]
-                                      ? ElevatedButton(
-                                          onPressed: () {
-                                            removeMarkers(i);
-                                            setState(() {
-                                              showSafeArea[i] = false;
-                                            });
-                                          },
-                                          child: Text(safeAreaList[i],
-                                              style: TextStyle(color: nColor)),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: yColor,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
-                                            ),
-                                            tapTargetSize: MaterialTapTargetSize
-                                                .shrinkWrap,
-                                          ),
-                                        )
-                                      : ElevatedButton(
-                                          onPressed: () {
-                                            showMarkers(i);
-                                            setState(() {
-                                              showSafeArea[i] = true;
-                                            });
-                                          },
-                                          child: Text(safeAreaList[i]),
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: n50Color,
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(5.0),
-                                            ),
-                                            tapTargetSize: MaterialTapTargetSize
-                                                .shrinkWrap,
-                                          ),
-                                        )
-                              ])),
+                              left: 1.w,
+                              top: 1.h,
+                              child: Wrap(
+                                  direction: Axis.vertical,
+                                  spacing: 1.h,
+                                  children: [
+                                    for (var i = 0;
+                                        i < safeAreaList.length;
+                                        i++)
+                                      showSafeArea[i]
+                                          ? SizedBox(
+                                              width: 23.w,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  removeMarkers(i);
+                                                  setState(() {
+                                                    showSafeArea[i] = false;
+                                                  });
+                                                },
+                                                child: Text(safeAreaList[i],
+                                                    style: TextStyle(
+                                                        color: nColor)),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: yColor,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0),
+                                                  ),
+                                                  tapTargetSize:
+                                                      MaterialTapTargetSize
+                                                          .shrinkWrap,
+                                                ),
+                                              ))
+                                          : SizedBox(
+                                              width: 23.w,
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  showMarkers(i);
+                                                  setState(() {
+                                                    showSafeArea[i] = true;
+                                                  });
+                                                },
+                                                child: Text(safeAreaList[i]),
+                                                style: ElevatedButton.styleFrom(
+                                                  backgroundColor: n50Color,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            5.0),
+                                                  ),
+                                                  tapTargetSize:
+                                                      MaterialTapTargetSize
+                                                          .shrinkWrap,
+                                                ),
+                                              ))
+                                  ])),
                           Positioned(
                               left: 0,
                               right: 0,
-                              bottom: 10.h,
+                              bottom: 3.h,
                               child: Container(
-                                  margin:
-                                      EdgeInsets.fromLTRB(100.w, 0, 100.w, 0),
+                                  margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 0),
                                   child: ElevatedButton(
                                     onPressed: () {
                                       setState(() {
@@ -686,7 +798,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                             fontSize: 20, color: nColor)),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: yColor,
-                                      padding: EdgeInsets.all(10.w),
+                                      padding: EdgeInsets.all(3.w),
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(5.0),
