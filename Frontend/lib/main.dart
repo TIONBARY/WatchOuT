@@ -6,10 +6,10 @@ import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 import 'googleLogin/root_page.dart';
-import 'package:sizer/sizer.dart';
 
 void main() {
   runApp(MultiProvider(
