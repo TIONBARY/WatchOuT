@@ -93,15 +93,21 @@ class HomePage extends StatelessWidget {
         accentColor: Colors.black,
       ),
       home: FutureBuilder(
-        future: Firebase.initializeApp(),
+        future: test(),
         builder: (context, snapshot) {
+          var fb = snapshot.data!["FB"];
           if (snapshot.hasError) {
             return LoadingPage();
             // 에러페이지 없어서 대충 로딩페이지 재활용
           }
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
-            return AuthService().handleAuthState();
+            // Widget tmp = Container(
+            //   child: Text("hi"),
+            // );
+            // AuthService().test().then((value) => tmp = value);
+            return snapshot.data!["tmp"];
+            // AuthService().handleAuthState();
           }
           // Otherwise, show something whilst waiting for initialization to complete
           return LoadingPage();
@@ -109,6 +115,17 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<Map<String, dynamic>> test() async {
+  Map<String, dynamic> tmp = new Map();
+  // Widget widgetTmp = Container(
+  //   child: Text("실패~"),
+  // );
+
+  tmp.addEntries({"FB": await Firebase.initializeApp()}.entries);
+  tmp.addEntries({"tmp": await AuthService().test()}.entries);
+  return tmp;
 }
 
 void _permission() async {

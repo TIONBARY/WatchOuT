@@ -47,6 +47,7 @@ class AuthService {
       "googleUID": "${user?.uid}",
       "profileImage": "${user?.photoURL}",
       "phone": "01012345678",
+      "age": "12",
       "blocked": false,
       "activated": false,
       "region": "12345", //(시군구번호)
@@ -55,6 +56,23 @@ class AuthService {
       "gender": "M",
       "hide": false
     });
+  }
+
+  Future<Widget> test() async {
+    User? currentUser = _authentication.currentUser;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc("${currentUser?.uid}");
+    Map<String, dynamic>? documentData;
+    // Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      return handleAuthState();
+    } else {
+      registerBasicInfo();
+      print("기본 정보를 들록합니다.");
+      return handleAuthState();
+    }
   }
 
   //Determine if the user is authenticated.
