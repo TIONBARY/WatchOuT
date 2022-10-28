@@ -8,6 +8,7 @@ import 'package:sizer/sizer.dart';
 
 import '../components/login/auth_service.dart';
 import '../constants.dart';
+import '../main.dart';
 
 class TabNavBar extends StatefulWidget {
   final User user;
@@ -45,6 +46,11 @@ class _TabNavBarState extends State<TabNavBar> {
               ),
               onPressed: () {
                 AuthService().signOut();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => HomePage()),
+                    (route) => false);
               },
             )
           ],

@@ -49,12 +49,15 @@ class AuthService {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData && check) {
+            print("로그인 되었습니다.");
             return TabNavBar(FirebaseAuth.instance.currentUser!);
           } else if (snapshot.hasData && !check) {
             print("${check} check의 값은");
             return userInfoPage();
-          } else
+          } else {
+            print("로그아웃 되었습니다.");
             return LoginPage();
+          }
         });
   }
 
