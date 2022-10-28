@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/constants.dart';
+import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class CallDialog extends StatelessWidget {
@@ -25,20 +25,20 @@ class CallDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(5.w, 10.h, 5.w, 10.h),
-        height: 150.h,
+        padding: EdgeInsets.fromLTRB(1.w, 2.h, 1.w, 2.h),
+        height: 20.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Title(
               color: nColor,
               child: Text(emoji[titles]! + " " + names,
-                  style: TextStyle(fontSize: 17.5.sp)),
+                  style: TextStyle(fontSize: 12.5.sp)),
             ),
             Text(phones.isEmpty ? "등록된 번호가 없습니다." : phones),
             Container(
-              padding: EdgeInsets.fromLTRB(0, 17.5.h, 0, 0),
-              width: 150.w,
+              padding: EdgeInsets.fromLTRB(0, 2.5.h, 0, 0),
+              width: 35.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
