@@ -1,9 +1,13 @@
+import 'dart:collection';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_background/flutter_background.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
+import 'package:homealone/providers/user_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -13,6 +17,7 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<SwitchBools>(create: (_) => SwitchBools()),
+      ChangeNotifierProvider<MyUserInfo>(create: (_) => MyUserInfo()),
       ChangeNotifierProvider<HeartRateProvider>(
           create: (_) => HeartRateProvider()),
     ],
@@ -46,9 +51,13 @@ class _MyAppState extends State<MyApp> {
           Provider.of<HeartRateProvider>(context, listen: false).heartRate =
               heartRateBPM;
           debugPrint("BPM 심박수 $heartRateBPM");
+          Map<String, String> msg = HashMap<String, String>();
+          msg.addEntries({"HEART_RATE": heartRateBPM.toString()}.entries);
+          watch.sendMessage(msg);
         }));
     // HeartRateProvider().changeHeartRate(heartRateBPM);
     // debugPrint("일단 심박수 $heartRateBPM");
+    initBackground();
   }
 
   @override
@@ -143,4 +152,21 @@ void _permission() async {
   }
   print("requestStatus ${requestStatus.name}");
   print("status ${status.name}");
+}
+
+void initBackground() async {
+  final androidConfig = FlutterBackgroundAndroidConfig(
+    notificationTitle: "워치 아웃",
+    notificationText: "워치아웃이 백그라운드에서 실행중입니다.",
+    notificationImportance: AndroidNotificationImportance.Default,
+    notificationIcon: AndroidResource(
+        name: 'background_icon',
+        defType: 'drawable'), // Default is ic_launcher from folder mipmap
+  );
+  bool success =
+      await FlutterBackground.initialize(androidConfig: androidConfig);
+  bool hasPermissions = await FlutterBackground.hasPermissions;
+  if (hasPermissions) {
+    success = await FlutterBackground.enableBackgroundExecution();
+  }
 }

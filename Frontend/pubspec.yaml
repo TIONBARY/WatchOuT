@@ -57,6 +57,7 @@ dependencies:
   native_screenshot: ^1.0.0
   path_provider: ^2.0.11
   provider: ^6.0.4
+  flutter_background: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -86,6 +87,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - .env
+    - assets/
   fonts:
     - family: HanSan
       fonts:

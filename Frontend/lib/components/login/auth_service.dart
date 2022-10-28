@@ -7,6 +7,8 @@ import '../../googleLogin/login_page.dart';
 import '../../googleLogin/tab_bar_page.dart';
 
 class AuthService {
+  FirebaseAuth _authentication = FirebaseAuth.instance;
+
   Future<bool> activated() async {
     FirebaseAuth _authentication = FirebaseAuth.instance;
     User? currentUser = _authentication.currentUser;
@@ -24,7 +26,6 @@ class AuthService {
   }
 
   Future<Map<String, dynamic>?> userInfo() async {
-    FirebaseAuth _authentication = FirebaseAuth.instance;
     User? currentUser = _authentication.currentUser;
     FirebaseFirestore db = FirebaseFirestore.instance;
     DocumentReference<Map<String, dynamic>> documentReference =
@@ -39,12 +40,30 @@ class AuthService {
     return documentData;
   }
 
+  void registerBasicInfo() {
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    User? user = _authentication.currentUser;
+    db.collection("user").doc("${user?.uid}").set({
+      "googleUID": "${user?.uid}",
+      "profileImage": "${user?.photoURL}",
+      "phone": "01012345678",
+      "blocked": false,
+      "activated": false,
+      "region": "12345", //(시군구번호)
+      "nickname": "구의동호랑이",
+      "name": "홍길동",
+      "gender": "M",
+      "hide": false
+    });
+  }
+
   //Determine if the user is authenticated.
   handleAuthState() {
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
+            registerBasicInfo();
             print("로그인 되었습니다.");
             return TabNavBar(FirebaseAuth.instance.currentUser!);
           } else {

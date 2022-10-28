@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 class ProfileBar extends StatefulWidget {
@@ -37,21 +39,13 @@ class _ProfileBarState extends State<ProfileBar> {
           Flexible(
             flex: 7,
             child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Container(
-                      child: Text(
-                        '${_authentication.currentUser!.displayName} 님',
-                        style: TextStyle(fontSize: 17.5.sp),
-                      ),
-                    ),
-                  ),
-                ],
+              child: Text(
+                Provider.of<MyUserInfo>(context, listen: false).nickname,
+                style: TextStyle(fontSize: 17.5.sp),
               ),
             ),
           ),
+          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
         ],
       ),
     );
