@@ -6,6 +6,7 @@ import 'package:homealone/pages/safe_area_choice_page.dart';
 import 'package:homealone/pages/set_page.dart';
 import 'package:sizer/sizer.dart';
 
+import '../components/login/auth_service.dart';
 import '../constants.dart';
 
 class TabNavBar extends StatefulWidget {
@@ -43,7 +44,7 @@ class _TabNavBarState extends State<TabNavBar> {
                 color: Colors.white,
               ),
               onPressed: () {
-                _authentication.signOut();
+                AuthService().signOut();
               },
             )
           ],

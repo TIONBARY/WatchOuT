@@ -61,7 +61,6 @@ class _userInfoPageState extends State<userInfoPage> {
         },
         child: SignUpForm(),
       ),
-      // SignUpForm(),
     );
     // }
   }

@@ -20,14 +20,29 @@ class AuthService {
     if (docSnapshot.exists) {
       documentData = docSnapshot.data();
     }
-    if (documentData == null)
-      print("왜 또 눌이야아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아아");
+    if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
     return documentData?["activated"];
+  }
+
+  Future<Map<String, dynamic>?> _userInfo() async {
+    FirebaseAuth _authentication = FirebaseAuth.instance;
+    User? currentUser = _authentication.currentUser;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc("${currentUser?.uid}");
+    Map<String, dynamic>? documentData;
+    // Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
+    return documentData;
   }
 
   //Determine if the user is authenticated.
   handleAuthState() {
-    bool check = true;
+    bool check = false;
     _activated().then((value) => {check = value, print("value의 값은 ${value}")});
 
     return StreamBuilder(
