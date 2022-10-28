@@ -5,9 +5,7 @@ import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:sizer/siz_provider.dart';
-
-import 'googleLogin/root_page.dart';
+import 'package:sizer/sizer.dart';
 
 void main() {
   runApp(MultiProvider(

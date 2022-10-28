@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
-import 'package:homealonet '../../googleLogin/tab_bar_page.dart';
+
+import '../../googleLogin/tab_bar_page.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
