@@ -27,7 +27,7 @@ class AuthService {
 
   //Determine if the user is authenticated.
   handleAuthState() {
-    bool check = false;
+    bool check = true;
     _activated().then((value) => {check = value, print("value의 값은 ${value}")});
 
     return StreamBuilder(

@@ -9,8 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
-import 'googleLogin/root_page.dart';
-
 void main() {
   runApp(MultiProvider(
     providers: [
