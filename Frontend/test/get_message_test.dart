@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
+// Wear OS 연동 테스트 페이지
+
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MyApp(),
+  );
 }
 
 class MyApp extends StatefulWidget {
