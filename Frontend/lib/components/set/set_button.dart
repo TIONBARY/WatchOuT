@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../wear/heart_rate_view.dart';
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -39,6 +42,13 @@ class _SetButtonState extends State<SetButton> {
                     value;
               });
             }),
+        Provider.of<SwitchBools>(context, listen: true).useWearOS
+            ? HeartRateView(
+                margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
+                heartRate:
+                    Provider.of<HeartRateProvider>(context, listen: false)
+                        .heartRate)
+            : Container(),
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
             texts: '스크린 사용 감지',
@@ -88,10 +98,7 @@ class _SetButtonState extends State<SetButton> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _contactList.isEmpty
-                    ? Text(
-                        '비상 연락망을 등록해주세요.',
-                        style: TextStyle(color: nColor),
-                      )
+                    ? Text('비상연락처를 등록해주세요.')
                     : DropdownButton(
                         value: _selectedContact,
                         items: _nameList.map((value) {

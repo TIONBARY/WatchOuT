@@ -27,10 +27,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.Node
-import com.google.android.gms.wearable.PutDataRequest
-import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.*
 import com.ssafy.homealone.databinding.ActivityMainBinding
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayInputStream
@@ -38,13 +35,13 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 
+
 /**
  * Activity displaying the app UI. Notably, this binds data from [MainViewModel] to views on screen,
  * and performs the permission check when enabling passive data.
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
     private val dataClient by lazy { Wearable.getDataClient(this) }
     private val messageClient by lazy { Wearable.getMessageClient(this) }
     private val capabilityClient by lazy { Wearable.getCapabilityClient(this) }
@@ -134,61 +131,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-//    테스트용 전송버튼
-    fun onClickInMain(view: View) {
-        when(binding.lastMeasuredValue.text){
-            binding.lastMeasuredValue.text -> {
-
-//                val intent = Intent(this, DataMainActivity::class.java)
-//                intent.putExtra("heartRate",  binding.lastMeasuredValue.text)
-                Log.d("심박수", binding.lastMeasuredValue.text.toString())
-//                it.id, channelName, messageData
-                sendHeartRateData(binding.lastMeasuredValue.text)
-//                sendMessage(binding.lastMeasuredValue.text.toString())
-//                startActivity(intent)
-            }
-        }
-    }
-
-    //데이터 업데이트
-    private fun sendHeartRateData(data: Any) {
-        val eventData = objectToBytes(mutableMapOf(Pair("HEART_RATE", data.toString().trim())))
-        val dataItem = PutDataRequest.create("/$channelName")
-        dataItem.data = eventData
-        dataClient.putDataItem(dataItem)
-            .addOnSuccessListener { Log.d("데이터 전송 성공", data.toString()) }
-            .addOnFailureListener {  Log.e("데이터 전송 실패", it.message.toString()) }
-
-    }
-
-    // 메세지 전송
-    private fun sendMessage(message: String) {
-        Log.d("메세지", message)
-        val messageData = objectToBytes(mutableMapOf(Pair("HEART_RATE", message)))
-
-        Log.d("메세지 전송", objectFromBytes(messageData).toString())
-        nodeClient.connectedNodes.addOnSuccessListener { nodes ->
-            nodes.forEach {
-                messageClient.sendMessage(it.id, channelName, messageData)
-
-//                messageClient.sendMessage(it.id, "/$channelName", messageData)
-            }
-        }
-    }
-
-    private fun objectToBytes(`object`: Any): ByteArray {
-        val baos = ByteArrayOutputStream()
-        val oos = ObjectOutputStream(baos)
-        oos.writeObject(`object`)
-        return baos.toByteArray()
-    }
-
-    private fun objectFromBytes(bytes: ByteArray): Any {
-        val bis = ByteArrayInputStream(bytes)
-        val ois = ObjectInputStream(bis)
-        return ois.readObject()
-    }
-
 //    private fun onQueryOtherDevicesClicked() {
 //        lifecycleScope.launch {
 //            try {
@@ -269,10 +211,45 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TAG = "DataMainActivity"
+        private const val TAG = "MainActivity"
+        private val channelName = "watch_connectivity"
 
-        private const val CAMERA_CAPABILITY = "camera"
-        private const val WEAR_CAPABILITY = "wear"
-        private const val MOBILE_CAPABILITY = "mobile"
+        //데이터 업데이트
+        fun sendHeartRateData(dataClient: DataClient, data: Any) {
+            val eventData = objectToBytes(mutableMapOf(Pair("HEART_RATE", data.toString().trim())))
+            val dataItem = PutDataRequest.create("/$channelName")
+            dataItem.data = eventData
+            dataClient.putDataItem(dataItem)
+                .addOnSuccessListener { Log.d("데이터 전송 성공", data.toString()) }
+                .addOnFailureListener {  Log.e("데이터 전송 실패", it.message.toString()) }
+        }
+
+        // 메세지 전송
+        private fun sendMessage(nodeClient: NodeClient, messageClient: MessageClient, message: String) {
+            Log.d("메세지", message)
+            val messageData = objectToBytes(mutableMapOf(Pair("HEART_RATE", message)))
+
+            Log.d("메세지 전송", objectFromBytes(messageData).toString())
+            nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+                nodes.forEach {
+                    messageClient.sendMessage(it.id, channelName, messageData)
+
+//                messageClient.sendMessage(it.id, "/$channelName", messageData)
+                }
+            }
+        }
+
+        private fun objectFromBytes(bytes: ByteArray): Any {
+            val bis = ByteArrayInputStream(bytes)
+            val ois = ObjectInputStream(bis)
+            return ois.readObject()
+        }
+
+        private fun objectToBytes(`object`: Any): ByteArray {
+            val baos = ByteArrayOutputStream()
+            val oos = ObjectOutputStream(baos)
+            oos.writeObject(`object`)
+            return baos.toByteArray()
+        }
     }
 }
