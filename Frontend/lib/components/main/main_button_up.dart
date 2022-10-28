@@ -20,32 +20,31 @@ class _MainButtonUpState extends State<MainButtonUp> {
       children: [
         MainPageTextButton(
             flexs: 2,
-            margins: EdgeInsets.fromLTRB(1.w, 0.5.h, 0.5.w, 0.5.h),
+            margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 1.h),
             boxcolors: Colors.red,
             onpresseds: () {},
             texts: 'SOS',
             textcolors: Colors.white,
-            fontsizes: 50.sp),
+            fontsizes: 40.sp),
         Flexible(
             child: Column(
           children: [
             MainPageTextButton(
                 flexs: 1,
-                margins: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                // margins: EdgeInsets.fromLTRB(0.5.w, 1.h, 1.w, 0.5.h),
+                margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
                 boxcolors: Colors.black12,
                 onpresseds: () {},
-                texts: '미정1',
+                texts: '미정',
                 textcolors: nColor,
-                fontsizes: 15.sp),
+                fontsizes: 12.5.sp),
             MainPageTextButton(
                 flexs: 1,
-                margins: EdgeInsets.fromLTRB(0.5.w, 0.5.h, 1.w, 1.h),
+                margins: EdgeInsets.fromLTRB(1.w, 0.5.h, 2.w, 1.h),
                 boxcolors: Colors.black12,
                 onpresseds: () {},
-                texts: '미정2',
+                texts: '미정',
                 textcolors: nColor,
-                fontsizes: 15.sp)
+                fontsizes: 12.5.sp)
           ],
         ))
       ],
