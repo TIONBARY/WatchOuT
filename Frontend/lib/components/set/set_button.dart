@@ -14,7 +14,8 @@ class SetButton extends StatefulWidget {
 }
 
 class _SetButtonState extends State<SetButton> {
-  final TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _nameFieldController = TextEditingController();
+  final TextEditingController _contactFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
   final List<String> _valueList = ['문자', '전화', 'X'];
   String _selectedAlert = '문자';
@@ -135,7 +136,7 @@ class _SetButtonState extends State<SetButton> {
                         _addName = value;
                       });
                     },
-                    controller: _textFieldController,
+                    controller: _nameFieldController,
                     decoration: InputDecoration(hintText: '별명을 입력하세요.'),
                   ),
                   TextField(
@@ -144,7 +145,7 @@ class _SetButtonState extends State<SetButton> {
                         _addContact = value;
                       });
                     },
-                    controller: _textFieldController,
+                    controller: _contactFieldController,
                     decoration: InputDecoration(hintText: '연락처를 입력하세요.'),
                   ),
                 ],
@@ -155,6 +156,8 @@ class _SetButtonState extends State<SetButton> {
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                 onPressed: () {
                   setState(() {
+                    _nameFieldController.clear();
+                    _contactFieldController.clear();
                     Navigator.pop(context);
                   });
                 },
@@ -167,6 +170,8 @@ class _SetButtonState extends State<SetButton> {
                     _contactList.add(_addContact);
                     _nameList.add(_addName);
                     print(_contactList.first);
+                    _nameFieldController.clear();
+                    _contactFieldController.clear();
                     Navigator.pop(context);
                   });
                 },
