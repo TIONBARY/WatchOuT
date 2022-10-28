@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../wear/heart_rate_view.dart';
 

@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/safe_area_map_page.dart';
+import 'package:sizer/sizer.dart';
 
 class SafeAreaChoiceButton extends StatelessWidget {
   const SafeAreaChoiceButton(this.name);
