@@ -86,6 +86,7 @@ flutter:
   #   - images/a_dot_ham.jpeg
   assets:
     - .env
+    - assets/
   fonts:
     - family: HanSan
       fonts:

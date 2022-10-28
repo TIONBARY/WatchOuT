@@ -37,21 +37,13 @@ class _ProfileBarState extends State<ProfileBar> {
           Flexible(
             flex: 7,
             child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Container(
-                      child: Text(
-                        '${_authentication.currentUser!.displayName} 님',
-                        style: TextStyle(fontSize: 17.5.sp),
-                      ),
-                    ),
-                  ),
-                ],
+              child: Text(
+                '${_authentication.currentUser!.displayName}',
+                style: TextStyle(fontSize: 17.5.sp),
               ),
             ),
           ),
+          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
         ],
       ),
     );
