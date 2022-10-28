@@ -27,6 +27,7 @@ late WebViewController? _mapController;
 String addrName = "";
 String kakaoMapKey = "";
 String cctvAPIKey = "";
+String openAPIKey = "";
 double initLat = 0.0;
 double initLon = 0.0;
 Timer? timer;
@@ -78,19 +79,22 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   List<Map<String, dynamic>> cctvList = [];
   List<Map<String, dynamic>> sortedcctvList = [];
-  List<String> safeAreaList = ["편의점", "파출소", "병원", "약국", "안심 택배"];
-  List<bool> showSafeArea = [false, false, false, false, false];
+  List<String> safeAreaList = ["편의점", "파출소", "병원", "약국", "안심 택배", "비상벨"];
+  List<bool> showSafeArea = [false, false, false, false, false, false];
   List<String> safeAreaImages = [
     "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/convenience-store.png?alt=media&token=ef353640-b18b-4ab4-8079-f76f37251df2",
     "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/police-station-pin.png?alt=media&token=67f2f7ed-4196-4980-a6f5-4006f8f9dd5a",
     "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/hospital.png?alt=media&token=372f6988-95fd-49bb-8ce2-fe65875993ce",
     "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/pharmacy.png?alt=media&token=b04fb0ca-610a-4559-bebe-b23a4903e6f5",
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/box.png?alt=media&token=b683b522-747d-4851-9950-4747347a501d"
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/box.png?alt=media&token=b683b522-747d-4851-9950-4747347a501d",
+    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/bell.png?alt=media&token=6946f5fe-9b8c-4d89-950b-44e5a26c86d4"
   ];
-  List<List<Map<String, dynamic>>> safeAreaCoordList = [[], [], [], [], []];
+  List<List<Map<String, dynamic>>> safeAreaCoordList = [[], [], [], [], [], []];
 
   List<Map<String, dynamic>> safeOpenBoxList = [];
   List<Map<String, dynamic>> sortedSafeOpenBoxList = [];
+  List<Map<String, dynamic>> emergencyBellList = [];
+  List<Map<String, dynamic>> sortedEmergencyBellList = [];
 
   int idx = 0;
 
@@ -101,6 +105,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   ScreenshotController screenshotController = ScreenshotController();
 
   late final Future? myFuture = _future();
+
+  Map<String, dynamic> newValue = {};
 
   @override
   void initState() {
@@ -115,6 +121,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     await dotenv.load();
     kakaoMapKey = dotenv.get('kakaoMapAPIKey');
     cctvAPIKey = dotenv.get('cctvAPIKey');
+    openAPIKey = dotenv.get('openAPIKey');
     // debugPrint("어싱크 내부");
     initLat = pos.latitude;
     initLon = pos.longitude;
@@ -122,8 +129,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     await _search();
     // await registerCCTV();
     // await registerSafeOpenBox();
+    // await registerEmergencyBell();
     await _searchSafeArea();
     await _searchSafeOpenBox();
+    await _searchEmergencyBell();
     return kakaoMapKey; // 5초 후 '짜잔!' 리턴
   }
 
@@ -174,6 +183,38 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         .collection("safeOpenBox")
         .doc("data")
         .set({"data": safeOpenBoxList});
+  }
+
+  Future<void> registerEmergencyBell() async {
+    emergencyBellList = [];
+    print("start");
+    for (int i = 0; i < 27; i++) {
+      final response = await http.get(Uri.parse(
+              'http://api.data.go.kr/openapi/tn_pubr_public_safety_emergency_bell_position_api')
+          .replace(queryParameters: {
+        'pageNo': i.toString(),
+        'numOfRows': 1000.toString(),
+        'type': 'json',
+        'serviceKey': openAPIKey
+      }));
+      print(response.body);
+      final result = await json.decode(response.body);
+      if (result['response']['body']['items'] == null) return;
+      if (result['response']['body']['items'] != null) {
+        result['response']['body']['items'].forEach((value) => {
+              if (value['rdnmadr'].contains("서울특별시") ||
+                  value['lnmadr'].contains("서울특별시"))
+                emergencyBellList.add(
+                    {"WGSXPT": value['latitude'], "WGSYPT": value['longitude']})
+            });
+      }
+      print(emergencyBellList.length);
+    }
+    print(emergencyBellList.length);
+    await FirebaseFirestore.instance
+        .collection("emergencyBell")
+        .doc("서울특별시")
+        .set({"data": emergencyBellList});
   }
 
   void showMarkers(int idx) {
@@ -227,25 +268,55 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     getSortedSafeOpenBoxList();
   }
 
+  Future<void> _searchEmergencyBell() async {
+    emergencyBellList = [];
+    final response = await FirebaseFirestore.instance
+        .collection("emergencyBell")
+        .doc("서울특별시")
+        .get();
+    final emergencyBellJson = response.data() as Map<String, dynamic>;
+    for (int i = 0; i < emergencyBellJson['data'].length; i++) {
+      if (emergencyBellJson['data'][i]['WGSXPT'] != null &&
+          emergencyBellJson['data'][i]['WGSYPT'] != null &&
+          checkIsDouble(emergencyBellJson['data'][i]['WGSXPT']) &&
+          checkIsDouble(emergencyBellJson['data'][i]['WGSYPT']))
+        emergencyBellList.add(emergencyBellJson['data'][i]);
+    }
+    print(emergencyBellList.length);
+    getSortedEmergencyBellList();
+  }
+
+  bool checkIsDouble(String number) {
+    return double.tryParse(number) != null;
+  }
+
   void getSortedCCTVList() {
-    print('sort start');
     cctvList.sort((a, b) => (calculateDistance(initLat, initLon,
             double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
         .compareTo(calculateDistance(initLat, initLon,
             double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
-    sortedcctvList = cctvList.sublist(0, 300);
-    print('sort end');
+    sortedcctvList = cctvList.sublist(0, 200);
   }
 
   void getSortedSafeOpenBoxList() {
-    print('sort safe open box start');
     safeOpenBoxList.sort((a, b) => (calculateDistance(initLat, initLon,
             double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
         .compareTo(calculateDistance(initLat, initLon,
             double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
     sortedSafeOpenBoxList = safeOpenBoxList;
     safeAreaCoordList[4] = sortedSafeOpenBoxList;
-    print('sort end');
+  }
+
+  void getSortedEmergencyBellList() {
+    print("sort start");
+    emergencyBellList.sort((a, b) => (calculateDistance(initLat, initLon,
+            double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
+        .compareTo(calculateDistance(initLat, initLon,
+            double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
+    print("sort end");
+    sortedEmergencyBellList = emergencyBellList;
+    print(sortedEmergencyBellList);
+    safeAreaCoordList[5] = sortedEmergencyBellList;
   }
 
   double calculateDistance(lat1, lon1, lat2, lon2) {
@@ -606,7 +677,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     var mapTypeControl = new kakao.maps.MapTypeControl();
     map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
     
-    var markersList = [[], [], [], [], []];
+    var markersList = [[], [], [], [], [], []];
     var _safeAreaCoordList = ${json.encode({
                                     "list": safeAreaCoordList
                                   })}["list"];
@@ -639,9 +710,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
             })(i));
           }
         }
-        for (var j = 0; j < _safeAreaCoordList[4].length; j++) {
-          addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[4][j]['WGSXPT'], _safeAreaCoordList[4][j]['WGSYPT']));
+        for (var i = 4; i < 6; i++) {
+          for (var j = 0; j < _safeAreaCoordList[i].length; j++) {
+            addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[i][j]['WGSXPT'], _safeAreaCoordList[i][j]['WGSYPT']));
+          }
         }
+        
       }
       createSafeAreaMarkers();
       function showMarkers(idx) {
