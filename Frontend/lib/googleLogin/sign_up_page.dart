@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 
 import '../components/login/sign_up.dart';
 
-class userInfoPage extends StatefulWidget {
-  const userInfoPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<userInfoPage> createState() => _userInfoPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _userInfoPageState extends State<userInfoPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuth _authentication = FirebaseAuth.instance;
   User? loggedUser;
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -41,28 +41,21 @@ class _userInfoPageState extends State<userInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        title: Text('상세 정보 입력'),
-        actions: [
-          IconButton(
-            icon: Icon(
-              Icons.exit_to_app_sharp,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _authentication.signOut();
-            },
-          )
-        ],
-      ),
+      // appBar: AppBar(
+      //   title: Text(
+      //     '회원가입',
+      //     style: TextStyle(color: yColor, fontSize: 20.sp),
+      //   ),
+      //   centerTitle: true,
+      //   backgroundColor: nColor,
+      // ),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: SignUpForm(),
+        child: SignUp(),
       ),
     );
-    // }
   }
 
   Widget _handleCurrentScreen() {

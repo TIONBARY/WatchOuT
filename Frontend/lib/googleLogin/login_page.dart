@@ -25,7 +25,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'Watch OuT',
+                'WatchOuT',
                 style: TextStyle(
                     fontSize: 50.0, fontWeight: FontWeight.bold, color: yColor),
               ),
