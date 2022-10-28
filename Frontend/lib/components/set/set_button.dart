@@ -121,6 +121,8 @@ class _SetButtonState extends State<SetButton> {
   }
 
   Future<void> _displayTextInputDiaLog(BuildContext context) async {
+    _nameFieldController.clear();
+    _contactFieldController.clear();
     return showDialog(
         context: context,
         builder: (context) {
