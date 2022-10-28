@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:homealone/constants.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -18,25 +19,29 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              '구글 로그인 테스트중',
-              style: TextStyle(fontSize: 40.0, fontWeight: FontWeight.bold),
-            ),
-            Container(
-              margin: EdgeInsets.all(50.0),
-            ),
-            SignInButton(
-              Buttons.Google,
-              onPressed: () {
-                _handleSignIn().then((user) {
-                  print(user);
-                });
-              },
-            ),
-          ],
+        child: Container(
+          color: nColor,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              const Text(
+                'Watch OuT',
+                style: TextStyle(
+                    fontSize: 50.0, fontWeight: FontWeight.bold, color: yColor),
+              ),
+              Container(
+                margin: EdgeInsets.all(50.0),
+              ),
+              SignInButton(
+                Buttons.Google,
+                onPressed: () {
+                  _handleSignIn().then((user) {
+                    print(user);
+                  });
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
