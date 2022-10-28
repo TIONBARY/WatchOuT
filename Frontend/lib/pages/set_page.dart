@@ -16,6 +16,7 @@ class _SetPageState extends State<SetPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         toolbarHeight: 0,
       ),

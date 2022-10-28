@@ -52,6 +52,10 @@ dependencies:
   firebase_database: ^9.1.7
   cloud_firestore: ^3.5.1
   carousel_slider: ^4.1.1
+  sizer: ^2.0.15
+  screenshot: ^1.2.3
+  native_screenshot: ^1.0.0
+  path_provider: ^2.0.11
   provider: ^6.0.4
 
 dev_dependencies:

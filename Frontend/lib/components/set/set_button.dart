@@ -17,7 +17,8 @@ class SetButton extends StatefulWidget {
 }
 
 class _SetButtonState extends State<SetButton> {
-  final TextEditingController _textFieldController = TextEditingController();
+  final TextEditingController _nameFieldController = TextEditingController();
+  final TextEditingController _contactFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
   final List<String> _valueList = ['문자', '전화', 'X'];
   String _selectedAlert = '문자';
@@ -134,59 +135,125 @@ class _SetButtonState extends State<SetButton> {
   }
 
   Future<void> _displayTextInputDiaLog(BuildContext context) async {
+    _nameFieldController.clear();
+    _contactFieldController.clear();
     return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('연락처를 입력해 주세요.'),
-            content: SizedBox(
-              height: 100,
-              child: Column(
-                children: [
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        _addName = value;
-                      });
-                    },
-                    controller: _textFieldController,
-                    decoration: InputDecoration(hintText: '별명을 입력하세요.'),
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(5.w, 10.h, 5.w, 10.h),
+            height: 250.h,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Title(
+                  color: nColor,
+                  child: Text(
+                    '비상 연락망',
+                    style: TextStyle(
+                      color: nColor,
+                      fontSize: 25.sp,
+                    ),
                   ),
-                  TextField(
-                    onChanged: (value) {
-                      setState(() {
-                        _addContact = value;
-                      });
-                    },
-                    controller: _textFieldController,
-                    decoration: InputDecoration(hintText: '연락처를 입력하세요.'),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 25.w),
+                  height: 100.h,
+                  child: Column(
+                    children: [
+                      TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            _addName = value;
+                          });
+                        },
+                        controller: _nameFieldController,
+                        cursorColor: nColor,
+                        decoration: InputDecoration(
+                          hintText: '이름 또는 별명',
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: nColor),
+                          ),
+                        ),
+                      ),
+                      TextField(
+                        onChanged: (value) {
+                          setState(() {
+                            _addContact = value;
+                          });
+                        },
+                        controller: _contactFieldController,
+                        cursorColor: nColor,
+                        decoration: InputDecoration(
+                          hintText: '연락처',
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(color: nColor),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 17.5.h, 0, 0),
+                  width: 150.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: yColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _contactList.add(_addContact);
+                            _nameList.add(_addName);
+                            print(_contactList.first);
+                            _nameFieldController.clear();
+                            _contactFieldController.clear();
+                            Navigator.pop(context);
+                          });
+                        },
+                        child: Text(
+                          '등록',
+                          style: TextStyle(
+                            color: nColor,
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: n25Color,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _nameFieldController.clear();
+                            _contactFieldController.clear();
+                            Navigator.pop(context);
+                          });
+                        },
+                        child: Text(
+                          '취소',
+                          style: TextStyle(color: nColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            actions: [
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                onPressed: () {
-                  setState(() {
-                    Navigator.pop(context);
-                  });
-                },
-                child: Text('cancel'),
-              ),
-              ElevatedButton(
-                child: Text('confirm'),
-                onPressed: () {
-                  setState(() {
-                    _contactList.add(_addContact);
-                    _nameList.add(_addName);
-                    print(_contactList.first);
-                    Navigator.pop(context);
-                  });
-                },
-              )
-            ],
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }
