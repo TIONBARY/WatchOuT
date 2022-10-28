@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/googleLogin/user_info_page.dart';
 import 'package:homealone/pages/main_page.dart';
 import 'package:homealone/pages/record_page.dart';
 import 'package:homealone/pages/safe_area_choice_page.dart';
@@ -21,11 +22,26 @@ class TabNavBar extends StatefulWidget {
 
 class _TabNavBarState extends State<TabNavBar> {
   final _authentication = FirebaseAuth.instance;
-
+  late bool check;
   late TabController _tabController;
 
   final _selectedColor = nColor;
   final _unselectedColor = Color(0xff5f6368);
+
+  Future<void> checkUserInfo() async {
+    check = await AuthService().activated();
+    if (!check) {
+      print("너 왜 가입 안했냐?");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => userInfoPage()));
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    checkUserInfo();
+  }
 
   @override
   Widget build(BuildContext context) {
