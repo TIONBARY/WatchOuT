@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
-
-import '../../googleLogin/tab_bar_page.dart';
+import 'package:homealonet '../../googleLogin/tab_bar_page.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -19,11 +18,9 @@ class _SignupFormState extends State<SignUpForm> {
   final _SignupFormKey = GlobalKey<FormState>();
 
   String? _name = '';
-  String? _password = '';
   String? _nickname = '';
   String? _gender = '';
   String? _phone = '';
-  String? _email = '';
   String? _age = '';
   String? _region = '';
 

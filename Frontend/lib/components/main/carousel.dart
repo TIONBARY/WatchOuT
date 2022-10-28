@@ -1,6 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 
 final List<String> imgList = [
   'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
@@ -56,7 +56,7 @@ class Carousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 12.5.h, 0, 12.5.h),
+      margin: EdgeInsets.fromLTRB(0, 1.25.h, 0, 1.25.h),
       child: CarouselSlider(
         options: CarouselOptions(
           autoPlay: true,

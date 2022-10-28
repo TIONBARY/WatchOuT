@@ -1,10 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/pages/main_page.dart';
 import 'package:homealone/pages/record_page.dart';
 import 'package:homealone/pages/safe_area_choice_page.dart';
 import 'package:homealone/pages/set_page.dart';
+import 'package:sizer/sizer.dart';
 
 import '../constants.dart';
 

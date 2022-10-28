@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:sizer/sizer.dart';
 
 class ProfileBar extends StatefulWidget {
   const ProfileBar({Key? key}) : super(key: key);
@@ -15,7 +15,7 @@ class _ProfileBarState extends State<ProfileBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(25.w, 15.h, 25.w, 5.h),
+      padding: EdgeInsets.fromLTRB(2.5.w, 1.5.h, 2.5.w, 0.5.h),
       child: Row(
         children: [
           Flexible(
@@ -33,7 +33,7 @@ class _ProfileBarState extends State<ProfileBar> {
           )),
           Flexible(
               child: Container(
-            padding: EdgeInsets.fromLTRB(12.5.w, 0, 12.5.w, 0),
+            padding: EdgeInsets.fromLTRB(1.25.w, 0, 1.25.w, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
