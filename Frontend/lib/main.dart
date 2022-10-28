@@ -59,6 +59,7 @@ class _MyAppState extends State<MyApp> {
         debugShowCheckedModeBanner: false,
         title: 'WatchOut',
         theme: ThemeData(
+          fontFamily: 'HanSan',
           primarySwatch: Colors.blue,
           primaryColor: Colors.white,
           accentColor: Colors.black,
