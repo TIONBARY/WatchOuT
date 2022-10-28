@@ -20,6 +20,7 @@ class _ProfileBarState extends State<ProfileBar> {
       child: Row(
         children: [
           Flexible(
+            flex: 3,
             child: Container(
               child: SizedBox(
                 height: 25.h,
@@ -34,30 +35,15 @@ class _ProfileBarState extends State<ProfileBar> {
             ),
           ),
           Flexible(
+            flex: 7,
             child: Container(
-              padding: EdgeInsets.fromLTRB(2.5.w, 0, 2.5.w, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: Container(
-                      child: Text(
-                        'User 님',
-                        style: TextStyle(fontSize: 20.sp),
-                      ),
-                    ),
-                  ),
-                  Flexible(
-                    child: Container(
-                      child: Text(
-                        '안녕하세요',
-                      ),
-                    ),
-                  ),
-                ],
+              child: Text(
+                '${_authentication.currentUser!.displayName}',
+                style: TextStyle(fontSize: 17.5.sp),
               ),
             ),
           ),
+          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
         ],
       ),
     );

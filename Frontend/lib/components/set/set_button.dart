@@ -20,7 +20,7 @@ class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
-  final List<String> _valueList = ['문자', '전화', 'X'];
+  final List<String> _valueList = ['문자', '전화', '사용안함'];
   String _selectedAlert = '문자';
   List<String> _contactList = ['010123456768', '01043218765'];
   List<String> _nameList = ['엄마', '아빠'];
@@ -33,15 +33,15 @@ class _SetButtonState extends State<SetButton> {
     return Column(
       children: [
         SetPageRadioButton(
-            margins: EdgeInsets.fromLTRB(1.w, 1.5.h, 1.w, 0.75.h),
-            texts: 'WearOS 사용',
-            values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
-            onchangeds: (value) {
-              setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useWearOS =
-                    value;
-              });
-            }),
+          margins: EdgeInsets.fromLTRB(1.w, 1.5.h, 1.w, 0.75.h),
+          texts: 'WearOS 사용',
+          values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
+          onchangeds: (value) {
+            setState(() {
+              Provider.of<SwitchBools>(context, listen: false).changeWearOS();
+            });
+          },
+        ),
         Provider.of<SwitchBools>(context, listen: true).useWearOS
             ? HeartRateView(
                 margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
@@ -50,44 +50,45 @@ class _SetButtonState extends State<SetButton> {
                         .heartRate)
             : Container(),
         SetPageRadioButton(
-            margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-            texts: '스크린 사용 감지',
-            values: Provider.of<SwitchBools>(context, listen: false).useScreen,
-            onchangeds: (value) {
-              setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useScreen =
-                    value;
-              });
-            }),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+          texts: '스크린 사용 감지',
+          values: Provider.of<SwitchBools>(context, listen: false).useScreen,
+          onchangeds: (value) {
+            setState(() {
+              Provider.of<SwitchBools>(context, listen: false).changeScreen();
+            });
+          },
+        ),
         SetPageRadioButton(
-            margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-            texts: '위치 정보 전송',
-            values: Provider.of<SwitchBools>(context, listen: false).useGPS,
-            onchangeds: (value) {
-              setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useGPS = value;
-              });
-            }),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+          texts: '위치 정보 전송',
+          values: Provider.of<SwitchBools>(context, listen: false).useGPS,
+          onchangeds: (value) {
+            setState(() {
+              Provider.of<SwitchBools>(context, listen: false).changeGPS();
+            });
+          },
+        ),
         SetPageRadioButton(
-            margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-            texts: '경보음 사용',
-            values: Provider.of<SwitchBools>(context, listen: false).useSiren,
-            onchangeds: (value) {
-              setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useSiren =
-                    value;
-              });
-            }),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+          texts: '경보음 사용',
+          values: Provider.of<SwitchBools>(context, listen: false).useSiren,
+          onchangeds: (value) {
+            setState(() {
+              Provider.of<SwitchBools>(context, listen: false).changeSiren();
+            });
+          },
+        ),
         SetPageRadioButton(
-            margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-            texts: '위험 지대 알림',
-            values: Provider.of<SwitchBools>(context, listen: false).useDzone,
-            onchangeds: (value) {
-              setState(() {
-                Provider.of<SwitchBools>(context, listen: false).useDzone =
-                    value;
-              });
-            }),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+          texts: '위험 지대 알림',
+          values: Provider.of<SwitchBools>(context, listen: false).useDzone,
+          onchangeds: (value) {
+            setState(() {
+              Provider.of<SwitchBools>(context, listen: false).changeDzone();
+            });
+          },
+        ),
         Flexible(
           child: Container(
             padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
