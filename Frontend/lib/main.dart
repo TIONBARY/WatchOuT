@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
     return Sizer(builder: (context, orientation, deviceType) {
       return MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'WatchOut',
+        title: 'WatchOuT',
         theme: ThemeData(
           fontFamily: 'HanSan',
           primarySwatch: Colors.blue,
@@ -85,7 +85,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'WatchOut',
+      title: 'WatchOuT',
       theme: ThemeData(
         fontFamily: 'HanSan',
         primarySwatch: Colors.blue,
