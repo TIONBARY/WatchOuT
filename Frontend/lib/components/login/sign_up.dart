@@ -19,11 +19,9 @@ class _SignupFormState extends State<SignUpForm> {
   final _SignupFormKey = GlobalKey<FormState>();
 
   String? _name = '';
-  String? _password = '';
   String? _nickname = '';
   String? _gender = '';
   String? _phone = '';
-  String? _email = '';
   String? _age = '';
   String? _region = '';
 

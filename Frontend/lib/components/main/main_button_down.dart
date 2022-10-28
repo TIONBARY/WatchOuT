@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
+import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MainButtonDown extends StatefulWidget {
@@ -25,7 +25,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
             children: [
               MainPageTextButton(
                   flexs: 1,
-                  margins: EdgeInsets.fromLTRB(10.w, 10.h, 5.w, 5.h),
+                  margins: EdgeInsets.fromLTRB(1.w, 1.h, 0.5.w, 0.5.h),
                   boxcolors: Colors.black12,
                   onpresseds: () {},
                   texts: '안심귀가\n서비스',
