@@ -33,68 +33,66 @@ class _SetButtonState extends State<SetButton> {
     return Column(
       children: [
         SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(5.w, 10.h, 2.5.w, 10.h),
+          margins: EdgeInsets.fromLTRB(1.w, 1.5.h, 1.w, 0.75.h),
           texts: 'WearOS 사용',
           values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
           onchangeds: (value) {
             setState(() {
-              Provider.of<SwitchBools>(context, listen: false).useWearOS =
-                  value;
+              Provider.of<SwitchBools>(context, listen: false).changeWearOS();
             });
           },
         ),
         Provider.of<SwitchBools>(context, listen: true).useWearOS
             ? HeartRateView(
-                margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
+                margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
                 heartRate:
                     Provider.of<HeartRateProvider>(context, listen: false)
                         .heartRate)
             : Container(),
         SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
           texts: '스크린 사용 감지',
           values: Provider.of<SwitchBools>(context, listen: false).useScreen,
           onchangeds: (value) {
             setState(() {
-              Provider.of<SwitchBools>(context, listen: false).useScreen =
-                  value;
+              Provider.of<SwitchBools>(context, listen: false).changeScreen();
             });
           },
         ),
         SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
           texts: '위치 정보 전송',
           values: Provider.of<SwitchBools>(context, listen: false).useGPS,
           onchangeds: (value) {
             setState(() {
-              Provider.of<SwitchBools>(context, listen: false).useGPS = value;
+              Provider.of<SwitchBools>(context, listen: false).changeGPS();
             });
           },
         ),
         SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
           texts: '경보음 사용',
           values: Provider.of<SwitchBools>(context, listen: false).useSiren,
           onchangeds: (value) {
             setState(() {
-              Provider.of<SwitchBools>(context, listen: false).useSiren = value;
+              Provider.of<SwitchBools>(context, listen: false).changeSiren();
             });
           },
         ),
         SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
+          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
           texts: '위험 지대 알림',
           values: Provider.of<SwitchBools>(context, listen: false).useDzone,
           onchangeds: (value) {
             setState(() {
-              Provider.of<SwitchBools>(context, listen: false).useDzone = value;
+              Provider.of<SwitchBools>(context, listen: false).changeDzone();
             });
           },
         ),
         Flexible(
           child: Container(
-            padding: EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h),
-            margin: EdgeInsets.fromLTRB(5.w, 10.h, 5.w, 10.h),
+            padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
+            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
             decoration: BoxDecoration(
                 color: n25Color, borderRadius: BorderRadius.circular(25)),
             child: Row(
@@ -125,7 +123,7 @@ class _SetButtonState extends State<SetButton> {
                             ),
                           ),
                           Container(
-                            margin: EdgeInsets.symmetric(horizontal: 25.w),
+                            margin: EdgeInsets.symmetric(horizontal: 5.w),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton(
                                 value: _selectedAlert,
@@ -173,8 +171,8 @@ class _SetButtonState extends State<SetButton> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
-            padding: EdgeInsets.fromLTRB(5.w, 10.h, 5.w, 10.h),
-            height: 250.h,
+            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 2.5.h),
+            height: 30.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -184,13 +182,12 @@ class _SetButtonState extends State<SetButton> {
                     '비상 연락망',
                     style: TextStyle(
                       color: nColor,
-                      fontSize: 25.sp,
+                      fontSize: 17.5.sp,
                     ),
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: 25.w),
-                  height: 100.h,
+                  height: 12.5.h,
                   child: Column(
                     children: [
                       TextField(
@@ -228,8 +225,8 @@ class _SetButtonState extends State<SetButton> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(0, 17.5.h, 0, 0),
-                  width: 150.w,
+                  margin: EdgeInsets.fromLTRB(0, 2.5.h, 0, 0),
+                  width: 40.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

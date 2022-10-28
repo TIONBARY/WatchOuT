@@ -25,15 +25,15 @@ class _MainButtonDownState extends State<MainButtonDown> {
             children: [
               MainPageTextButton(
                   flexs: 1,
-                  margins: EdgeInsets.fromLTRB(1.w, 1.h, 0.5.w, 0.5.h),
+                  margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 0.5.h),
                   boxcolors: Colors.black12,
                   onpresseds: () {},
                   texts: '안심귀가\n서비스',
                   textcolors: nColor,
-                  fontsizes: 15.sp),
+                  fontsizes: 12.5.sp),
               MainPageTextButton(
                   flexs: 1,
-                  margins: EdgeInsets.fromLTRB(10.w, 5.h, 5.w, 10.h),
+                  margins: EdgeInsets.fromLTRB(2.w, 0.5.h, 1.w, 1.h),
                   boxcolors: Colors.black12,
                   onpresseds: () async {
                     await launch('https://m.sexoffender.go.kr/main.nsc',
@@ -41,13 +41,13 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   },
                   texts: '성범죄자\n알림e',
                   textcolors: nColor,
-                  fontsizes: 15.sp),
+                  fontsizes: 12.5.sp),
             ],
           ),
         ),
         MainPageTextButton(
             flexs: 2,
-            margins: EdgeInsets.fromLTRB(5.w, 5.h, 10.w, 5.h),
+            margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 1.h),
             boxcolors: nColor,
             onpresseds: () {
               Navigator.push(
@@ -57,7 +57,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
             },
             texts: '',
             textcolors: Colors.white,
-            fontsizes: 50.sp),
+            fontsizes: 40.sp),
       ],
     );
   }

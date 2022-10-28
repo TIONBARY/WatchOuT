@@ -40,7 +40,7 @@ final List<Widget> imageSliders = imgList
                           'No. ${imgList.indexOf(item)} image',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 20.0,
+                            fontSize: 12.5.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),

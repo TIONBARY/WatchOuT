@@ -13,8 +13,8 @@ class BasicDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(5.w, 10.h, 5.w, 10.h),
-        height: 100.h,
+        padding: EdgeInsets.fromLTRB(1.w, 2.h, 1.w, 2.h),
+        height: 15.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -22,24 +22,27 @@ class BasicDialog extends StatelessWidget {
               color: nColor,
               child: Text(titles),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: n25Color,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(7),
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 1.h, 0, 0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: n25Color,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(7),
+                  ),
                 ),
-              ),
-              onPressed: () {
-                if (pageBuilder == null) {
-                  Navigator.of(context).pop();
-                } else {
-                  Navigator.push(
-                      context, MaterialPageRoute(builder: pageBuilder!));
-                }
-              },
-              child: Text(
-                '확인',
-                style: TextStyle(color: nColor),
+                onPressed: () {
+                  if (pageBuilder == null) {
+                    Navigator.of(context).pop();
+                  } else {
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: pageBuilder!));
+                  }
+                },
+                child: Text(
+                  '확인',
+                  style: TextStyle(color: nColor),
+                ),
               ),
             ),
           ],

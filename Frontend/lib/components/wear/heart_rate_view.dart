@@ -23,7 +23,7 @@ class _HeartRateViewState extends State<HeartRateView> {
   Widget build(BuildContext context) {
     return Flexible(
       child: Container(
-        padding: EdgeInsets.fromLTRB(25.w, 5.h, 25.w, 5.h),
+        padding: EdgeInsets.fromLTRB(5.w, 2.h, 5.w, 2.h),
         margin: widget.margins,
         decoration: BoxDecoration(
             color: n25Color, borderRadius: BorderRadius.circular(25)),

@@ -34,8 +34,8 @@ class _TabNavBarState extends State<TabNavBar> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          title: Text('WatchOut',
-              style: TextStyle(color: yColor, fontSize: 25.sp)),
+          title: Text('WatchOuT',
+              style: TextStyle(color: yColor, fontSize: 20.sp)),
           centerTitle: true,
           backgroundColor: nColor,
           actions: [
