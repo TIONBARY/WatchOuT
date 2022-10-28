@@ -36,4 +36,13 @@ class UserInfo with ChangeNotifier {
   void setRegion(String region) {
     this.region = region;
   }
+
+  // void setUser(firebasedb db){ //파이어베이스 계정 불러온 다음 데이터를 전역변수에 대입
+  //   setName(db.name);
+  //   setNickname();
+  //   setAge();
+  //   setGender();
+  //   setPhone();
+  //   setRegion();
+  // }
 }
