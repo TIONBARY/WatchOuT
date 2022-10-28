@@ -85,7 +85,8 @@ class _TabNavBarState extends State<TabNavBar> {
               print("the length of docs is : ${docs?.length}");
               print("the value of nickname is : ${docs?["nickname"]}");
               print(docs);
-              Provider.of<MyUserInfo>(context, listen: false).setUser(docs);
+              if (docs != null)
+                Provider.of<MyUserInfo>(context, listen: false).setUser(docs);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
