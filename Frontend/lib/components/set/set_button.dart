@@ -99,33 +99,59 @@ class _SetButtonState extends State<SetButton> {
               children: [
                 _contactList.isEmpty
                     ? Text('비상연락처를 등록해주세요.')
-                    : DropdownButton(
-                        value: _selectedContact,
-                        items: _nameList.map((value) {
-                          return DropdownMenuItem(
-                              value: value, child: Text(value));
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedContact = value!;
-                          });
-                        }),
+                    : Row(
+                        children: [
+                          DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              value: _selectedContact,
+                              items: _nameList.map(
+                                (value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (value) {
+                                setState(
+                                  () {
+                                    _selectedContact = value!;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 25.w),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton(
+                                value: _selectedAlert,
+                                items: _valueList.map(
+                                  (value) {
+                                    return DropdownMenuItem(
+                                      value: value,
+                                      child: Text(value),
+                                    );
+                                  },
+                                ).toList(),
+                                onChanged: (value) {
+                                  setState(
+                                    () {
+                                      _selectedAlert = value!;
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                 IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
                     _displayTextInputDiaLog(context);
                   },
                 ),
-                DropdownButton(
-                    value: _selectedAlert,
-                    items: _valueList.map((value) {
-                      return DropdownMenuItem(value: value, child: Text(value));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedAlert = value!;
-                      });
-                    }),
               ],
             ),
           ),
@@ -186,6 +212,7 @@ class _SetButtonState extends State<SetButton> {
                           });
                         },
                         controller: _contactFieldController,
+                        keyboardType: TextInputType.phone,
                         cursorColor: nColor,
                         decoration: InputDecoration(
                           hintText: '연락처',
