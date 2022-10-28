@@ -5,10 +5,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../../googleLogin/login_page.dart';
 import '../../googleLogin/tab_bar_page.dart';
-import '../../googleLogin/user_info_page.dart';
 
 class AuthService {
-  Future<bool> _activated() async {
+  Future<bool> activated() async {
     FirebaseAuth _authentication = FirebaseAuth.instance;
     User? currentUser = _authentication.currentUser;
     FirebaseFirestore db = FirebaseFirestore.instance;
@@ -24,7 +23,7 @@ class AuthService {
     return documentData?["activated"];
   }
 
-  Future<Map<String, dynamic>?> _userInfo() async {
+  Future<Map<String, dynamic>?> userInfo() async {
     FirebaseAuth _authentication = FirebaseAuth.instance;
     User? currentUser = _authentication.currentUser;
     FirebaseFirestore db = FirebaseFirestore.instance;
@@ -42,18 +41,12 @@ class AuthService {
 
   //Determine if the user is authenticated.
   handleAuthState() {
-    bool check = false;
-    _activated().then((value) => {check = value, print("value의 값은 ${value}")});
-
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData && check) {
+          if (snapshot.hasData) {
             print("로그인 되었습니다.");
             return TabNavBar(FirebaseAuth.instance.currentUser!);
-          } else if (snapshot.hasData && !check) {
-            print("${check} check의 값은");
-            return userInfoPage();
           } else {
             print("로그아웃 되었습니다.");
             return LoginPage();
