@@ -8,6 +8,7 @@ class HeartRateProvider with ChangeNotifier {
   bool isEmergency = false;
 
   void changeHeartRate(value) {
+    heartRate = value;
     if (heartRate < (minValue - gapValue) ||
         heartRate >= (maxValue + gapValue)) {
       debugPrint("이상 상황 $heartRate");
@@ -16,22 +17,26 @@ class HeartRateProvider with ChangeNotifier {
       debugPrint("정상범위 심박수 $heartRate");
       isEmergency = false;
     }
-    heartRate = value;
+    notifyListeners();
   }
 
   void changeMinValue(value) {
     minValue = value;
+    notifyListeners();
   }
 
   void changeMaxValue(value) {
     maxValue = value;
+    notifyListeners();
   }
 
   void changeGapValue(value) {
     gapValue = value;
+    notifyListeners();
   }
 
   void changeIsEmergency(value) {
     isEmergency = value;
+    notifyListeners();
   }
 }

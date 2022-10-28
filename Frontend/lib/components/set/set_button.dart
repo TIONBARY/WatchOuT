@@ -44,8 +44,9 @@ class _SetButtonState extends State<SetButton> {
         Provider.of<SwitchBools>(context, listen: true).useWearOS
             ? HeartRateView(
                 margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),
-                texts: Provider.of<HeartRateProvider>(context, listen: true)
-                    .heartRate)
+                heartRate:
+                    Provider.of<HeartRateProvider>(context, listen: false)
+                        .heartRate)
             : Container(),
         SetPageRadioButton(
             margins: EdgeInsets.fromLTRB(2.5.w, 10.h, 2.5.w, 10.h),

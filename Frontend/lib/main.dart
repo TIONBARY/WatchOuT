@@ -6,6 +6,7 @@ import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:watch_connectivity/watch_connectivity.dart';
 
 import 'googleLogin/root_page.dart';
 
@@ -20,8 +21,36 @@ void main() {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    final watch = WatchConnectivity();
+    // bool reachable = false;
+    double heartRateBPM = 0.0;
+    // watch.isReachable.then((value) => setState(() => {reachable = value}));
+
+    watch.receivedApplicationContexts.then((value) =>
+        setState(() => {heartRateBPM = double.parse(value.last.values.last)}));
+
+    watch.contextStream.listen((e) => setState(() {
+          // debugPrint("심박수 리스너 내부");
+          // debugPrint(reachable.toString());
+          heartRateBPM = double.parse(e.values.last);
+          Provider.of<HeartRateProvider>(context, listen: false).heartRate =
+              heartRateBPM;
+          debugPrint("BPM 심박수 $heartRateBPM");
+        }));
+    // HeartRateProvider().changeHeartRate(heartRateBPM);
+    // debugPrint("일단 심박수 $heartRateBPM");
+  }
 
   @override
   Widget build(BuildContext context) {
