@@ -64,7 +64,7 @@ class _SignupState extends State<SignUp> {
       "gender": _gender,
       "age": _age,
       "phone": _phone,
-      "region": '(${this.postCode}) ${this.address}',
+      "region": '${this.address} (${this.postCode})',
       "activated": true,
     });
   }
