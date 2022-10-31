@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../components/login/sign_up.dart';
+import 'package:homealone/components/login/sign_up.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({Key? key}) : super(key: key);
@@ -52,12 +51,12 @@ class _SignUpPageState extends State<SignUpPage> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: SignUp(),
+        child: SignUpForm(),
       ),
     );
   }
 
-  Widget _handleCurrentScreen() {
+  Widget _handleCurentScreen() {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (BuildContext context, AsyncSnapshot snapshot) {
