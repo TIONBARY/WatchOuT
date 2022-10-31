@@ -51,7 +51,7 @@ class _SignUpPageState extends State<SignUpPage> {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: SignUpForm(),
+        child: SignUp(),
       ),
     );
   }
