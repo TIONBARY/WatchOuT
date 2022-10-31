@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
-void main() {
+void main() async {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<SwitchBools>(create: (_) => SwitchBools()),

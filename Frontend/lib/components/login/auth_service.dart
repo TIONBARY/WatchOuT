@@ -110,7 +110,7 @@ class AuthService {
         }
         ;
         final userDocs = snapshot.data!.data();
-
+        if (userDocs == null) registerBasicInfo();
         //유저 상세 페이지가 입력된 상태라면
         if (userDocs!["activated"]) {
           print("activaetd");
