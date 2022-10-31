@@ -739,6 +739,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                           json.decode(
                                               message.message)['place_name'],
                                           json.decode(message.message)['phone'],
+                                          null,
                                           null);
                                     });
                               }),
