@@ -118,13 +118,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     WidgetsFlutterBinding.ensureInitialized();
     if (defaultTargetPlatform == TargetPlatform.android) {
       locationSettings = AndroidSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 1,
-          intervalDuration: const Duration(milliseconds: 1000),
-          foregroundNotificationConfig: const ForegroundNotificationConfig(
-            notificationText: "백그라운드에서 위치정보를 받아오고 있습니다.",
-            notificationTitle: "WatchOut이 백그라운드에서 실행중입니다.",
-          ));
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 1,
+        intervalDuration: const Duration(milliseconds: 1000),
+      );
     } else if (defaultTargetPlatform == TargetPlatform.iOS ||
         defaultTargetPlatform == TargetPlatform.macOS) {
       locationSettings = AppleSettings(
@@ -659,11 +656,11 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
       //})(i));
     }
     addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-		var zoomControl = new kakao.maps.ZoomControl();
-    map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+		// var zoomControl = new kakao.maps.ZoomControl();
+    // map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 
-    var mapTypeControl = new kakao.maps.MapTypeControl();
-    map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
+    // var mapTypeControl = new kakao.maps.MapTypeControl();
+    // map.addControl(mapTypeControl, kakao.maps.ControlPosition.TOPRIGHT);
     
     var markersList = [[], [], [], [], [], []];
     var _safeAreaCoordList = ${json.encode({
