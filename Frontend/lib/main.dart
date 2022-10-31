@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
@@ -204,13 +205,19 @@ Future<void> onStart(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
+  if (service is AndroidServiceInstance) {
+    onStartWatch(service, flutterLocalNotificationsPlugin);
+  }
+}
+
+void onStartWatch(ServiceInstance service,
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) {
   final watch = WatchConnectivity();
   double heartRateBPM = 0.0;
   Map<String, String> msg = HashMap<String, String>();
 
   watch.receivedApplicationContexts
       .then((value) => heartRateBPM = double.parse(value.last.values.last));
-
   watch.contextStream.listen((e) async => {
         heartRateBPM = double.parse(e.values.last),
         // Provider.of<HeartRateProvider>(context, listen: false)
@@ -232,22 +239,24 @@ Future<void> onStart(ServiceInstance service) async {
               '위기 상황 발생!!! $heartRateBPM ${DateTime.now()}',
               const NotificationDetails(
                 android: AndroidNotificationDetails(
-                  notificationChannelId,
-                  '포그라운드 서비스',
-                  icon: 'ic_bg_service_small',
-                  ongoing: true,
-                  enableVibration: true,
-                  fullScreenIntent: true,
-                  importance: Importance.max,
-                  // sound:
-                ),
+                    notificationChannelId, '포그라운드 서비스',
+                    icon: 'launch_background',
+                    ongoing: true,
+                    enableVibration: true,
+                    fullScreenIntent: true,
+                    importance: Importance.max,
+                    autoCancel: true, // 알림 터치시 해제
+                    timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
+                    actions: [
+                      AndroidNotificationAction("ignore", "무시",
+                          cancelNotification: true),
+                      AndroidNotificationAction("open", "바로가기",
+                          showsUserInterface: true, cancelNotification: true),
+                    ]
+                    // sound:
+                    ),
               ),
             )
           }
       });
-
-  // if (service is AndroidServiceInstance) {
-  //   if (await service.isForegroundService()) {
-  //   }
-  // }
 }
