@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/googleLogin/user_info_page.dart';
+import 'package:homealone/googleLogin/sign_up_page.dart';
+import 'package:homealone/pages/safe_area_cctv_page.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -11,7 +12,6 @@ import '../constants.dart';
 import '../main.dart';
 import '../pages/main_page.dart';
 import '../pages/record_page.dart';
-import '../pages/safe_area_choice_page.dart';
 import '../pages/set_page.dart';
 
 class TabNavBar extends StatefulWidget {
@@ -35,7 +35,7 @@ class _TabNavBarState extends State<TabNavBar> {
     if (!check) {
       print("너 왜 가입 안했냐?");
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => userInfoPage()));
+          context, MaterialPageRoute(builder: (context) => SignUpPage()));
     }
   }
 
@@ -115,12 +115,12 @@ class _TabNavBarState extends State<TabNavBar> {
                       child: TabBarView(
                         children: [
                           MainPage(),
-                          SafeAreaChoicePage(),
+                          SafeAreaCCTVMapPage(),
                           RecordPage(),
                           SetPage(),
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               );
