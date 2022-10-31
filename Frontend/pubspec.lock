@@ -135,12 +135,12 @@ packages:
     source: hosted
     version: "1.24.0"
   firebase_core_platform_interface:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: firebase_core_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.5.2"
+    version: "4.5.1"
   firebase_core_web:
     dependency: transitive
     description:
@@ -188,6 +188,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.0.2"
+  flutter_inappwebview:
+    dependency: transitive
+    description:
+      name: flutter_inappwebview
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.7.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -195,13 +202,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  flutter_screenutil:
-    dependency: "direct main"
-    description:
-      name: flutter_screenutil
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.6.0"
   flutter_signin_button:
     dependency: "direct main"
     description:
@@ -240,6 +240,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "9.2.0"
+  geocoding:
+    dependency: transitive
+    description:
+      name: geocoding
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.5"
+  geocoding_platform_interface:
+    dependency: transitive
+    description:
+      name: geocoding_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   geolocator:
     dependency: "direct main"
     description:
@@ -352,6 +366,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.2"
+  kpostal:
+    dependency: "direct main"
+    description:
+      name: kpostal
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.1"
   lints:
     dependency: transitive
     description:
@@ -499,13 +520,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  persistent_bottom_nav_bar:
-    dependency: "direct main"
-    description:
-      name: persistent_bottom_nav_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "5.0.2"
   petitparser:
     dependency: transitive
     description:

@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:homealone/googleLogin/sign_up_page.dart';
 
 import '../../googleLogin/login_page.dart';
 import '../../googleLogin/tab_bar_page.dart';
@@ -47,6 +49,7 @@ class AuthService {
       "googleUID": "${user?.uid}",
       "profileImage": "${user?.photoURL}",
       "phone": "01012345678",
+      "age": "12",
       "blocked": false,
       "activated": false,
       "region": "12345", //(시군구번호)
@@ -57,20 +60,66 @@ class AuthService {
     });
   }
 
+  Future<Widget> test() async {
+    User? currentUser = _authentication.currentUser;
+    FirebaseFirestore db = FirebaseFirestore.instance;
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc("${currentUser?.uid}");
+    Map<String, dynamic>? documentData;
+    // Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      return handleAuthState();
+    } else {
+      registerBasicInfo();
+      print("기본 정보를 들록합니다.");
+      return handleAuthState();
+    }
+  }
+
   //Determine if the user is authenticated.
   handleAuthState() {
     return StreamBuilder(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            registerBasicInfo();
-            print("로그인 되었습니다.");
-            return TabNavBar(FirebaseAuth.instance.currentUser!);
+            print("구글 계정이 확인되었습니다.");
+            print("${FirebaseAuth.instance.currentUser!.uid}");
+            return handleDetailState(FirebaseAuth.instance.currentUser!.uid);
           } else {
             print("로그아웃 되었습니다.");
             return LoginPage();
           }
         });
+  }
+
+  handleDetailState(String googleUID) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("user")
+          .doc("${googleUID}")
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        ;
+        final userDocs = snapshot.data!.data();
+
+        //유저 상세 페이지가 입력된 상태라면
+        if (userDocs!["activated"]) {
+          print("activaetd");
+          return TabNavBar(FirebaseAuth.instance.currentUser!);
+        } else {
+          print("non activated");
+          registerBasicInfo();
+          return SignUpPage();
+        }
+      },
+    );
   }
 
   signInWithGoogle() async {
