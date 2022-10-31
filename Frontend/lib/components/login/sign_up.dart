@@ -24,6 +24,10 @@ class _SignupState extends State<SignUp> {
 
   String postCode = '';
   String address = '';
+  String latitude = '-';
+  String longitude = '-';
+  String kakaoLatitude = '-';
+  String kakaoLongitude = '-';
 
   String? _name = '';
   String? _nickname = '';
@@ -218,10 +222,13 @@ class _SignupState extends State<SignUp> {
                             builder: (_) => KpostalView(
                               useLocalServer: true,
                               localPort: 8080,
+                              // kakaoKey: kakaoMapAPIKey,
                               callback: (Kpostal result) {
                                 setState(() {
                                   this.postCode = result.postCode;
                                   this.address = result.address;
+                                  this.latitude = result.latitude.toString();
+                                  this.longitude = result.longitude.toString();
                                 });
                               },
                             ),
@@ -240,12 +247,8 @@ class _SignupState extends State<SignUp> {
             //   padding: EdgeInsets.all(40.0),
             //   child: Column(
             //     children: [
-            //       Text('postCode',
-            //           style: TextStyle(fontWeight: FontWeight.bold)),
-            //       Text('(${this.postCode})'),
-            //       Text('address',
-            //           style: TextStyle(fontWeight: FontWeight.bold)),
-            //       Text('${this.address}'),
+            //       Text(
+            //           'latitude: ${this.latitude} / longitude: ${this.longitude}'),
             //     ],
             //   ),
             // ),

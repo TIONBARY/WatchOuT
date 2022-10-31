@@ -104,7 +104,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   MaterialPageRoute(
                       builder: (context) => SafeAreaCCTVMapPage()));
             },
-            texts: '',
+            texts: 'CCTV',
             textcolors: Colors.white,
             fontsizes: 40.sp),
       ],
