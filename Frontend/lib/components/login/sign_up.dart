@@ -2,14 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/components/login/sign_up_text_field.dart';
-import 'package:homealone/constants.dart';
-import 'package:kpostal/kpostal.dart';
-import 'package:sizer/sizer.dart';
-
-class SignUp extends StatefulWidget {
-  const SignUp({
-import '../../googleLogin/tab_bar_page.dart';
 
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
@@ -17,17 +9,11 @@ class SignUpForm extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<SignUp> createState() => _SignupState();
+  State<SignUpForm> createState() => _SignupFormState();
 }
 
-class _SignupState extends State<SignUp> {
-  final TextEditingController _textController = new TextEditingController();
-  Widget _changedTextWidget = Container();
-
-  final _SignupKey = GlobalKey<FormState>();
-
-  String postCode = '';
-  String address = '';
+class _SignupFormState extends State<SignUpForm> {
+  final _SignupFormKey = GlobalKey<FormState>();
 
   String? _name = '';
   String? _nickname = '';
@@ -60,7 +46,7 @@ class _SignupState extends State<SignUp> {
   }
 
   Future<void> _register() async {
-    _SignupKey.currentState!.save();
+    _SignupFormKey.currentState!.save();
     print("nickname은 ${_nickname}");
     db.collection("user").doc("${loggedUser!.uid}").update({
       "nickname": _nickname,
@@ -68,7 +54,7 @@ class _SignupState extends State<SignUp> {
       "gender": _gender,
       "age": _age,
       "phone": _phone,
-      "region": '${this.address} (${this.postCode})',
+      "region": _region,
       "activated": true,
     });
   }
@@ -80,199 +66,115 @@ class _SignupState extends State<SignUp> {
         FocusScope.of(context).unfocus();
       },
       child: Form(
-        key: _SignupKey,
+        key: _SignupFormKey,
         child: ListView(
           children: [
             Container(
-              height: 25.h,
-              color: n75Color,
-              child: Container(
-                margin: EdgeInsets.fromLTRB(0, 4.h, 0, 0),
-                child: Image(
-                  image: AssetImage('assets/WatchOuT_Logo.png'),
-                  fit: BoxFit.cover,
-                ),
+              // width: 100,
+              height: 200,
+              color: Colors.red,
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: TextField(
+                decoration: InputDecoration(
+                    labelText: "닉네임",
+                    helperText: "한글만 입력 가능해요",
+                    hintText: "닉네임을 입력해주세요.",
+                    icon: Icon(Icons.android),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(3)),
+                onChanged: (nickname) {
+                  _nickname = nickname;
+                },
               ),
             ),
-            SignUpTextField(
-              paddings: EdgeInsets.fromLTRB(7.5.w, 2.5.h, 7.5.w, 1.25.h),
-              keyboardtypes: TextInputType.text,
-              hinttexts: '이름',
-              helpertexts: '한글로 입력해주세요.',
-              onchangeds: (name) {
-                _name = name;
-              },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: TextField(
+                decoration: InputDecoration(
+                    labelText: "이름",
+                    helperText: "한글만 입력 가능해요",
+                    hintText: "닉네임을 입력해주세요.",
+                    icon: Icon(Icons.android),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(3)),
+                onChanged: (name) {
+                  _name = name;
+                },
+              ),
             ),
-            SignUpTextField(
-              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
-              keyboardtypes: TextInputType.text,
-              hinttexts: '닉네임',
-              helpertexts: '10글자 이내로 입력해주세요.',
-              onchangeds: (nickname) {
-                _nickname = nickname;
-              },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: TextField(
+                decoration: InputDecoration(
+                    labelText: "성별",
+                    helperText: "한글만 입력 가능해요",
+                    hintText: "닉네임을 입력해주세요.",
+                    icon: Icon(Icons.android),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(3)),
+                onChanged: (gender) {
+                  _gender = gender;
+                },
+              ),
             ),
-            SignUpTextField(
-              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
-              keyboardtypes: TextInputType.number,
-              hinttexts: '생년월일',
-              helpertexts: 'YYMMDD 형식으로 입력해주세요.',
-              onchangeds: (age) {
-                _age = age;
-              },
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: TextField(
+                decoration: InputDecoration(
+                    labelText: "나이",
+                    helperText: "한글만 입력 가능해요",
+                    hintText: "닉네임을 입력해주세요.",
+                    icon: Icon(Icons.android),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(3)),
+                onChanged: (age) {
+                  _age = age;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: TextField(
+                decoration: InputDecoration(
+                    labelText: "전화번호",
+                    helperText: "한글만 입력 가능해요",
+                    hintText: "닉네임을 입력해주세요.",
+                    icon: Icon(Icons.android),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(3)),
+                onChanged: (number) {
+                  _phone = number;
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+              child: TextField(
+                decoration: InputDecoration(
+                    labelText: "지역",
+                    helperText: "한글만 입력 가능해요",
+                    hintText: "닉네임을 입력해주세요.",
+                    icon: Icon(Icons.android),
+                    border: OutlineInputBorder(),
+                    contentPadding: EdgeInsets.all(3)),
+                onChanged: (region) {
+                  _region = region;
+                },
+              ),
             ),
             Container(
-                padding: EdgeInsets.fromLTRB(7.5.w, 0, 7.5.w, 0),
-                child: Column(children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                          child: ListTile(
-                        title: const Text(
-                          '남자',
-                          style: TextStyle(
-                            color: nColor,
-                          ),
-                        ),
-                        leading: Radio<String>(
-                          value: "M",
-                          groupValue: _gender,
-                          fillColor: MaterialStateColor.resolveWith(
-                              (states) => nColor),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                        ),
-                      )),
-                      Expanded(
-                          child: ListTile(
-                        title: const Text(
-                          '여자',
-                          style: TextStyle(
-                            color: nColor,
-                          ),
-                        ),
-                        leading: Radio<String>(
-                          value: "F",
-                          groupValue: _gender,
-                          fillColor: MaterialStateColor.resolveWith(
-                              (states) => nColor),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                        ),
-                      )),
-                    ],
-                  )
-                ])),
-            SignUpTextField(
-              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
-              keyboardtypes: TextInputType.number,
-              hinttexts: '전화번호',
-              helpertexts: '숫자만 입력해주세요.',
-              onchangeds: (number) {
-                _phone = number;
-              },
-            ),
-            Row(
-              children: [
-                FittedBox(
-                  fit: BoxFit.contain,
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 1.25.w, 1.25.h),
-                    padding: EdgeInsets.fromLTRB(5.w, 1.25.h, 1.25.w, 1.25.h),
-                    width: 62.5.w,
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          width: 1.sp,
-                          color: n25Color,
-                        )),
-                    child: (this.postCode.isEmpty && this.address.isEmpty)
-                        ? Text(
-                            '주소',
-                            style: TextStyle(color: n75Color),
-                          )
-                        : Text(
-                            '(${this.postCode}) ${this.address}',
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(1.25.w, 1.25.h, 0, 1.25.h),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: nColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
-                      ),
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => KpostalView(
-                              useLocalServer: true,
-                              localPort: 8080,
-                              callback: (Kpostal result) {
-                                setState(() {
-                                  this.postCode = result.postCode;
-                                  this.address = result.address;
-                                });
-                              },
-                            ),
-                          ),
-                        );
-                      },
-                      child: Text(
-                        '우편번호',
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            // Container(
-            //   padding: EdgeInsets.all(40.0),
-            //   child: Column(
-            //     children: [
-            //       Text('postCode',
-            //           style: TextStyle(fontWeight: FontWeight.bold)),
-            //       Text('(${this.postCode})'),
-            //       Text('address',
-            //           style: TextStyle(fontWeight: FontWeight.bold)),
-            //       Text('${this.address}'),
-            //     ],
-            //   ),
-            // ),
-            Container(
-              padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: nColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                ),
+              margin: const EdgeInsets.only(top: 16.0),
+              alignment: Alignment.centerRight,
+              child: OutlinedButton(
                 onPressed: () {
                   _register();
                   Navigator.pop(context);
                 },
-                child: Text(
-                  '회원가입',
-                  style: TextStyle(
-                    color: yColor,
-                  ),
-                ),
+                child: Text('회원가입'),
               ),
-            ),
+            )
           ],
         ),
       ),

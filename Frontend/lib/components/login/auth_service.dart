@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:homealone/googleLogin/user_info_page.dart';
+import 'package:homealone/googleLogin/sign_up_page.dart';
 
 import '../../googleLogin/login_page.dart';
 import '../../googleLogin/tab_bar_page.dart';
@@ -116,7 +116,7 @@ class AuthService {
         } else {
           print("non activated");
           registerBasicInfo();
-          return userInfoPage();
+          return SignUpPage();
         }
       },
     );
