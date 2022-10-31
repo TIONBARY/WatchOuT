@@ -23,18 +23,18 @@ import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
-late WebViewController? _mapController;
+WebViewController? _mapController;
 String addrName = "";
 String kakaoMapKey = "";
 String cctvAPIKey = "";
 String openAPIKey = "";
 double initLat = 0.0;
 double initLon = 0.0;
-Timer? timer;
-Timer? tempTimer;
+late LocationSettings locationSettings;
 
 List<Position> positionList = [];
-StreamSubscription<Position>? _positionStreamSubscription;
+StreamSubscription<Position>? _walkPositionStream;
+StreamSubscription<Position>? _currentPositionStream;
 bool pressWalkBtn = false;
 DateTime startTime = DateTime.now();
 DateTime endTime = DateTime.now();
@@ -116,15 +116,51 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   Future _future() async {
     LocationPermission permission = await Geolocator.requestPermission();
     WidgetsFlutterBinding.ensureInitialized();
-    Position pos = await Geolocator.getCurrentPosition();
-    // await dotenv.load(fileName: ".env");
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      locationSettings = AndroidSettings(
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 1,
+          intervalDuration: const Duration(milliseconds: 1000),
+          foregroundNotificationConfig: const ForegroundNotificationConfig(
+            notificationText: "백그라운드에서 위치정보를 받아오고 있습니다.",
+            notificationTitle: "WatchOut이 백그라운드에서 실행중입니다.",
+          ));
+    } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        activityType: ActivityType.fitness,
+        distanceFilter: 10,
+        pauseLocationUpdatesAutomatically: true,
+        showBackgroundLocationIndicator: false,
+      );
+    } else {
+      locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      );
+    }
+    _currentPositionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
+      if (position != null) {
+        initLat = position!.latitude;
+        initLon = position!.longitude;
+      }
+      if (_mapController != null) {
+        _mapController?.runJavascript('''
+          markers[markers.length-1].setMap(null);
+          addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+        ''');
+      }
+    });
+    Position position = await Geolocator.getCurrentPosition();
     await dotenv.load();
     kakaoMapKey = dotenv.get('kakaoMapAPIKey');
     cctvAPIKey = dotenv.get('cctvAPIKey');
     openAPIKey = dotenv.get('openAPIKey');
-    // debugPrint("어싱크 내부");
-    initLat = pos.latitude;
-    initLon = pos.longitude;
+    initLat = position.latitude;
+    initLon = position.longitude;
     area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
     await _search();
     // await registerCCTV();
@@ -141,7 +177,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
       cctvList = [];
       final response = await http.get(Uri.parse(
           'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/1/1000/${guName[i]}/'));
-      print(response.body);
       final result = await json.decode(response.body);
       int count = result['safeOpenCCTV']['list_total_count'];
       if (result['safeOpenCCTV'] == null) return;
@@ -159,7 +194,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
               .forEach((value) => {cctvList.add(value)});
         }
       }
-      print(cctvList);
       await FirebaseFirestore.instance
           .collection("cctv")
           .doc(guName[i])
@@ -171,14 +205,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     safeOpenBoxList = [];
     final response = await http.get(Uri.parse(
         'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenBox/1/300/'));
-    print(response.body);
     final result = await json.decode(response.body);
     if (result['safeOpenBox'] == null) return;
     if (result['safeOpenBox']['row'] != null) {
       result['safeOpenBox']['row']
           .forEach((value) => {safeOpenBoxList.add(value)});
     }
-    print(safeOpenBoxList);
     await FirebaseFirestore.instance
         .collection("safeOpenBox")
         .doc("data")
@@ -187,7 +219,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   Future<void> registerEmergencyBell() async {
     emergencyBellList = [];
-    print("start");
     for (int i = 0; i < 27; i++) {
       final response = await http.get(Uri.parse(
               'http://api.data.go.kr/openapi/tn_pubr_public_safety_emergency_bell_position_api')
@@ -197,7 +228,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         'type': 'json',
         'serviceKey': openAPIKey
       }));
-      print(response.body);
       final result = await json.decode(response.body);
       if (result['response']['body']['items'] == null) return;
       if (result['response']['body']['items'] != null) {
@@ -208,9 +238,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                     {"WGSXPT": value['latitude'], "WGSYPT": value['longitude']})
             });
       }
-      print(emergencyBellList.length);
     }
-    print(emergencyBellList.length);
     await FirebaseFirestore.instance
         .collection("emergencyBell")
         .doc("서울특별시")
@@ -239,7 +267,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
             .forEach((value) => {safeAreaCoordList[i].add(value)});
       }
     }
-    print(safeAreaCoordList);
   }
 
   Future<void> _search() async {
@@ -250,7 +277,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     for (int i = 0; i < cctvJson['data'].length; i++) {
       cctvList.add(cctvJson['data'][i]);
     }
-    print(cctvList);
     getSortedCCTVList();
   }
 
@@ -264,7 +290,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     for (int i = 0; i < safeOpenBoxJson['data'].length; i++) {
       safeOpenBoxList.add(safeOpenBoxJson['data'][i]);
     }
-    print(safeOpenBoxList);
     getSortedSafeOpenBoxList();
   }
 
@@ -282,7 +307,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           checkIsDouble(emergencyBellJson['data'][i]['WGSYPT']))
         emergencyBellList.add(emergencyBellJson['data'][i]);
     }
-    print(emergencyBellList.length);
     getSortedEmergencyBellList();
   }
 
@@ -308,14 +332,11 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   }
 
   void getSortedEmergencyBellList() {
-    print("sort start");
     emergencyBellList.sort((a, b) => (calculateDistance(initLat, initLon,
             double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
         .compareTo(calculateDistance(initLat, initLon,
             double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
-    print("sort end");
     sortedEmergencyBellList = emergencyBellList;
-    print(sortedEmergencyBellList);
     safeAreaCoordList[5] = sortedEmergencyBellList;
   }
 
@@ -328,23 +349,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     return 12742 * asin(sqrt(a));
   }
 
-  Future<void> _updateCurrLocation() async {
-    Position pos = await Geolocator.getCurrentPosition();
-    // await dotenv.load(fileName: ".env");
-    await dotenv.load();
-    kakaoMapKey = dotenv.get('kakaoMapAPIKey');
-    // debugPrint("어싱크 내부");
-    initLat = pos.latitude;
-    initLon = pos.longitude;
-    _mapController!.runJavascript('''
-      markers[markers.length-1].setMap(null);
-      addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-    ''');
-  }
-
   Future<void> _capturePng() async {
     String? path = await NativeScreenshot.takeScreenshot();
-    print("찍음");
     debugPrint(path);
     String fileName = formatDateTime(endTime.toIso8601String()) + ".png";
     String topFolder = await getDirectory();
@@ -429,31 +435,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   void startWalk(Position position, _mapController) {
     // 연속적인 위치 정보 기록에 사용될 설정
-    LocationSettings locationSettings;
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      locationSettings = AndroidSettings(
-          accuracy: LocationAccuracy.high,
-          distanceFilter: 1,
-          intervalDuration: const Duration(milliseconds: 1000),
-          foregroundNotificationConfig: const ForegroundNotificationConfig(
-            notificationText: "백그라운드에서 위치정보를 받아오고 있습니다.",
-            notificationTitle: "WatchOut이 백그라운드에서 실행중입니다.",
-          ));
-    } else if (defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.macOS) {
-      locationSettings = AppleSettings(
-        accuracy: LocationAccuracy.high,
-        activityType: ActivityType.fitness,
-        distanceFilter: 10,
-        pauseLocationUpdatesAutomatically: true,
-        showBackgroundLocationIndicator: false,
-      );
-    } else {
-      locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      );
-    }
 
     var lat = position.latitude, // 위도
         lon = position.longitude; // 경도
@@ -463,8 +444,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                   map.setDraggable(false);
                   map.setZoomable(false);
   ''');
-
-    _positionStreamSubscription = _geolocatorPlatform
+    _currentPositionStream?.cancel();
+    _walkPositionStream = _geolocatorPlatform
         .getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {
       if (!positionList.contains(position)) {
@@ -473,6 +454,14 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         }
         positionList.add(position!);
       }
+      if (position != null) {
+        initLat = position!.latitude;
+        initLon = position!.longitude;
+      }
+      _mapController!.runJavascript('''
+        markers[markers.length-1].setMap(null);
+        addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+      ''');
     });
     if (positionList.length == 0) {
       _mapController.runJavascript('''
@@ -511,12 +500,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     lon = position.longitude;
     beforeLat = beforePos.latitude;
     beforeLon = beforePos.longitude;
-    // 한 번에 너무 먼 거리 이동(오류/차량 등등) 제외
-    // if ((lat * 1000).round() == (beforeLat * 1000).round() ||
-    //     (lon * 1000).round() == (beforeLon * 1000).round()) {
-    // }
-
-    debugPrint('그리는 중');
     _mapController.runJavascript('''
                     var lat = parseFloat('$lat'), // 위도
                         lon = parseFloat('$lon'); // 경도
@@ -548,7 +531,19 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   }
 
   void stopWalk(WebViewController _mapController) {
-    _positionStreamSubscription?.cancel(); // 위치 기록 종료
+    _walkPositionStream?.cancel(); // 위치 기록 종료
+    _currentPositionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
+      if (position != null) {
+        initLat = position!.latitude;
+        initLon = position!.longitude;
+      }
+      _mapController!.runJavascript('''
+        markers[markers.length-1].setMap(null);
+        addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+      ''');
+    });
     _mapController.runJavascript('''
                      map.setDraggable(true);
                      map.setZoomable(true);
@@ -565,7 +560,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   ''');
 
     positionList = [];
-    debugPrint('산책 끝');
   }
 
   @override
@@ -596,12 +590,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                   else {
                     // debugPrint(snapshot.data); Container(
                     // child: Text(snapshot.data),
-                    tempTimer = Timer(Duration(seconds: 1), () {
-                      if (timer != null && timer!.isActive) return;
-                      timer = Timer.periodic(new Duration(seconds: 1), (timer) {
-                        _updateCurrLocation();
-                      });
-                    });
 
                     return Flexible(
                         flex: 1,
@@ -890,8 +878,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   @override
   void dispose() {
-    timer!.cancel();
-    tempTimer!.cancel();
     super.dispose();
   }
 }
