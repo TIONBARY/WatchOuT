@@ -241,7 +241,7 @@ void onStartWatch(ServiceInstance service,
                 android: AndroidNotificationDetails(
                     notificationChannelId, '포그라운드 서비스',
                     icon: 'launch_background',
-                    ongoing: true,
+                    ongoing: false,
                     enableVibration: true,
                     fullScreenIntent: true,
                     importance: Importance.max,
