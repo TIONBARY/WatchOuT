@@ -49,8 +49,9 @@ class _MainButtonDownState extends State<MainButtonDown> {
   Widget build(BuildContext context) {
     String address = Provider.of<MyUserInfo>(context, listen: false).region;
     final splitedAddress = address.split(' ');
-    String guName = splitedAddress[2];
-    String phones = guCall[guName];
+    String guName = splitedAddress[1];
+    String phones =
+        splitedAddress[1] == null ? splitedAddress[2] : splitedAddress[1];
 
     return Row(
       children: [

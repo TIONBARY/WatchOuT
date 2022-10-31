@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/googleLogin/sign_up_page.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
-import 'package:homealone/providers/user_provider.dart';
-import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../components/login/auth_service.dart';
@@ -50,82 +47,67 @@ class _TabNavBarState extends State<TabNavBar> {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            title: Text('WatchOuT',
-                style: TextStyle(color: yColor, fontSize: 20.sp)),
-            centerTitle: true,
-            backgroundColor: nColor,
-            actions: [
-              IconButton(
-                icon: Icon(
-                  Icons.exit_to_app_sharp,
-                  color: Colors.white,
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          title: Text('WatchOuT',
+              style: TextStyle(color: yColor, fontSize: 20.sp)),
+          centerTitle: true,
+          backgroundColor: nColor,
+          actions: [
+            IconButton(
+              icon: Icon(
+                Icons.exit_to_app_sharp,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                AuthService().signOut();
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (BuildContext context) => HomePage()),
+                    (route) => false);
+              },
+            )
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Container(
+                height: kToolbarHeight - 8.0,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade200,
+                  borderRadius: BorderRadius.circular(8.0),
                 ),
-                onPressed: () {
-                  AuthService().signOut();
-                  Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (BuildContext context) => HomePage()),
-                      (route) => false);
-                },
-              )
-            ],
-          ),
-          body: StreamBuilder(
-            stream: FirebaseFirestore.instance
-                .collection("user")
-                .doc("${_authentication.currentUser!.uid}")
-                .snapshots(),
-            builder: (BuildContext context,
-                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                    snapshot) {
-              final docs = snapshot.data?.data();
-              print("the length of docs is : ${docs?.length}");
-              print("the value of nickname is : ${docs?["nickname"]}");
-              print(docs);
-              if (docs != null)
-                Provider.of<MyUserInfo>(context, listen: false).setUser(docs);
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Container(
-                      height: kToolbarHeight - 8.0,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: TabBar(
-                        labelColor: yColor,
-                        indicator: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                            color: _selectedColor),
-                        unselectedLabelColor: nColor,
-                        tabs: [
-                          Tab(text: '홈'),
-                          Tab(text: '안전지대'),
-                          Tab(text: '기록'),
-                          Tab(text: '설정'),
-                        ],
-                      ),
-                    ),
-                    const Expanded(
-                      child: TabBarView(
-                        children: [
-                          MainPage(),
-                          SafeAreaCCTVMapPage(),
-                          RecordPage(),
-                          SetPage(),
-                        ],
-                      ),
-                    ),
+                child: TabBar(
+                  labelColor: yColor,
+                  indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.0),
+                      color: _selectedColor),
+                  unselectedLabelColor: nColor,
+                  tabs: [
+                    Tab(text: '홈'),
+                    Tab(text: '안전지대'),
+                    Tab(text: '기록'),
+                    Tab(text: '설정'),
                   ],
                 ),
-              );
-            },
-          )),
+              ),
+              const Expanded(
+                child: TabBarView(
+                  children: [
+                    MainPage(),
+                    SafeAreaCCTVMapPage(),
+                    RecordPage(),
+                    SetPage(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

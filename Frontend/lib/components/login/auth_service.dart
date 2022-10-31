@@ -4,9 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:homealone/googleLogin/sign_up_page.dart';
+import 'package:provider/provider.dart';
 
 import '../../googleLogin/login_page.dart';
 import '../../googleLogin/tab_bar_page.dart';
+import '../../providers/user_provider.dart';
 
 class AuthService {
   FirebaseAuth _authentication = FirebaseAuth.instance;
@@ -112,6 +114,7 @@ class AuthService {
         //유저 상세 페이지가 입력된 상태라면
         if (userDocs!["activated"]) {
           print("activaetd");
+          Provider.of<MyUserInfo>(context, listen: false).setUser(userDocs);
           return TabNavBar(FirebaseAuth.instance.currentUser!);
         } else {
           print("non activated");
