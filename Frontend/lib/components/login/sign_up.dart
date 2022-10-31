@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../googleLogin/tab_bar_page.dart';
+
 class SignUpForm extends StatefulWidget {
   const SignUpForm({
     Key? key,
@@ -170,7 +172,7 @@ class _SignupFormState extends State<SignUpForm> {
               child: OutlinedButton(
                 onPressed: () {
                   _register();
-                  Navigator.pop(context);
+                  TabNavBar(loggedUser!);
                 },
                 child: Text('회원가입'),
               ),

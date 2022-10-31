@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:homealone/googleLogin/user_info_page.dart';
 
 import '../../googleLogin/login_page.dart';
 import '../../googleLogin/tab_bar_page.dart';
@@ -81,14 +83,43 @@ class AuthService {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            registerBasicInfo();
-            print("로그인 되었습니다.");
-            return TabNavBar(FirebaseAuth.instance.currentUser!);
+            print("구글 계정이 확인되었습니다.");
+            print("${FirebaseAuth.instance.currentUser!.uid}");
+            return handleDetailState(FirebaseAuth.instance.currentUser!.uid);
           } else {
             print("로그아웃 되었습니다.");
             return LoginPage();
           }
         });
+  }
+
+  handleDetailState(String googleUID) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("user")
+          .doc("${googleUID}")
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        ;
+        final userDocs = snapshot.data!.data();
+
+        //유저 상세 페이지가 입력된 상태라면
+        if (userDocs!["activated"]) {
+          print("activaetd");
+          return TabNavBar(FirebaseAuth.instance.currentUser!);
+        } else {
+          print("non activated");
+          registerBasicInfo();
+          return userInfoPage();
+        }
+      },
+    );
   }
 
   signInWithGoogle() async {

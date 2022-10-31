@@ -93,12 +93,11 @@ class HomePage extends StatelessWidget {
         accentColor: Colors.black,
       ),
       home: FutureBuilder(
-        future: test(),
+        future: Firebase.initializeApp(),
         builder: (context, snapshot) {
-          var fb = snapshot.data!["FB"];
+          // var fb = snapshot.data!["FB"];
           if (snapshot.hasError) {
             return LoadingPage();
-            // 에러페이지 없어서 대충 로딩페이지 재활용
           }
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
@@ -106,8 +105,9 @@ class HomePage extends StatelessWidget {
             //   child: Text("hi"),
             // );
             // AuthService().test().then((value) => tmp = value);
-            return snapshot.data!["tmp"];
-            // AuthService().handleAuthState();
+            // return snapshot.data!["tmp"];
+            print("handleAuthstate로 넘어감");
+            return AuthService().handleAuthState();
           }
           // Otherwise, show something whilst waiting for initialization to complete
           return LoadingPage();
