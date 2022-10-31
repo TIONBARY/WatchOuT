@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:homealone/googleLogin/sign_up_page.dart';
+import 'package:homealone/providers/contact_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../googleLogin/login_page.dart';
@@ -51,32 +52,53 @@ class AuthService {
       "googleUID": "${user?.uid}",
       "profileImage": "${user?.photoURL}",
       "phone": "01012345678",
-      "age": "12",
+      "birth": "12",
       "blocked": false,
       "activated": false,
-      "region": "12345", //(시군구번호)
+      "address": "12345", //(시군구번호)
       "nickname": "구의동호랑이",
       "name": "홍길동",
       "gender": "M",
-      "hide": false
+      "hide": false,
+      "latitude": "",
+      "longitude": "",
     });
   }
 
-  Future<Widget> test() async {
-    User? currentUser = _authentication.currentUser;
+  void registerFirstResponder(String name, String number) {
     FirebaseFirestore db = FirebaseFirestore.instance;
-    DocumentReference<Map<String, dynamic>> documentReference =
-        db.collection("user").doc("${currentUser?.uid}");
-    Map<String, dynamic>? documentData;
-    // Map<String, dynamic>? documentData;
-    var docSnapshot = await documentReference.get();
-    if (docSnapshot.exists) {
-      return handleAuthState();
-    } else {
-      registerBasicInfo();
-      print("기본 정보를 들록합니다.");
-      return handleAuthState();
-    }
+    User? user = FirebaseAuth.instance.currentUser;
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("firstResponder")
+        .doc(name)
+        .set({"number": number});
+  }
+
+  getFirstResponder() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection("user")
+          .doc("${FirebaseAuth.instance.currentUser?.uid}")
+          .collection("firstResponder")
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        final phoneDocs = snapshot.data!.docs;
+        for (int i = 0; i < phoneDocs.length; i++) {
+          Provider.of<ContactInfo>(context, listen: false)
+              .addResponder(phoneDocs[i].id, phoneDocs[i]["number"]);
+          print("phoneDocs의 값은 다음과 같다 : ${phoneDocs[i].id}");
+        }
+        return TabNavBar(FirebaseAuth.instance.currentUser!);
+      },
+    );
   }
 
   //Determine if the user is authenticated.
@@ -110,12 +132,15 @@ class AuthService {
         }
         ;
         final userDocs = snapshot.data!.data();
-        if (userDocs == null) registerBasicInfo();
+        if (userDocs == null) {
+          registerBasicInfo();
+        }
         //유저 상세 페이지가 입력된 상태라면
         if (userDocs!["activated"]) {
           print("activaetd");
           Provider.of<MyUserInfo>(context, listen: false).setUser(userDocs);
-          return TabNavBar(FirebaseAuth.instance.currentUser!);
+          // getFirstResponder();
+          return getFirstResponder();
         } else {
           print("non activated");
           registerBasicInfo();

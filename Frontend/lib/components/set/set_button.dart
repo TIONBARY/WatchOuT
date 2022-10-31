@@ -7,6 +7,7 @@ import 'package:homealone/providers/switch_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../providers/contact_provider.dart';
 import '../wear/heart_rate_view.dart';
 
 class SetButton extends StatefulWidget {
@@ -22,14 +23,20 @@ class _SetButtonState extends State<SetButton> {
   final _authentication = FirebaseAuth.instance;
   final List<String> _valueList = ['문자', '전화', '사용안함'];
   String _selectedAlert = '문자';
-  List<String> _contactList = ['010123456768', '01043218765'];
-  List<String> _nameList = ['엄마', '아빠'];
-  String _selectedContact = '엄마';
+  List<String> _contactList = [];
+  // ['010123456768', '01043218765'];
+  List<String> _nameList = [];
+  // ['엄마', '아빠'];
+  String _selectedContact = '';
   String _addContact = '';
   String _addName = '';
-
   @override
   Widget build(BuildContext context) {
+    Map<String, String> firstResponder =
+        Provider.of<ContactInfo>(context, listen: false).getResponder();
+    _nameList = firstResponder.keys.toList();
+    _contactList = firstResponder.values.toList();
+    _selectedContact = _nameList[0];
     return Column(
       children: [
         SetPageRadioButton(
@@ -98,7 +105,7 @@ class _SetButtonState extends State<SetButton> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                _contactList.isEmpty
+                firstResponder.isEmpty
                     ? Text('비상연락처를 등록해주세요.')
                     : Row(
                         children: [

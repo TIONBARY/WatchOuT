@@ -40,14 +40,6 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text(
-      //     '회원가입',
-      //     style: TextStyle(color: yColor, fontSize: 20.sp),
-      //   ),
-      //   centerTitle: true,
-      //   backgroundColor: nColor,
-      // ),
       body: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();

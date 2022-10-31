@@ -88,8 +88,8 @@ class _TabNavBarState extends State<TabNavBar> {
                   unselectedLabelColor: nColor,
                   tabs: [
                     Tab(text: '홈'),
-                    Tab(text: '안전지대'),
-                    Tab(text: '기록'),
+                    Tab(text: '안전 지도'),
+                    Tab(text: '보호자'),
                     Tab(text: '설정'),
                   ],
                 ),

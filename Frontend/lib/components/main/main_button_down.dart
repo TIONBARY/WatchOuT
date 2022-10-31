@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
@@ -7,7 +8,6 @@ import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 Map guCall = {
   '강남구': '02-3423-6000',
@@ -49,9 +49,8 @@ class _MainButtonDownState extends State<MainButtonDown> {
   Widget build(BuildContext context) {
     String address = Provider.of<MyUserInfo>(context, listen: false).region;
     final splitedAddress = address.split(' ');
-    String guName = splitedAddress[1];
-    String phones =
-        splitedAddress[1] == null ? splitedAddress[2] : splitedAddress[1];
+    String guName = splitedAddress[2];
+    String phones = guCall[guName];
 
     return Row(
       children: [
@@ -63,7 +62,20 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 0.5.h),
                   boxcolors: Colors.black12,
                   onpresseds: () {
-                    UrlLauncher.launchUrl(Uri.parse("tel: " + phones));
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          // Future.delayed(Duration(seconds: 3), () {
+                          //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
+                          // });
+                          return CallDialog(
+                              null,
+                              guName + '청 스카우트 상황실',
+                              phones,
+                              '\n※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
+                              null);
+                        });
+                    // UrlLauncher.launchUrl(Uri.parse("tel: " + phones));
                   },
                   texts: '안심귀가\n서비스',
                   textcolors: nColor,
@@ -92,7 +104,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   MaterialPageRoute(
                       builder: (context) => SafeAreaCCTVMapPage()));
             },
-            texts: '',
+            texts: 'CCTV',
             textcolors: Colors.white,
             fontsizes: 40.sp),
       ],
