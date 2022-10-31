@@ -120,7 +120,6 @@ void _permission() async {
   if (await Permission.contacts.request().isGranted) {
     // Either the permission was already granted before or the user just granted it.
   }
-
 // You can request multiple permissions at once.
   Map<Permission, PermissionStatus> statuses = await [
     Permission.locationAlways,
