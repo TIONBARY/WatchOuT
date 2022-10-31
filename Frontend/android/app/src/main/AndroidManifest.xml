@@ -48,7 +48,6 @@
     <!-- Include only if your app benefits from precise location access. -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <!-- Provide required visibility configuration for API level 30 and above -->
-    <uses-permission android:name="android.permission.INTERNET"/>
     <queries>
         <!-- If your app checks for SMS support -->
         <intent>
