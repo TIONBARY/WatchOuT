@@ -7,6 +7,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
+import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:homealone/providers/user_provider.dart';
@@ -20,6 +21,7 @@ HeartRateProvider heartRateProvider = HeartRateProvider();
 void main() {
   runApp(MultiProvider(
     providers: [
+      ChangeNotifierProvider<ContactInfo>(create: (_) => ContactInfo()),
       ChangeNotifierProvider<SwitchBools>(create: (_) => SwitchBools()),
       ChangeNotifierProvider<MyUserInfo>(create: (_) => MyUserInfo()),
       ChangeNotifierProvider<HeartRateProvider>(
@@ -79,17 +81,11 @@ class HomePage extends StatelessWidget {
       home: FutureBuilder(
         future: Firebase.initializeApp(),
         builder: (context, snapshot) {
-          // var fb = snapshot.data!["FB"];
           if (snapshot.hasError) {
             return LoadingPage();
           }
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
-            // Widget tmp = Container(
-            //   child: Text("hi"),
-            // );
-            // AuthService().test().then((value) => tmp = value);
-            // return snapshot.data!["tmp"];
             print("handleAuthstate로 넘어감");
             return AuthService().handleAuthState();
           }
@@ -99,17 +95,6 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<Map<String, dynamic>> test() async {
-  Map<String, dynamic> tmp = new Map();
-  // Widget widgetTmp = Container(
-  //   child: Text("실패~"),
-  // );
-
-  tmp.addEntries({"FB": await Firebase.initializeApp()}.entries);
-  tmp.addEntries({"tmp": await AuthService().test()}.entries);
-  return tmp;
 }
 
 void _permission() async {
