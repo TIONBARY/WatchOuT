@@ -12,6 +12,7 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
+  final List<String> _items = List.generate(3, (index) => 'Item ${index + 1}');
   final _authentication = FirebaseAuth.instance;
 
   String _code = '';
@@ -20,8 +21,53 @@ class _RecordPageState extends State<RecordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+        padding: const EdgeInsets.only(top: 8.0),
         child: Stack(
           children: [
+            GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 1 / 1,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+              ),
+              itemCount: _items.length,
+              itemBuilder: (context, index) => Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Column(
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      child: Container(
+                        child: SizedBox(
+                          height: 22.5.h,
+                          width: 22.5.w,
+                          child: CircleAvatar(
+                            backgroundColor: nColor,
+                            child: GestureDetector(
+                              onTap: () => print('클릭'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Text('닉네임'),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: n50Color,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7),
+                        ),
+                      ),
+                      onPressed: () {},
+                      child: Text('위치 확인'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             Positioned(
               right: 1.25.w,
               bottom: 1.25.h,
@@ -59,7 +105,7 @@ class _RecordPageState extends State<RecordPage> {
                   paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
                   keyboardtypes: TextInputType.text,
                   hinttexts: '코드',
-                  helpertexts: '문자로 받은 코드를 입력해주세요.',
+                  helpertexts: '공유 받은 코드를 입력해주세요.',
                   onchangeds: (code) {
                     _code = code;
                   },
