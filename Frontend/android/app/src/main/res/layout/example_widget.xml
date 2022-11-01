@@ -8,6 +8,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Watch Out" />
+        android:background="@drawable/sos_image"
+        android:textSize="40sp"
+        android:fontFamily="@font/fontstyle"
+        android:text="SOS" />
 
 </RelativeLayout>
