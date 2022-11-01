@@ -26,8 +26,6 @@ class _SignupState extends State<SignUp> {
   String address = '';
   String latitude = '-';
   String longitude = '-';
-  String kakaoLatitude = '-';
-  String kakaoLongitude = '-';
 
   String? _name = '';
   String? _nickname = '';
@@ -68,7 +66,9 @@ class _SignupState extends State<SignUp> {
       "gender": _gender,
       "age": _age,
       "phone": _phone,
-      "region": '${this.address} (${this.postCode})',
+      "region": '(${this.postCode}) ${this.address}',
+      "latitude": '${this.latitude}',
+      "longitude": '${this.longitude}',
       "activated": true,
     });
   }
