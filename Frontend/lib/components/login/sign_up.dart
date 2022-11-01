@@ -23,7 +23,7 @@ class _SignupState extends State<SignUp> {
   final _SignupKey = GlobalKey<FormState>();
 
   String postCode = '';
-  String address = '';
+  String region = '';
   String latitude = '-';
   String longitude = '-';
 
@@ -31,8 +31,7 @@ class _SignupState extends State<SignUp> {
   String? _nickname = '';
   String? _gender = '';
   String? _phone = '';
-  String? _age = '';
-  String? _region = '';
+  String? _birth = '';
 
   final FirebaseAuth _authentication = FirebaseAuth.instance;
   User? loggedUser;
@@ -64,9 +63,9 @@ class _SignupState extends State<SignUp> {
       "nickname": _nickname,
       "name": _name,
       "gender": _gender,
-      "age": _age,
+      "birth": _birth,
       "phone": _phone,
-      "region": '(${this.postCode}) ${this.address}',
+      "region": '(${this.postCode}) ${this.region}',
       "latitude": '${this.latitude}',
       "longitude": '${this.longitude}',
       "activated": true,
@@ -118,7 +117,7 @@ class _SignupState extends State<SignUp> {
               hinttexts: '생년월일',
               helpertexts: 'YYMMDD 형식으로 입력해주세요.',
               onchangeds: (age) {
-                _age = age;
+                _birth = age;
               },
             ),
             Container(
@@ -194,13 +193,13 @@ class _SignupState extends State<SignUp> {
                           width: 1.sp,
                           color: n25Color,
                         )),
-                    child: (this.postCode.isEmpty && this.address.isEmpty)
+                    child: (this.postCode.isEmpty && this.region.isEmpty)
                         ? Text(
                             '주소',
                             style: TextStyle(color: n75Color),
                           )
                         : Text(
-                            '(${this.postCode}) ${this.address}',
+                            '(${this.postCode}) ${this.region}',
                             overflow: TextOverflow.ellipsis,
                           ),
                   ),
@@ -226,7 +225,7 @@ class _SignupState extends State<SignUp> {
                               callback: (Kpostal result) {
                                 setState(() {
                                   this.postCode = result.postCode;
-                                  this.address = result.address;
+                                  this.region = result.address;
                                   this.latitude = result.latitude.toString();
                                   this.longitude = result.longitude.toString();
                                 });
@@ -243,15 +242,6 @@ class _SignupState extends State<SignUp> {
                 ),
               ],
             ),
-            // Container(
-            //   padding: EdgeInsets.all(40.0),
-            //   child: Column(
-            //     children: [
-            //       Text(
-            //           'latitude: ${this.latitude} / longitude: ${this.longitude}'),
-            //     ],
-            //   ),
-            // ),
             Container(
               padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
               child: ElevatedButton(
@@ -262,7 +252,6 @@ class _SignupState extends State<SignUp> {
                 ),
                 onPressed: () {
                   _register();
-                  Navigator.pop(context);
                 },
                 child: Text(
                   '회원가입',
