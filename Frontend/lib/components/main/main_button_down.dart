@@ -75,7 +75,6 @@ class _MainButtonDownState extends State<MainButtonDown> {
                               '\n※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
                               null);
                         });
-                    // UrlLauncher.launchUrl(Uri.parse("tel: " + phones));
                   },
                   texts: '안심귀가\n서비스',
                   textcolors: nColor,

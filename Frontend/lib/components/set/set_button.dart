@@ -30,6 +30,7 @@ class _SetButtonState extends State<SetButton> {
   String _selectedContact = '';
   String _addContact = '';
   String _addName = '';
+
   @override
   Widget build(BuildContext context) {
     Map<String, String> firstResponder =
