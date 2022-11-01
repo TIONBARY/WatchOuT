@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
 
@@ -11,8 +12,6 @@ class RecordPage extends StatefulWidget {
 }
 
 class _RecordPageState extends State<RecordPage> {
-  final TextEditingController _nameFieldController = TextEditingController();
-  final TextEditingController _contactFieldController = TextEditingController();
   final _authentication = FirebaseAuth.instance;
 
   String _code = '';
@@ -23,25 +22,20 @@ class _RecordPageState extends State<RecordPage> {
       body: Container(
         child: Stack(
           children: [
-            // Positioned(
-            //   right: 2.5.w,
-            //   bottom: 2.5.h,
-            //   child: FloatingActionButton(
-            //     child: Icon(
-            //       Icons.edit,
-            //       size: 20.sp,
-            //     ),
-            //     backgroundColor: nColor,
-            //     onPressed: () {
-            //       showDialog(
-            //         context: context,
-            //         builder: (BuildContext context) {
-            //           return _CodeDialog(context);
-            //         },
-            //       );
-            //     },
-            //   ),
-            // ),
+            Positioned(
+              right: 1.25.w,
+              bottom: 1.25.h,
+              child: FloatingActionButton(
+                child: Icon(
+                  Icons.edit,
+                  size: 20.sp,
+                ),
+                backgroundColor: nColor,
+                onPressed: () {
+                  _CodeDialog(context);
+                },
+              ),
+            ),
           ],
         ),
       ),
@@ -49,8 +43,6 @@ class _RecordPageState extends State<RecordPage> {
   }
 
   Future<void> _CodeDialog(BuildContext context) async {
-    _nameFieldController.clear();
-    _contactFieldController.clear();
     return showDialog(
       context: context,
       builder: (context) {
@@ -59,44 +51,20 @@ class _RecordPageState extends State<RecordPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
             padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 2.5.h),
-            height: 30.h,
+            height: 22.5.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Title(
-                  color: nColor,
-                  child: Text(
-                    '코드',
-                    style: TextStyle(
-                      color: nColor,
-                      fontSize: 17.5.sp,
-                    ),
-                  ),
+                SignUpTextField(
+                  paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
+                  keyboardtypes: TextInputType.text,
+                  hinttexts: '코드',
+                  helpertexts: '문자로 받은 코드를 입력해주세요.',
+                  onchangeds: (code) {
+                    _code = code;
+                  },
                 ),
                 Container(
-                  height: 12.5.h,
-                  child: Column(
-                    children: [
-                      TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            _code = value;
-                          });
-                        },
-                        controller: _nameFieldController,
-                        cursorColor: nColor,
-                        decoration: InputDecoration(
-                          hintText: '이름 또는 별명',
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: nColor),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 2.5.h, 0, 0),
                   width: 40.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -109,11 +77,9 @@ class _RecordPageState extends State<RecordPage> {
                           ),
                         ),
                         onPressed: () {
-                          setState(() {
-                            _nameFieldController.clear();
-                            _contactFieldController.clear();
-                            Navigator.pop(context);
-                          });
+                          // setState(() {
+                          Navigator.pop(context);
+                          // });
                         },
                         child: Text(
                           '등록',
@@ -130,11 +96,9 @@ class _RecordPageState extends State<RecordPage> {
                           ),
                         ),
                         onPressed: () {
-                          setState(() {
-                            _nameFieldController.clear();
-                            _contactFieldController.clear();
-                            Navigator.pop(context);
-                          });
+                          // setState(() {
+                          Navigator.pop(context);
+                          // });
                         },
                         child: Text(
                           '취소',
