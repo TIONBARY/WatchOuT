@@ -1,15 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math' show cos, sqrt, asin;
+import 'dart:math' show Random, asin, cos, sqrt;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/components/dialog/access_code_message_choice_list_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:http/http.dart' as http;
@@ -31,6 +33,9 @@ String openAPIKey = "";
 double initLat = 0.0;
 double initLon = 0.0;
 late LocationSettings locationSettings;
+Timer? timer;
+const sendLocationIntervalSec = 30;
+const accessCodeLength = 8;
 
 List<Position> positionList = [];
 StreamSubscription<Position>? _walkPositionStream;
@@ -75,6 +80,7 @@ class SafeAreaCCTVMap extends StatefulWidget {
 }
 
 class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   ApiKakao apiKakao = ApiKakao();
 
   List<Map<String, dynamic>> cctvList = [];
@@ -107,6 +113,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   late final Future? myFuture = _future();
 
   Map<String, dynamic> newValue = {};
+
+  String accessCode = "";
 
   @override
   void initState() {
@@ -460,6 +468,39 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
       ''');
     });
+    accessCode = getRandomString(accessCodeLength);
+    print(accessCode);
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AccessCodeMessageChoiceListDialog(accessCode);
+        });
+    FirebaseFirestore.instance
+        .collection("user")
+        .doc(_auth.currentUser?.uid)
+        .get()
+        .then((response) {
+      Map<String, dynamic> user = response.data() as Map<String, dynamic>;
+      FirebaseFirestore.instance
+          .collection("codeToUserInfo")
+          .doc(accessCode)
+          .set({
+        "name": user["name"],
+        "profileImage": user["profileImage"],
+        "homeLat": user["latitude"],
+        "homeLon": user["longitude"]
+      });
+    });
+
+    timer = Timer.periodic(Duration(seconds: sendLocationIntervalSec), (timer) {
+      print("Interval Activated");
+      print(initLat);
+      print(initLon);
+      FirebaseFirestore.instance
+          .collection("location")
+          .doc(accessCode)
+          .set({"latitude": initLat, "longitude": initLon});
+    });
     if (positionList.length == 0) {
       _mapController.runJavascript('''
                   if ('$position') {
@@ -529,6 +570,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   void stopWalk(WebViewController _mapController) {
     _walkPositionStream?.cancel(); // 위치 기록 종료
+    timer?.cancel();
+    FirebaseFirestore.instance
+        .collection("codeToUserInfo")
+        .doc(accessCode)
+        .delete();
+    FirebaseFirestore.instance.collection("location").doc(accessCode).delete();
     _currentPositionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position? position) {
@@ -558,6 +605,13 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
     positionList = [];
   }
+
+  final _chars =
+      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+  Random _rnd = Random();
+
+  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   @override
   Widget build(BuildContext context) {
@@ -876,6 +930,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   @override
   void dispose() {
+    _walkPositionStream?.cancel();
+    _currentPositionStream?.cancel();
     super.dispose();
   }
 }
