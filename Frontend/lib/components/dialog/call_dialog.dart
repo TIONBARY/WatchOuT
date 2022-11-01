@@ -4,9 +4,10 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class CallDialog extends StatelessWidget {
-  String titles = '';
+  String? titles = '';
   String names = '';
   String phones = '';
+  String? texts = '';
   Widget Function(BuildContext)? pageBuilder;
 
   Map<String, String> emoji = {
@@ -18,7 +19,8 @@ class CallDialog extends StatelessWidget {
     "비상벨": "🔔"
   };
 
-  CallDialog(this.titles, this.names, this.phones, this.pageBuilder);
+  CallDialog(
+      this.titles, this.names, this.phones, this.texts, this.pageBuilder);
 
   @override
   Widget build(BuildContext context) {
@@ -26,16 +28,21 @@ class CallDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
         padding: EdgeInsets.fromLTRB(1.w, 2.h, 1.w, 2.h),
-        height: 20.h,
+        height: (this.texts == null) ? 20.h : 25.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Title(
               color: nColor,
-              child: Text(emoji[titles]! + " " + names,
-                  style: TextStyle(fontSize: 12.5.sp)),
+              child: (this.titles == null)
+                  ? Text(names, style: TextStyle(fontSize: 12.5.sp))
+                  : Text(emoji[titles]! + " " + names,
+                      style: TextStyle(fontSize: 12.5.sp)),
             ),
             Text(phones.isEmpty ? "등록된 번호가 없습니다." : phones),
+            (this.texts == null)
+                ? Padding(padding: EdgeInsets.zero)
+                : Text(texts!, textAlign: TextAlign.center),
             Container(
               padding: EdgeInsets.fromLTRB(0, 2.5.h, 0, 0),
               width: 35.w,
