@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math' show Random, asin, cos, sqrt;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -79,6 +80,7 @@ class SafeAreaCCTVMap extends StatefulWidget {
 }
 
 class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   ApiKakao apiKakao = ApiKakao();
 
   List<Map<String, dynamic>> cctvList = [];
@@ -473,6 +475,23 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         builder: (BuildContext context) {
           return AccessCodeMessageChoiceListDialog(accessCode);
         });
+    FirebaseFirestore.instance
+        .collection("user")
+        .doc(_auth.currentUser?.uid)
+        .get()
+        .then((response) {
+      Map<String, dynamic> user = response.data() as Map<String, dynamic>;
+      FirebaseFirestore.instance
+          .collection("codeToUserInfo")
+          .doc(accessCode)
+          .set({
+        "name": user["name"],
+        "profileImage": user["profileImage"],
+        "homeLat": user["latitude"],
+        "homeLon": user["longitude"]
+      });
+    });
+
     timer = Timer.periodic(Duration(seconds: sendLocationIntervalSec), (timer) {
       print("Interval Activated");
       print(initLat);
@@ -552,6 +571,11 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   void stopWalk(WebViewController _mapController) {
     _walkPositionStream?.cancel(); // 위치 기록 종료
     timer?.cancel();
+    FirebaseFirestore.instance
+        .collection("codeToUserInfo")
+        .doc(accessCode)
+        .delete();
+    FirebaseFirestore.instance.collection("location").doc(accessCode).delete();
     _currentPositionStream =
         Geolocator.getPositionStream(locationSettings: locationSettings)
             .listen((Position? position) {
