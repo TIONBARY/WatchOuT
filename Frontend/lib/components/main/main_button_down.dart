@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
@@ -48,8 +49,9 @@ class _MainButtonDownState extends State<MainButtonDown> {
   Widget build(BuildContext context) {
     String address = Provider.of<MyUserInfo>(context, listen: false).region;
     final splitedAddress = address.split(' ');
+    String sidoName = splitedAddress[1];
     String guName = splitedAddress[2];
-    String phones = guCall[guName];
+    String? phones = guCall[guName];
 
     return Row(
       children: [
@@ -61,19 +63,31 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 0.5.h),
                   boxcolors: Colors.black12,
                   onpresseds: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          // Future.delayed(Duration(seconds: 3), () {
-                          //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
-                          // });
-                          return CallDialog(
-                              null,
-                              guName + '청 스카우트 상황실',
-                              phones,
-                              '\n※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
-                              null);
-                        });
+                    (sidoName == '서울')
+                        ? showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              // Future.delayed(Duration(seconds: 3), () {
+                              //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
+                              // });
+                              return CallDialog(
+                                  null,
+                                  guName + '청 스카우트 상황실',
+                                  phones!,
+                                  '※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
+                                  null);
+                            },
+                          )
+                        : showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BasicDialog(
+                                  EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                                  12.5.h,
+                                  '안심귀가 서비스는 \'서울\' 에서만 제공됩니다.',
+                                  null);
+                            },
+                          );
                   },
                   texts: '안심귀가\n서비스',
                   textcolors: nColor,
