@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:ui';
 
@@ -197,6 +198,10 @@ Future<void> onStart(ServiceInstance service) async {
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin);
   }
+
+  Timer.periodic(Duration(seconds: 3), (timer) {
+    print('백그라운드반복');
+  });
 }
 
 void onStartWatch(ServiceInstance service,
