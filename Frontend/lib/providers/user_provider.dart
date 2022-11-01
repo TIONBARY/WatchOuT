@@ -45,6 +45,6 @@ class MyUserInfo with ChangeNotifier {
     setGender(userDoc?["gender"]);
     setPhone(userDoc?["phone"]);
     setRegion(userDoc?["region"]);
-    print("provider 안ㅇ userDoc${nickname}");
+    print("user provider : userDoc${nickname}");
   }
 }

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../providers/contact_provider.dart';
+import '../login/auth_service.dart';
 import '../wear/heart_rate_view.dart';
 
 class SetButton extends StatefulWidget {
@@ -24,22 +25,23 @@ class _SetButtonState extends State<SetButton> {
   final List<String> _valueList = ['문자', '전화', '사용안함'];
   String _selectedAlert = '문자';
   List<String> _contactList = [];
-  // ['010123456768', '01043218765'];
   List<String> _nameList = [];
-  // ['엄마', '아빠'];
   String _selectedContact = '';
   String _addContact = '';
   String _addName = '';
+  bool flag = true;
 
+  // Button context에서 Navigator.pop(context)로 해당 context를 벗어나면, setState의 re-rendering 적용이 안되는 듯?
   @override
   Widget build(BuildContext context) {
     Map<String, String> firstResponder =
         Provider.of<ContactInfo>(context, listen: false).getResponder();
-    if (!firstResponder.isEmpty) {
+    if (!firstResponder.isEmpty && flag) {
       _nameList = firstResponder.keys.toList();
       _contactList = firstResponder.values.toList();
-      _selectedContact = _nameList[0];
+      flag = false; //최초 한번만 실행되도록 설정
     }
+    if (!_nameList.isEmpty) _selectedContact = _nameList[0];
     return Column(
       children: [
         SetPageRadioButton(
@@ -251,8 +253,8 @@ class _SetButtonState extends State<SetButton> {
                           setState(() {
                             _contactList.add(_addContact);
                             _nameList.add(_addName);
-                            print(_contactList.first);
-                            // registerFirstResponder(_addName, _addContact);
+                            AuthService()
+                                .registerFirstResponder(_addName, _addContact);
                             _nameFieldController.clear();
                             _contactFieldController.clear();
                             Navigator.pop(context);
@@ -280,7 +282,7 @@ class _SetButtonState extends State<SetButton> {
                           });
                         },
                         child: Text(
-                          '취소',
+                          '닫기',
                           style: TextStyle(color: nColor),
                         ),
                       ),
