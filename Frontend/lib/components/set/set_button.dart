@@ -34,9 +34,11 @@ class _SetButtonState extends State<SetButton> {
   Widget build(BuildContext context) {
     Map<String, String> firstResponder =
         Provider.of<ContactInfo>(context, listen: false).getResponder();
-    _nameList = firstResponder.keys.toList();
-    _contactList = firstResponder.values.toList();
-    _selectedContact = _nameList[0];
+    if (!firstResponder.isEmpty) {
+      _nameList = firstResponder.keys.toList();
+      _contactList = firstResponder.values.toList();
+      _selectedContact = _nameList[0];
+    }
     return Column(
       children: [
         SetPageRadioButton(
@@ -105,7 +107,7 @@ class _SetButtonState extends State<SetButton> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                firstResponder.isEmpty
+                _nameList.isEmpty
                     ? Text('비상연락처를 등록해주세요.')
                     : Row(
                         children: [
@@ -249,6 +251,7 @@ class _SetButtonState extends State<SetButton> {
                             _contactList.add(_addContact);
                             _nameList.add(_addName);
                             print(_contactList.first);
+                            // registerFirstResponder(_addName, _addContact);
                             _nameFieldController.clear();
                             _contactFieldController.clear();
                             Navigator.pop(context);
