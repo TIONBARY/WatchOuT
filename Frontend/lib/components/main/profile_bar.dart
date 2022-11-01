@@ -54,6 +54,8 @@ class _ProfileBarState extends State<ProfileBar> {
   }
 }
 
+void addTodayCheck() {}
+
 void todayCheck() {
   DateTime now = DateTime.now();
   Timer(
