@@ -120,6 +120,15 @@ class _SignupState extends State<SignUp> {
                 _birth = age;
               },
             ),
+            SignUpTextField(
+              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
+              keyboardtypes: TextInputType.number,
+              hinttexts: '전화번호',
+              helpertexts: '숫자만 입력해주세요.',
+              onchangeds: (number) {
+                _phone = number;
+              },
+            ),
             Container(
                 padding: EdgeInsets.fromLTRB(7.5.w, 0, 7.5.w, 0),
                 child: Column(children: <Widget>[
@@ -169,15 +178,6 @@ class _SignupState extends State<SignUp> {
                     ],
                   )
                 ])),
-            SignUpTextField(
-              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
-              keyboardtypes: TextInputType.number,
-              hinttexts: '전화번호',
-              helpertexts: '숫자만 입력해주세요.',
-              onchangeds: (number) {
-                _phone = number;
-              },
-            ),
             Row(
               children: [
                 FittedBox(
@@ -243,7 +243,7 @@ class _SignupState extends State<SignUp> {
               ],
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(30.w, 0, 30.w, 0),
+              padding: EdgeInsets.fromLTRB(30.w, 1.25.h, 30.w, 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: nColor,

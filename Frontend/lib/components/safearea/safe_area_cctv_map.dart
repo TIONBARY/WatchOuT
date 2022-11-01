@@ -616,54 +616,55 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            FutureBuilder(
-                future: myFuture,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  //해당 부분은 data를 아직 받아 오지 못했을 때 실행되는 부분
-                  if (snapshot.hasData == false) {
-                    return CircularProgressIndicator();
-                    // CircularProgressIndicator();
-                  }
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FutureBuilder(
+            future: myFuture,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              //해당 부분은 data를 아직 받아 오지 못했을 때 실행되는 부분
+              if (snapshot.hasData == false) {
+                return CircularProgressIndicator();
+                // CircularProgressIndicator();
+              }
 
-                  //error가 발생하게 될 경우 반환하게 되는 부분
-                  else if (snapshot.hasError) {
-                    return Text(
-                      'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
-                      style: TextStyle(fontSize: 15),
-                    );
-                  }
+              //error가 발생하게 될 경우 반환하게 되는 부분
+              else if (snapshot.hasError) {
+                return Text(
+                  'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
+                  style: TextStyle(fontSize: 15),
+                );
+              }
 
-                  // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 부분
-                  else {
-                    // debugPrint(snapshot.data); Container(
-                    // child: Text(snapshot.data),
+              // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 부분
+              else {
+                // debugPrint(snapshot.data); Container(
+                // child: Text(snapshot.data),
 
-                    return Flexible(
-                        flex: 1,
-                        fit: FlexFit.loose,
-                        child: Stack(children: [
-                          KakaoMapView(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              // height: size.height * 7 / 10,
-                              // height: size.height - appBarHeight - 130,
-                              // height: 1.sh,
-                              kakaoMapKey: kakaoMapKey,
-                              lat: initLat,
-                              lng: initLon,
-                              // zoomLevel: 1,
-                              showMapTypeControl: false,
-                              showZoomControl: false,
-                              draggableMarker: false,
-                              // mapType: MapType.TERRAIN,
-                              mapController: (controller) {
-                                _mapController = controller;
-                              },
-                              customScript: '''
+                return Flexible(
+                  flex: 1,
+                  fit: FlexFit.loose,
+                  child: Stack(
+                    children: [
+                      KakaoMapView(
+                        width: MediaQuery.of(context).size.width,
+                        height: MediaQuery.of(context).size.height,
+                        // height: size.height * 7 / 10,
+                        // height: size.height - appBarHeight - 130,
+                        // height: 1.sh,
+                        kakaoMapKey: kakaoMapKey,
+                        lat: initLat,
+                        lng: initLon,
+                        // zoomLevel: 1,
+                        showMapTypeControl: false,
+                        showZoomControl: false,
+                        draggableMarker: false,
+                        // mapType: MapType.TERRAIN,
+                        mapController: (controller) {
+                          _mapController = controller;
+                        },
+                        customScript: '''
     var markers = [];
 
     function addMarker(position) {
@@ -718,8 +719,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     
     var markersList = [[], [], [], [], [], []];
     var _safeAreaCoordList = ${json.encode({
-                                    "list": safeAreaCoordList
-                                  })}["list"];
+                              "list": safeAreaCoordList
+                            })}["list"];
     _safeAreaImages = ${json.encode({"list": safeAreaImages})}["list"];
     function addSafeAreaMarker(idx, position) {
         var imageSrc = _safeAreaImages[idx], // 마커이미지의 주소입니다    
@@ -768,164 +769,178 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         }
       }
               ''',
-                              onTapMarker: (message) {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return CallDialog(
-                                          safeAreaList[json.decode(message
-                                              .message)['safe_area_idx']],
-                                          json.decode(
-                                              message.message)['place_name'],
-                                          json.decode(message.message)['phone'],
-                                          null,
-                                          null);
-                                    });
-                              }),
-                          Positioned(
-                              right: 3.w,
-                              bottom: 3.h,
-                              child: FloatingActionButton(
-                                  child: Icon(Icons.refresh),
-                                  elevation: 5,
-                                  hoverElevation: 10,
-                                  tooltip: "CCTV 리스트 갱신",
-                                  backgroundColor: nColor,
-                                  onPressed: () {
-                                    getSortedCCTVList();
-                                  })),
-                          Positioned(
-                              left: 3.w,
-                              bottom: 3.h,
-                              child: FloatingActionButton(
-                                  child: Icon(Icons.emergency_share),
-                                  elevation: 5,
-                                  hoverElevation: 10,
-                                  tooltip: "긴급 신고",
-                                  backgroundColor: Colors.red,
-                                  onPressed: () {
-                                    UrlLauncher.launchUrl(Uri.parse("tel:112"));
-                                  })),
-                          Positioned(
-                              left: 1.w,
-                              top: 1.h,
-                              child: Wrap(
-                                  direction: Axis.vertical,
-                                  spacing: 1.h,
-                                  children: [
-                                    for (var i = 0;
-                                        i < safeAreaList.length;
-                                        i++)
-                                      showSafeArea[i]
-                                          ? SizedBox(
-                                              width: 23.w,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  removeMarkers(i);
-                                                  setState(() {
-                                                    showSafeArea[i] = false;
-                                                  });
-                                                },
-                                                child: Text(safeAreaList[i],
-                                                    style: TextStyle(
-                                                        color: nColor)),
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: yColor,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0),
-                                                  ),
-                                                  tapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .shrinkWrap,
-                                                ),
-                                              ))
-                                          : SizedBox(
-                                              width: 23.w,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  showMarkers(i);
-                                                  setState(() {
-                                                    showSafeArea[i] = true;
-                                                  });
-                                                },
-                                                child: Text(safeAreaList[i]),
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: n50Color,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            5.0),
-                                                  ),
-                                                  tapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .shrinkWrap,
-                                                ),
-                                              ))
-                                  ])),
-                          Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 3.h,
-                              child: Container(
-                                  margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 0),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        if (pressWalkBtn == false) {
-                                          // 버튼 변경
-                                          pressWalkBtn = true;
-                                          debugPrint(pressWalkBtn.toString());
-
-                                          // 카카오 맵 이동 기록 시작
-                                          Future<Position> future =
-                                              _determinePosition();
-                                          future
-                                              .then((pos) => startWalk(
-                                                  pos, _mapController))
-                                              .catchError(
-                                                  (error) => debugPrint(error));
-                                          startTime = DateTime.now();
-                                        } else if (pressWalkBtn == true) {
-                                          // 버튼 변경
-                                          pressWalkBtn = false;
-                                          debugPrint(pressWalkBtn.toString());
-
-                                          // 카카오 맵 이동 기록 중단
-                                          stopWalk(_mapController!);
-
-                                          // 타이머 정지
-                                          // _stopWatchTimer.dispose();
-                                          endTime = DateTime.now();
-                                          // 백엔드 서버로 전송
-
-                                          sleep(Duration(milliseconds: 500));
-                                          // 스크린샷 저장
-                                          _capturePng();
-                                        }
-                                      });
-                                    },
-                                    child: Text(
-                                        pressWalkBtn ? "귀가 종료" : "귀가 시작",
-                                        style: TextStyle(
-                                            fontSize: 20, color: nColor)),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: yColor,
-                                      padding: EdgeInsets.all(3.w),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
+                        onTapMarker: (message) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return CallDialog(
+                                  safeAreaList[json.decode(
+                                      message.message)['safe_area_idx']],
+                                  json.decode(message.message)['place_name'],
+                                  json.decode(message.message)['phone'],
+                                  null,
+                                  null);
+                            },
+                          );
+                        },
+                      ),
+                      Positioned(
+                        left: 2.w,
+                        bottom: 1.h,
+                        child: FloatingActionButton(
+                          child: Icon(Icons.emergency_share),
+                          elevation: 5,
+                          hoverElevation: 10,
+                          tooltip: "긴급 신고",
+                          backgroundColor: Colors.red,
+                          onPressed: () {
+                            UrlLauncher.launchUrl(Uri.parse("tel:112"));
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        left: 1.w,
+                        top: 1.h,
+                        child: Wrap(
+                          direction: Axis.vertical,
+                          spacing: 1.h,
+                          children: [
+                            for (var i = 0; i < safeAreaList.length; i++)
+                              showSafeArea[i]
+                                  ? SizedBox(
+                                      width: 23.w,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          removeMarkers(i);
+                                          setState(
+                                            () {
+                                              showSafeArea[i] = false;
+                                            },
+                                          );
+                                        },
+                                        child: Text(
+                                          safeAreaList[i],
+                                          style: TextStyle(color: nColor),
+                                        ),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: yColor,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                          ),
+                                          tapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        ),
                                       ),
-                                      tapTargetSize:
-                                          MaterialTapTargetSize.shrinkWrap,
+                                    )
+                                  : SizedBox(
+                                      width: 23.w,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          showMarkers(i);
+                                          setState(
+                                            () {
+                                              showSafeArea[i] = true;
+                                            },
+                                          );
+                                        },
+                                        child: Text(safeAreaList[i]),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: n50Color,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5.0),
+                                          ),
+                                          tapTargetSize:
+                                              MaterialTapTargetSize.shrinkWrap,
+                                        ),
+                                      ),
                                     ),
-                                  )))
-                        ]));
-                  }
-                })
-          ],
-        ));
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 1.h,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(25.w, 0, 25.w, 0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              setState(
+                                () {
+                                  if (pressWalkBtn == false) {
+                                    // 버튼 변경
+                                    pressWalkBtn = true;
+                                    debugPrint(pressWalkBtn.toString());
+
+                                    // 카카오 맵 이동 기록 시작
+                                    Future<Position> future =
+                                        _determinePosition();
+                                    future
+                                        .then((pos) =>
+                                            startWalk(pos, _mapController))
+                                        .catchError(
+                                            (error) => debugPrint(error));
+                                    startTime = DateTime.now();
+                                  } else if (pressWalkBtn == true) {
+                                    // 버튼 변경
+                                    pressWalkBtn = false;
+                                    debugPrint(pressWalkBtn.toString());
+
+                                    // 카카오 맵 이동 기록 중단
+                                    stopWalk(_mapController!);
+
+                                    // 타이머 정지
+                                    // _stopWatchTimer.dispose();
+                                    endTime = DateTime.now();
+                                    // 백엔드 서버로 전송
+
+                                    sleep(Duration(milliseconds: 500));
+                                    // 스크린샷 저장
+                                    _capturePng();
+                                  }
+                                },
+                              );
+                            },
+                            child: Text(
+                              pressWalkBtn ? "귀가 종료" : "귀가 시작",
+                              style: TextStyle(fontSize: 20, color: nColor),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: yColor,
+                              padding: EdgeInsets.all(3.w),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        right: 2.w,
+                        bottom: 1.h,
+                        child: FloatingActionButton(
+                          child: Icon(Icons.refresh),
+                          elevation: 5,
+                          hoverElevation: 10,
+                          tooltip: "CCTV 리스트 갱신",
+                          backgroundColor: nColor,
+                          onPressed: () {
+                            getSortedCCTVList();
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   @override
