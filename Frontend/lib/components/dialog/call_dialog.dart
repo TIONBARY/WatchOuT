@@ -27,10 +27,10 @@ class CallDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(1.w, 2.h, 1.w, 2.h),
-        height: (this.texts == null) ? 20.h : 25.h,
+        padding: EdgeInsets.fromLTRB(5.w, 2.h, 5.w, 1.5.h),
+        height: (this.texts == null) ? 15.h : 22.5.h,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
               color: nColor,
@@ -44,7 +44,6 @@ class CallDialog extends StatelessWidget {
                 ? Padding(padding: EdgeInsets.zero)
                 : Text(texts!, textAlign: TextAlign.center),
             Container(
-              padding: EdgeInsets.fromLTRB(0, 2.5.h, 0, 0),
               width: 35.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
