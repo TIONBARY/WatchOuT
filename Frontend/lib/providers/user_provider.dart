@@ -4,7 +4,7 @@ class MyUserInfo with ChangeNotifier {
   bool isLogin = false;
   String name = '';
   String nickname = '';
-  String age = '';
+  String birth = '';
   String gender = '';
   String phone = '';
   String region = '';
@@ -21,8 +21,8 @@ class MyUserInfo with ChangeNotifier {
     this.nickname = nickname;
   }
 
-  void setAge(String age) {
-    this.age = age;
+  void setBirth(String birth) {
+    this.birth = birth;
   }
 
   void setGender(String gender) {
@@ -41,10 +41,10 @@ class MyUserInfo with ChangeNotifier {
     //파이어베이스 계정 불러온 다음 데이터를 전역변수에 대입
     setName(userDoc?["name"]);
     setNickname(userDoc?["nickname"]);
-    setAge(userDoc?["age"]);
+    setBirth(userDoc?["birth"]);
     setGender(userDoc?["gender"]);
     setPhone(userDoc?["phone"]);
     setRegion(userDoc?["region"]);
-    print("provider 안ㅇ userDoc${nickname}");
+    print("user provider : userDoc${nickname}");
   }
 }
