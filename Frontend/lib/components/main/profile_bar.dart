@@ -17,9 +17,10 @@ class _ProfileBarState extends State<ProfileBar> {
     return Container(
       padding: EdgeInsets.fromLTRB(4.w, 3.h, 4.w, 1.h),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
-            flex: 3,
+            flex: 5,
             child: Container(
               child: SizedBox(
                 height: 22.5.h,
@@ -28,10 +29,20 @@ class _ProfileBarState extends State<ProfileBar> {
                   backgroundImage: NetworkImage(
                       Provider.of<MyUserInfo>(context, listen: false)
                           .profileImage),
-                  child: GestureDetector(
-                    onTap: () => doCheck(context),
-                  ),
+                  // child: GestureDetector(
+                  //   onTap: () => doCheck(context),
+                  // ),
                 ),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 3,
+            child: Container(
+              margin: EdgeInsets.only(left: 2.5.w),
+              child: Text(
+                Provider.of<MyUserInfo>(context, listen: false).name,
+                style: TextStyle(fontSize: 17.5.sp),
               ),
             ),
           ),
@@ -39,9 +50,9 @@ class _ProfileBarState extends State<ProfileBar> {
             flex: 2,
             child: Container(
               margin: EdgeInsets.only(left: 2.5.w),
-              child: Text(
-                Provider.of<MyUserInfo>(context, listen: false).name,
-                style: TextStyle(fontSize: 17.5.sp),
+              child: IconButton(
+                onPressed: () => doCheck(context),
+                icon: Icon(Icons.check),
               ),
             ),
           ),
