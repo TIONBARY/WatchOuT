@@ -49,6 +49,10 @@ class _ProfileBarState extends State<ProfileBar> {
 void doCheck(BuildContext context) {
   myuserInfo.confirmCheck();
   print('출석 완료 ${myuserInfo.isCheck}');
+
+  print('프로필바다트${myuserInfo.toString()}');
+  print('프로필바다트${myuserInfo.hashCode}');
+  print('프로필바다트${Provider.of<MyUserInfo>(context, listen: false).hashCode}');
 }
 
 // void todayCheck() {

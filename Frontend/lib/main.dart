@@ -213,6 +213,8 @@ Future<void> onStart(ServiceInstance service) async {
     Duration(seconds: 10),
     (timer) {
       print('현재 출석 상태 ${myuserInfo.isCheck}');
+      print('메인다트${myuserInfo.toString()}');
+      print('메인다트${myuserInfo.hashCode}');
     },
   );
 }
