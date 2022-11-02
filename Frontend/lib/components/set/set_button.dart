@@ -183,10 +183,10 @@ class _SetButtonState extends State<SetButton> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
-            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 2.5.h),
-            height: 30.h,
+            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+            height: 27.5.h,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Title(
                   color: nColor,
@@ -211,7 +211,7 @@ class _SetButtonState extends State<SetButton> {
                         controller: _nameFieldController,
                         cursorColor: nColor,
                         decoration: InputDecoration(
-                          hintText: '이름 또는 별명',
+                          hintText: '이름 또는 닉네임',
                           focusedBorder: UnderlineInputBorder(
                             borderSide: BorderSide(color: nColor),
                           ),
@@ -237,7 +237,6 @@ class _SetButtonState extends State<SetButton> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.fromLTRB(0, 2.5.h, 0, 0),
                   width: 40.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -785,70 +785,64 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           );
                         },
                       ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 1.h),
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: Positioned(
+                      Positioned(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 1.h),
+                          child: Align(
+                            alignment: Alignment.topCenter,
                             child: Wrap(
                               direction: Axis.horizontal,
                               spacing: 1.w,
                               children: [
                                 for (var i = 0; i < safeAreaList.length; i++)
                                   showSafeArea[i]
-                                      ? Flexible(
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              removeMarkers(i);
-                                              setState(
-                                                () {
-                                                  showSafeArea[i] = false;
-                                                },
-                                              );
-                                            },
-                                            child: Text(
-                                              safeAreaList[i],
-                                              style: TextStyle(color: nColor),
+                                      ? ElevatedButton(
+                                          onPressed: () {
+                                            removeMarkers(i);
+                                            setState(
+                                              () {
+                                                showSafeArea[i] = false;
+                                              },
+                                            );
+                                          },
+                                          child: Text(
+                                            safeAreaList[i],
+                                            style: TextStyle(color: nColor),
+                                          ),
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: Size.zero,
+                                            padding: EdgeInsets.fromLTRB(
+                                                2.w, 1.h, 2.w, 1.h),
+                                            backgroundColor: yColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
                                             ),
-                                            style: ElevatedButton.styleFrom(
-                                              minimumSize: Size.zero,
-                                              padding: EdgeInsets.fromLTRB(
-                                                  2.w, 1.h, 2.w, 1.h),
-                                              backgroundColor: yColor,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                              ),
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
-                                            ),
+                                            tapTargetSize: MaterialTapTargetSize
+                                                .shrinkWrap,
                                           ),
                                         )
-                                      : Flexible(
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              showMarkers(i);
-                                              setState(
-                                                () {
-                                                  showSafeArea[i] = true;
-                                                },
-                                              );
-                                            },
-                                            child: Text(safeAreaList[i]),
-                                            style: ElevatedButton.styleFrom(
-                                              minimumSize: Size.zero,
-                                              padding: EdgeInsets.fromLTRB(
-                                                  2.w, 1.h, 2.w, 1.h),
-                                              backgroundColor: n50Color,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(5.0),
-                                              ),
-                                              tapTargetSize:
-                                                  MaterialTapTargetSize
-                                                      .shrinkWrap,
+                                      : ElevatedButton(
+                                          onPressed: () {
+                                            showMarkers(i);
+                                            setState(
+                                              () {
+                                                showSafeArea[i] = true;
+                                              },
+                                            );
+                                          },
+                                          child: Text(safeAreaList[i]),
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: Size.zero,
+                                            padding: EdgeInsets.fromLTRB(
+                                                2.w, 1.h, 2.w, 1.h),
+                                            backgroundColor: nColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(5.0),
                                             ),
+                                            tapTargetSize: MaterialTapTargetSize
+                                                .shrinkWrap,
                                           ),
                                         ),
                               ],
