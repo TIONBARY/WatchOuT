@@ -10,16 +10,6 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-WebViewController? _mapController;
-String kakaoMapKey = "";
-double initLat = 0.0;
-double initLon = 0.0;
-late LocationSettings locationSettings;
-const sendLocationIntervalSec = 30;
-
-StreamSubscription<Position>? _walkPositionStream;
-StreamSubscription<Position>? _currentPositionStream;
-
 class GoingHomeMap extends StatefulWidget {
   const GoingHomeMap(this.homeLat, this.homeLon, this.accessCode, {Key? key})
       : super(key: key);
@@ -40,15 +30,30 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
 
   late final Future? myFuture = _getKakaoKey();
 
+  WebViewController? _mapController;
+  String kakaoMapKey = "";
+  late LocationSettings locationSettings;
+
+  StreamSubscription<Position>? _walkPositionStream;
+  StreamSubscription<Position>? _currentPositionStream;
+
+  double initLat = 37.5;
+  double initLon = 127.5;
+
   @override
   void initState() {
     super.initState();
-    _getKakaoKey();
   }
 
   Future _getKakaoKey() async {
     await dotenv.load();
     kakaoMapKey = dotenv.get('kakaoMapAPIKey');
+    final response = await FirebaseFirestore.instance
+        .collection("location")
+        .doc(widget.accessCode)
+        .get();
+    initLat = response.data()!["latitude"];
+    initLon = response.data()!["longitude"];
     FirebaseFirestore.instance
         .collection("location")
         .doc(widget.accessCode)
@@ -56,10 +61,8 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
         .listen((snapshot) {
       initLat = snapshot.get("latitude");
       initLon = snapshot.get("longitude");
-      print(initLat);
-      print(initLon);
       if (_mapController != null) {
-        _mapController!.runJavascript('''
+        _mapController?.runJavascript('''
         markers[markers.length-1].setMap(null);
         addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
       ''');
