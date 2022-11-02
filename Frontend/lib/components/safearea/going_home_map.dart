@@ -5,8 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/constants.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:sizer/sizer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -43,6 +45,7 @@ class GoingHomeMap extends StatefulWidget {
 
 class _GoingHomeMapState extends State<GoingHomeMap> {
   late final Future? myFuture = _getKakaoKey();
+  ApiKakao apiKakao = ApiKakao();
 
   @override
   void initState() {
@@ -73,6 +76,23 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
       }
     });
     return kakaoMapKey;
+  }
+
+  void _sendSMS(String message, List<String> recipients) async {
+    String _result = await sendSMS(message: message, recipients: recipients)
+        .catchError((onError) {
+      print(onError);
+    });
+    print(_result);
+  }
+
+  void sendEmergencyMessage() async {
+    String address =
+        await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
+    String message =
+        "${widget.name} 님이 현재 위급 상황에 처한 것 같습니다. 확인 부탁드립니다. 현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+    List<String> recipients = ["112"];
+    _sendSMS(message, recipients);
   }
 
   @override
@@ -188,7 +208,24 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
     bounds.extend(new kakao.maps.LatLng(${widget.homeLat}, ${widget.homeLon}));
     bounds.extend(new kakao.maps.LatLng(${initLat}, ${initLon}));
     map.setBounds(bounds);                      
-              ''')
+              '''),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 3.h,
+                        child: FloatingActionButton.large(
+                          child: Image.network(
+                              "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/siren.png?alt=media&token=7ec078b6-ed95-4787-9ecc-39c5841199c7",
+                              height: 6.h),
+                          elevation: 5,
+                          hoverElevation: 10,
+                          tooltip: "긴급 신고",
+                          backgroundColor: yColor,
+                          onPressed: () {
+                            sendEmergencyMessage();
+                          },
+                        ),
+                      ),
                     ],
                   ),
                 ),
