@@ -5,9 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/constants.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
+import 'package:sizer/sizer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 ApiKakao apiKakao = ApiKakao();
@@ -26,11 +29,15 @@ double initLat = 37.5;
 double initLon = 127.5;
 
 class GoingHomeMap extends StatefulWidget {
-  const GoingHomeMap(this.homeLat, this.homeLon, this.accessCode, {Key? key})
+  const GoingHomeMap(
+      this.homeLat, this.homeLon, this.accessCode, this.profileImage, this.name,
+      {Key? key})
       : super(key: key);
   final homeLat;
   final homeLon;
   final accessCode;
+  final profileImage;
+  final name;
 
   @override
   State<GoingHomeMap> createState() => _GoingHomeMapState();
@@ -38,6 +45,7 @@ class GoingHomeMap extends StatefulWidget {
 
 class _GoingHomeMapState extends State<GoingHomeMap> {
   late final Future? myFuture = _getKakaoKey();
+  ApiKakao apiKakao = ApiKakao();
 
   @override
   void initState() {
@@ -70,25 +78,74 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
     return kakaoMapKey;
   }
 
+  void _sendSMS(String message, List<String> recipients) async {
+    String _result = await sendSMS(message: message, recipients: recipients)
+        .catchError((onError) {
+      print(onError);
+    });
+    print(_result);
+  }
+
+  void sendEmergencyMessage() async {
+    String address =
+        await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
+    String message =
+        "${widget.name} 님이 현재 위급 상황에 처한 것 같습니다. 확인 부탁드립니다. 현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+    List<String> recipients = ["112"];
+    _sendSMS(message, recipients);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          FutureBuilder(
-            future: myFuture,
-            builder: (BuildContext context, AsyncSnapshot snapshot) {
-              if (snapshot.hasData == false) {
-                return CircularProgressIndicator();
-              } else if (snapshot.hasError) {
-                return Text(
-                  'Error: ${snapshot.error}',
-                  style: TextStyle(fontSize: 15),
-                );
-              } else {
-                return Flexible(
+    return FutureBuilder(
+      future: myFuture,
+      builder: (BuildContext context, AsyncSnapshot snapshot) {
+        if (snapshot.hasData == false) {
+          return Container(
+              alignment: Alignment.center, child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Text(
+            'Error: ${snapshot.error}',
+            style: TextStyle(fontSize: 15),
+          );
+        } else {
+          return Container(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(
+                        flex: 3,
+                        child: Container(
+                          child: SizedBox(
+                            height: 15.h,
+                            width: 15.w,
+                            child: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(widget.profileImage),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Flexible(
+                        flex: 7,
+                        child: Container(
+                          child: Text(
+                            widget.name + " 님의 현재 위치",
+                            style: TextStyle(fontSize: 17.5.sp),
+                          ),
+                        ),
+                      ),
+                      // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
+                    ],
+                  ),
+                ),
+                Flexible(
                   flex: 1,
                   fit: FlexFit.loose,
                   child: Stack(
@@ -114,7 +171,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
     var markers = [];
 
     function addMarker(position) {
-      var imageSrc = 'https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/cctvMarker.png?alt=media&token=1ddb3640-c595-4dd8-813c-f1e8ef1df6e0', // 마커이미지의 주소입니다    
+      var imageSrc = 'https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/home.png?alt=media&token=184f9f09-4d0c-4ffc-a327-9e1277743a5d', // 마커이미지의 주소입니다    
           imageSize = new kakao.maps.Size(40, 40); // 마커이미지의 크기입니다
           // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
       
@@ -151,15 +208,30 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
     bounds.extend(new kakao.maps.LatLng(${widget.homeLat}, ${widget.homeLon}));
     bounds.extend(new kakao.maps.LatLng(${initLat}, ${initLon}));
     map.setBounds(bounds);                      
-              ''')
+              '''),
+                      Positioned(
+                        left: 0,
+                        right: 0,
+                        bottom: 3.h,
+                        child: FloatingActionButton.large(
+                          child: Image.asset("assets/siren.png", height: 6.h),
+                          elevation: 5,
+                          hoverElevation: 10,
+                          tooltip: "긴급 신고",
+                          backgroundColor: yColor,
+                          onPressed: () {
+                            sendEmergencyMessage();
+                          },
+                        ),
+                      ),
                     ],
                   ),
-                );
-              }
-            },
-          ),
-        ],
-      ),
+                ),
+              ],
+            ),
+          );
+        }
+      },
     );
   }
 

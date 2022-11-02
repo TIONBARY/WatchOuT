@@ -18,7 +18,7 @@ class RecordPage extends StatefulWidget {
 class _RecordPageState extends State<RecordPage> {
   List<Map<String, dynamic>> _goingHomeUserList = [];
   final _authentication = FirebaseAuth.instance;
-
+  bool isLoading = true;
   String _code = '';
 
   void addGoingHomeUser() async {
@@ -53,6 +53,12 @@ class _RecordPageState extends State<RecordPage> {
         .get();
     final info = response.data() as Map<String, dynamic>;
     final _list = info["list"];
+    if (_list == null) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
     for (int i = 0; i < _list.length; i++) {
       final response = await FirebaseFirestore.instance
           .collection("codeToUserInfo")
@@ -61,12 +67,14 @@ class _RecordPageState extends State<RecordPage> {
       if (response.exists) {
         _goingHomeUserList.add(_list[i]);
       }
-      FirebaseFirestore.instance
-          .collection("goingHomeUserList")
-          .doc(_authentication.currentUser?.uid)
-          .set({"list": _goingHomeUserList});
     }
-    setState(() {});
+    FirebaseFirestore.instance
+        .collection("goingHomeUserList")
+        .doc(_authentication.currentUser?.uid)
+        .set({"list": _goingHomeUserList});
+    setState(() {
+      isLoading = false;
+    });
   }
 
   @override
@@ -78,89 +86,99 @@ class _RecordPageState extends State<RecordPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.only(top: 8.0),
-        child: Stack(
-          children: [
-            _goingHomeUserList.length == 0
-                ? Container(
-                    width: 100.w,
-                    height: 100.h,
-                    alignment: Alignment.center,
-                    child: Text("귀가 중인 사용자가 없습니다.",
-                        style: TextStyle(fontSize: 20)))
-                : GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      childAspectRatio: 1 / 1,
-                      crossAxisSpacing: 5,
-                      mainAxisSpacing: 5,
-                    ),
-                    itemCount: _goingHomeUserList.length,
-                    itemBuilder: (context, index) => Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: Column(
-                        children: [
-                          Flexible(
-                            flex: 3,
-                            child: Container(
-                              child: SizedBox(
-                                height: 22.5.h,
-                                width: 22.5.w,
-                                child: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      _goingHomeUserList[index]
-                                          ["profileImage"]),
-                                  child: GestureDetector(
-                                    onTap: () => print('클릭'),
+      body: isLoading
+          ? Container(
+              alignment: Alignment.center, child: CircularProgressIndicator())
+          : Container(
+              padding: const EdgeInsets.only(top: 8.0),
+              child: Stack(
+                children: [
+                  _goingHomeUserList.length == 0
+                      ? Container(
+                          width: 100.w,
+                          height: 100.h,
+                          alignment: Alignment.center,
+                          child: Text("귀가 중인 사용자가 없습니다.",
+                              style: TextStyle(fontSize: 20)))
+                      : GridView.builder(
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            childAspectRatio: 1 / 1,
+                            crossAxisSpacing: 5,
+                            mainAxisSpacing: 5,
+                          ),
+                          itemCount: _goingHomeUserList.length,
+                          itemBuilder: (context, index) => Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Column(
+                              children: [
+                                Flexible(
+                                  flex: 3,
+                                  child: Container(
+                                    child: SizedBox(
+                                      height: 22.5.h,
+                                      width: 22.5.w,
+                                      child: CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            _goingHomeUserList[index]
+                                                ["profileImage"]),
+                                        child: GestureDetector(
+                                          onTap: () => print('클릭'),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                Text(_goingHomeUserList[index]["name"]),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: n50Color,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(7),
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) => GoingHomeMapPage(
+                                                _goingHomeUserList[index]
+                                                    ["homeLat"],
+                                                _goingHomeUserList[index]
+                                                    ["homeLon"],
+                                                _goingHomeUserList[index]
+                                                    ["accessCode"],
+                                                _goingHomeUserList[index]
+                                                    ["profileImage"],
+                                                _goingHomeUserList[index]
+                                                    ["name"])));
+                                  },
+                                  child: Text('위치 확인'),
+                                ),
+                              ],
                             ),
                           ),
-                          Text('닉네임'),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: n50Color,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(7),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => GoingHomeMapPage(
-                                          _goingHomeUserList[index]["homeLat"],
-                                          _goingHomeUserList[index]["homeLon"],
-                                          _goingHomeUserList[index]
-                                              ["accessCode"])));
-                            },
-                            child: Text('위치 확인'),
-                          ),
-                        ],
+                        ),
+                  Positioned(
+                    right: 1.25.w,
+                    bottom: 1.25.h,
+                    child: FloatingActionButton(
+                      child: Icon(
+                        Icons.edit,
+                        size: 20.sp,
                       ),
+                      backgroundColor: nColor,
+                      onPressed: () {
+                        _CodeDialog(context);
+                      },
                     ),
                   ),
-            Positioned(
-              right: 1.25.w,
-              bottom: 1.25.h,
-              child: FloatingActionButton(
-                child: Icon(
-                  Icons.edit,
-                  size: 20.sp,
-                ),
-                backgroundColor: nColor,
-                onPressed: () {
-                  _CodeDialog(context);
-                },
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 
