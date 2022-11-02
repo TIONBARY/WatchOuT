@@ -63,6 +63,8 @@ dependencies:
   flutter_background_service: ^2.4.5
   flutter_sms: ^2.3.3
   home_widget: ^0.1.6
+  http: ^0.13.5
+  youtube_player_flutter: ^8.1.1
 
 dev_dependencies:
   flutter_test:
