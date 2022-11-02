@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:homealone/constants.dart';
 import 'package:homealone/main.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -21,22 +20,29 @@ class _ProfileBarState extends State<ProfileBar> {
         children: [
           Flexible(
             flex: 3,
-            child: SizedBox(
-              height: 25.h,
-              width: 25.w,
-              child: CircleAvatar(
-                backgroundColor: nColor,
-                child: GestureDetector(
-                  onTap: () => doCheck(context),
+            child: Container(
+              child: SizedBox(
+                height: 22.5.h,
+                width: 22.5.w,
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage(
+                      Provider.of<MyUserInfo>(context, listen: false)
+                          .profileImage),
+                  child: GestureDetector(
+                    onTap: () => doCheck(context),
+                  ),
                 ),
               ),
             ),
           ),
           Flexible(
-            flex: 7,
-            child: Text(
-              Provider.of<MyUserInfo>(context, listen: false).nickname,
-              style: TextStyle(fontSize: 17.5.sp),
+            flex: 2,
+            child: Container(
+              margin: EdgeInsets.only(left: 2.5.w),
+              child: Text(
+                Provider.of<MyUserInfo>(context, listen: false).name,
+                style: TextStyle(fontSize: 17.5.sp),
+              ),
             ),
           ),
           // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
