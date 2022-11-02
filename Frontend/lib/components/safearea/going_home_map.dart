@@ -214,9 +214,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                         right: 0,
                         bottom: 3.h,
                         child: FloatingActionButton.large(
-                          child: Image.network(
-                              "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/siren.png?alt=media&token=7ec078b6-ed95-4787-9ecc-39c5841199c7",
-                              height: 6.h),
+                          child: Image.asset("assets/siren.png", height: 6.h),
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "긴급 신고",
