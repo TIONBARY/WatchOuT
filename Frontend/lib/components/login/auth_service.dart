@@ -73,7 +73,7 @@ class AuthService {
         .doc("${user?.uid}")
         .collection("firstResponder")
         .doc(name)
-        .set({"number": number});
+        .set({"number": number, "phone": false, "message": false});
   }
 
   getFirstResponder() {
