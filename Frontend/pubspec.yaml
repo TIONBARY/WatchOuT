@@ -65,6 +65,12 @@ dependencies:
   home_widget: ^0.1.6
   multi_select_flutter: ^4.1.2
 
+  http: ^0.13.5
+  youtube_player_flutter: ^8.1.1
+
+  multi_select_flutter: ^4.1.2
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

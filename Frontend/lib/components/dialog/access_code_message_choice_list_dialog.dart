@@ -83,16 +83,19 @@ class _AccessCodeMessageChoiceListDialogState
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(1.w, 2.h, 1.w, 2.h),
-        height: 30.h,
+        padding: EdgeInsets.fromLTRB(1.w, 2.5.h, 1.w, 1.25.h),
+        height: 25.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
               color: nColor,
               child: Text(
-                "귀갓길 공유",
-                style: TextStyle(fontSize: 20),
+                "귀갓길 공유 (최대 2명)",
+                style: TextStyle(
+                  color: nColor,
+                  fontSize: 15.sp,
+                ),
               ),
             ),
             // FutureBuilder(
@@ -184,7 +187,6 @@ class _AccessCodeMessageChoiceListDialogState
               },
             ),
             Container(
-              margin: EdgeInsets.fromLTRB(0, 1.h, 0, 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: n25Color,
