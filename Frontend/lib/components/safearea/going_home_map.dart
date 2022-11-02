@@ -8,7 +8,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/googleLogin/tab_bar_page.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:sizer/sizer.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -66,6 +68,17 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
         .doc(widget.accessCode)
         .snapshots()
         .listen((snapshot) {
+      if (!snapshot.exists) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return BasicDialog(
+                  EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                  12.5.h,
+                  widget.name + " 님이 귀가를 종료했습니다.",
+                  (context) => TabNavBar());
+            });
+      }
       initLat = snapshot.get("latitude");
       initLon = snapshot.get("longitude");
       if (_mapController != null) {
