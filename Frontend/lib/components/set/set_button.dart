@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/constants.dart';
@@ -21,7 +20,6 @@ class SetButton extends StatefulWidget {
 class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
-  final _authentication = FirebaseAuth.instance;
   final List<String> _valueList = ['문자', '전화', '사용안함'];
   String _selectedAlert = '문자';
   List<String> _contactList = [];

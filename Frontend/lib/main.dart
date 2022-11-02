@@ -19,6 +19,7 @@ import 'package:sizer/sizer.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 HeartRateProvider heartRateProvider = HeartRateProvider();
+MyUserInfo myuserInfo = MyUserInfo();
 
 void main() {
   runApp(
@@ -47,6 +48,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     heartRateProvider = Provider.of<HeartRateProvider>(context, listen: false);
+    myuserInfo = Provider.of<MyUserInfo>(context, listen: false);
     initializeService();
   }
 
@@ -200,9 +202,19 @@ Future<void> onStart(ServiceInstance service) async {
   }
 
   Timer.periodic(
-    Duration(seconds: 3),
+    Duration(minutes: 1),
     (timer) {
-      print('백그라운드반복');
+      myuserInfo.initCheck();
+      print('출석 초기화 ${myuserInfo.isCheck}');
+    },
+  );
+
+  Timer.periodic(
+    Duration(seconds: 10),
+    (timer) {
+      print('현재 출석 상태 ${myuserInfo.isCheck}');
+      print('메인다트${myuserInfo.toString()}');
+      print('메인다트${myuserInfo.hashCode}');
     },
   );
 }
