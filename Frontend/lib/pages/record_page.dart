@@ -172,10 +172,10 @@ class _RecordPageState extends State<RecordPage> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
-            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 2.5.h),
-            height: 22.5.h,
+            padding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
+            height: 19.5.h,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SignUpTextField(
                   paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
