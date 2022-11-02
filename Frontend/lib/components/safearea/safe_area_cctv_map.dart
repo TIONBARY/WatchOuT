@@ -427,6 +427,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
       }
       function createSafeAreaMarkers() {
         for (var i = 0; i < 4; i++) {
+          for (var j = 0; j < markersList[i].length; j++) {
+            markersList[i][j].setMap(null);
+          }
+          markersList[i] = [];
+        }
+        for (var i = 0; i < 4; i++) {
           for (var j = 0; j < _safeAreaCoordList[i].length; j++) {
             addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[i][j]['y'], _safeAreaCoordList[i][j]['x']));
             kakao.maps.event.addListener(markersList[i][j], 'click', (function(i) {
@@ -437,15 +443,17 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
               };
             })(i));
           }
-        }
+        }        
+      }
+      function createAdditionalSafeAreaMarkers() {
         for (var i = 4; i < 6; i++) {
           for (var j = 0; j < _safeAreaCoordList[i].length; j++) {
             addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[i][j]['WGSXPT'], _safeAreaCoordList[i][j]['WGSYPT']));
           }
         }
-        
       }
       createSafeAreaMarkers();
+      createAdditionalSafeAreaMarkers();
       function showMarkers(idx) {
         for (var i = 0; i < markersList[idx].length; i++) {
           markersList[idx][i].setMap(map);
@@ -620,7 +628,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           tooltip: "CCTV 리스트 갱신",
                           backgroundColor: nColor,
                           onPressed: () {
-                            getSortedCCTVList();
+                            updateCurrLocation();
                           },
                         ),
                       ),
@@ -880,6 +888,27 @@ double calculateDistance(lat1, lon1, lat2, lon2) {
       c((lat2 - lat1) * p) / 2 +
       c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
   return 12742 * asin(sqrt(a));
+}
+
+Future<void> updateCurrLocation() async {
+  area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
+  await _search();
+  await _searchSafeArea();
+  _mapController?.runJavascript('''
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+    markers = [];
+    _cctvList = ${json.encode({"list": sortedcctvList})}["list"];
+    for(var i = 0 ; i < ${sortedcctvList.length} ; i++){
+      addMarker(new kakao.maps.LatLng(_cctvList[i]['WGSXPT'], _cctvList[i]['WGSYPT']));
+    }
+    addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+    var _safeAreaCoordList = ${json.encode({
+        "list": safeAreaCoordList
+      })}["list"];
+    createSafeAreaMarkers();
+  ''');
 }
 
 Future<void> _capturePng() async {
