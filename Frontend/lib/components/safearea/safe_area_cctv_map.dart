@@ -40,6 +40,7 @@ const accessCodeLength = 8;
 List<Position> positionList = [];
 StreamSubscription<Position>? _walkPositionStream;
 StreamSubscription<Position>? _currentPositionStream;
+StreamSubscription<Position>? _backgroundPositionStream;
 bool pressWalkBtn = false;
 DateTime startTime = DateTime.now();
 DateTime endTime = DateTime.now();
@@ -72,6 +73,41 @@ List<String> guName = [
   "중랑구"
 ];
 
+ApiKakao apiKakao = ApiKakao();
+
+List<Map<String, dynamic>> cctvList = [];
+List<Map<String, dynamic>> sortedcctvList = [];
+List<String> safeAreaList = ["편의점", "파출소", "병원", "약국", "안심 택배", "비상벨"];
+List<bool> showSafeArea = [false, false, false, false, false, false];
+List<String> safeAreaImages = [
+  "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/convenience-store.png?alt=media&token=ef353640-b18b-4ab4-8079-f76f37251df2",
+  "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/police-station-pin.png?alt=media&token=67f2f7ed-4196-4980-a6f5-4006f8f9dd5a",
+  "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/hospital.png?alt=media&token=372f6988-95fd-49bb-8ce2-fe65875993ce",
+  "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/pharmacy.png?alt=media&token=b04fb0ca-610a-4559-bebe-b23a4903e6f5",
+  "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/box.png?alt=media&token=b683b522-747d-4851-9950-4747347a501d",
+  "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/bell.png?alt=media&token=6946f5fe-9b8c-4d89-950b-44e5a26c86d4"
+];
+List<List<Map<String, dynamic>>> safeAreaCoordList = [[], [], [], [], [], []];
+
+List<Map<String, dynamic>> safeOpenBoxList = [];
+List<Map<String, dynamic>> sortedSafeOpenBoxList = [];
+List<Map<String, dynamic>> emergencyBellList = [];
+List<Map<String, dynamic>> sortedEmergencyBellList = [];
+
+int idx = 0;
+
+String api_url = "";
+
+String area = "";
+
+ScreenshotController screenshotController = ScreenshotController();
+
+late final Future? myFuture = _future();
+
+Map<String, dynamic> newValue = {};
+
+String accessCode = "";
+
 class SafeAreaCCTVMap extends StatefulWidget {
   const SafeAreaCCTVMap({Key? key}) : super(key: key);
 
@@ -81,361 +117,10 @@ class SafeAreaCCTVMap extends StatefulWidget {
 
 class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  ApiKakao apiKakao = ApiKakao();
-
-  List<Map<String, dynamic>> cctvList = [];
-  List<Map<String, dynamic>> sortedcctvList = [];
-  List<String> safeAreaList = ["편의점", "파출소", "병원", "약국", "안심 택배", "비상벨"];
-  List<bool> showSafeArea = [false, false, false, false, false, false];
-  List<String> safeAreaImages = [
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/convenience-store.png?alt=media&token=ef353640-b18b-4ab4-8079-f76f37251df2",
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/police-station-pin.png?alt=media&token=67f2f7ed-4196-4980-a6f5-4006f8f9dd5a",
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/hospital.png?alt=media&token=372f6988-95fd-49bb-8ce2-fe65875993ce",
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/pharmacy.png?alt=media&token=b04fb0ca-610a-4559-bebe-b23a4903e6f5",
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/box.png?alt=media&token=b683b522-747d-4851-9950-4747347a501d",
-    "https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/bell.png?alt=media&token=6946f5fe-9b8c-4d89-950b-44e5a26c86d4"
-  ];
-  List<List<Map<String, dynamic>>> safeAreaCoordList = [[], [], [], [], [], []];
-
-  List<Map<String, dynamic>> safeOpenBoxList = [];
-  List<Map<String, dynamic>> sortedSafeOpenBoxList = [];
-  List<Map<String, dynamic>> emergencyBellList = [];
-  List<Map<String, dynamic>> sortedEmergencyBellList = [];
-
-  int idx = 0;
-
-  String api_url = "";
-
-  String area = "";
-
-  ScreenshotController screenshotController = ScreenshotController();
-
-  late final Future? myFuture = _future();
-
-  Map<String, dynamic> newValue = {};
-
-  String accessCode = "";
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Future _future() async {
-    LocationPermission permission = await Geolocator.requestPermission();
-    WidgetsFlutterBinding.ensureInitialized();
-    if (defaultTargetPlatform == TargetPlatform.android) {
-      locationSettings = AndroidSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 1,
-        intervalDuration: const Duration(milliseconds: 1000),
-      );
-    } else if (defaultTargetPlatform == TargetPlatform.iOS ||
-        defaultTargetPlatform == TargetPlatform.macOS) {
-      locationSettings = AppleSettings(
-        accuracy: LocationAccuracy.high,
-        activityType: ActivityType.fitness,
-        distanceFilter: 10,
-        pauseLocationUpdatesAutomatically: true,
-        showBackgroundLocationIndicator: false,
-      );
-    } else {
-      locationSettings = LocationSettings(
-        accuracy: LocationAccuracy.high,
-        distanceFilter: 10,
-      );
-    }
-    _currentPositionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position? position) {
-      if (position != null) {
-        initLat = position!.latitude;
-        initLon = position!.longitude;
-      }
-      if (_mapController != null) {
-        _mapController?.runJavascript('''
-          markers[markers.length-1].setMap(null);
-          addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-        ''');
-      }
-    });
-    Position position = await Geolocator.getCurrentPosition();
-    await dotenv.load();
-    kakaoMapKey = dotenv.get('kakaoMapAPIKey');
-    cctvAPIKey = dotenv.get('cctvAPIKey');
-    openAPIKey = dotenv.get('openAPIKey');
-    initLat = position.latitude;
-    initLon = position.longitude;
-    area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
-    await _search();
-    // await registerCCTV();
-    // await registerSafeOpenBox();
-    // await registerEmergencyBell();
-    await _searchSafeArea();
-    await _searchSafeOpenBox();
-    await _searchEmergencyBell();
-    return kakaoMapKey; // 5초 후 '짜잔!' 리턴
-  }
-
-  Future<void> registerCCTV() async {
-    for (int i = 0; i < guName.length; i++) {
-      cctvList = [];
-      final response = await http.get(Uri.parse(
-          'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/1/1000/${guName[i]}/'));
-      final result = await json.decode(response.body);
-      int count = result['safeOpenCCTV']['list_total_count'];
-      if (result['safeOpenCCTV'] == null) return;
-      if (result['safeOpenCCTV']['row'] != null) {
-        result['safeOpenCCTV']['row'].forEach((value) => {cctvList.add(value)});
-      }
-      for (int i = 1001; i < count; i += 1000) {
-        final response = await http.get(Uri.parse(
-            'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/${i}/${(i + 1000 - 1)}/${area}/'));
-        print(response.body);
-        final result = await json.decode(response.body);
-        if (result['safeOpenCCTV'] == null) return;
-        if (result['safeOpenCCTV']['row'] != null) {
-          result['safeOpenCCTV']['row']
-              .forEach((value) => {cctvList.add(value)});
-        }
-      }
-      await FirebaseFirestore.instance
-          .collection("cctv")
-          .doc(guName[i])
-          .set({"data": cctvList});
-    }
-  }
-
-  Future<void> registerSafeOpenBox() async {
-    safeOpenBoxList = [];
-    final response = await http.get(Uri.parse(
-        'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenBox/1/300/'));
-    final result = await json.decode(response.body);
-    if (result['safeOpenBox'] == null) return;
-    if (result['safeOpenBox']['row'] != null) {
-      result['safeOpenBox']['row']
-          .forEach((value) => {safeOpenBoxList.add(value)});
-    }
-    await FirebaseFirestore.instance
-        .collection("safeOpenBox")
-        .doc("data")
-        .set({"data": safeOpenBoxList});
-  }
-
-  Future<void> registerEmergencyBell() async {
-    emergencyBellList = [];
-    for (int i = 0; i < 27; i++) {
-      final response = await http.get(Uri.parse(
-              'http://api.data.go.kr/openapi/tn_pubr_public_safety_emergency_bell_position_api')
-          .replace(queryParameters: {
-        'pageNo': i.toString(),
-        'numOfRows': 1000.toString(),
-        'type': 'json',
-        'serviceKey': openAPIKey
-      }));
-      final result = await json.decode(response.body);
-      if (result['response']['body']['items'] == null) return;
-      if (result['response']['body']['items'] != null) {
-        result['response']['body']['items'].forEach((value) => {
-              if (value['rdnmadr'].contains("서울특별시") ||
-                  value['lnmadr'].contains("서울특별시"))
-                emergencyBellList.add(
-                    {"WGSXPT": value['latitude'], "WGSYPT": value['longitude']})
-            });
-      }
-    }
-    await FirebaseFirestore.instance
-        .collection("emergencyBell")
-        .doc("서울특별시")
-        .set({"data": emergencyBellList});
-  }
-
-  void showMarkers(int idx) {
-    _mapController!.runJavascript('''
-      showMarkers(${idx});
-    ''');
-  }
-
-  void removeMarkers(int idx) {
-    _mapController!.runJavascript('''
-      removeMarkers(${idx});
-    ''');
-  }
-
-  Future<void> _searchSafeArea() async {
-    for (int i = 0; i < 4; i++) {
-      Map<String, dynamic> result = await apiKakao.searchArea(
-          safeAreaList[i], initLat.toString(), initLon.toString());
-      if (result['documents'] != null) {
-        safeAreaCoordList[i] = [];
-        result['documents']
-            .forEach((value) => {safeAreaCoordList[i].add(value)});
-      }
-    }
-  }
-
-  Future<void> _search() async {
-    cctvList = [];
-    final response =
-        await FirebaseFirestore.instance.collection("cctv").doc(area).get();
-    final cctvJson = response.data() as Map<String, dynamic>;
-    for (int i = 0; i < cctvJson['data'].length; i++) {
-      cctvList.add(cctvJson['data'][i]);
-    }
-    getSortedCCTVList();
-  }
-
-  Future<void> _searchSafeOpenBox() async {
-    safeOpenBoxList = [];
-    final response = await FirebaseFirestore.instance
-        .collection("safeOpenBox")
-        .doc("data")
-        .get();
-    final safeOpenBoxJson = response.data() as Map<String, dynamic>;
-    for (int i = 0; i < safeOpenBoxJson['data'].length; i++) {
-      safeOpenBoxList.add(safeOpenBoxJson['data'][i]);
-    }
-    getSortedSafeOpenBoxList();
-  }
-
-  Future<void> _searchEmergencyBell() async {
-    emergencyBellList = [];
-    final response = await FirebaseFirestore.instance
-        .collection("emergencyBell")
-        .doc("서울특별시")
-        .get();
-    final emergencyBellJson = response.data() as Map<String, dynamic>;
-    for (int i = 0; i < emergencyBellJson['data'].length; i++) {
-      if (emergencyBellJson['data'][i]['WGSXPT'] != null &&
-          emergencyBellJson['data'][i]['WGSYPT'] != null &&
-          checkIsDouble(emergencyBellJson['data'][i]['WGSXPT']) &&
-          checkIsDouble(emergencyBellJson['data'][i]['WGSYPT']))
-        emergencyBellList.add(emergencyBellJson['data'][i]);
-    }
-    getSortedEmergencyBellList();
-  }
-
-  bool checkIsDouble(String number) {
-    return double.tryParse(number) != null;
-  }
-
-  void getSortedCCTVList() {
-    cctvList.sort((a, b) => (calculateDistance(initLat, initLon,
-            double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
-        .compareTo(calculateDistance(initLat, initLon,
-            double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
-    sortedcctvList = cctvList.sublist(0, 200);
-  }
-
-  void getSortedSafeOpenBoxList() {
-    safeOpenBoxList.sort((a, b) => (calculateDistance(initLat, initLon,
-            double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
-        .compareTo(calculateDistance(initLat, initLon,
-            double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
-    sortedSafeOpenBoxList = safeOpenBoxList;
-    safeAreaCoordList[4] = sortedSafeOpenBoxList;
-  }
-
-  void getSortedEmergencyBellList() {
-    emergencyBellList.sort((a, b) => (calculateDistance(initLat, initLon,
-            double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
-        .compareTo(calculateDistance(initLat, initLon,
-            double.parse(b['WGSXPT']), double.parse(b['WGSYPT']))));
-    sortedEmergencyBellList = emergencyBellList;
-    safeAreaCoordList[5] = sortedEmergencyBellList;
-  }
-
-  double calculateDistance(lat1, lon1, lat2, lon2) {
-    var p = 0.017453292519943295;
-    var c = cos;
-    var a = 0.5 -
-        c((lat2 - lat1) * p) / 2 +
-        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
-    return 12742 * asin(sqrt(a));
-  }
-
-  Future<void> _capturePng() async {
-    String? path = await NativeScreenshot.takeScreenshot();
-    debugPrint(path);
-    String fileName = formatDateTime(endTime.toIso8601String()) + ".png";
-    String topFolder = await getDirectory();
-    moveFile(File(path!), topFolder + "/" + fileName);
-  }
-
-  String formatDateTime(String inputTime) {
-    String converted = inputTime.trim().split(".").first;
-    converted = converted.replaceAll("-", "");
-    converted = converted.replaceAll(":", "");
-    converted = converted.replaceAll("T", "");
-    return converted;
-  }
-
-  Future<File> moveFile(File sourceFile, String newPath) async {
-    try {
-      // prefer using rename as it is probably faster
-      return await sourceFile.rename(newPath);
-    } on FileSystemException catch (e) {
-      // if rename fails, copy the source file and then delete it
-      debugPrint(e.message);
-      final newFile = await sourceFile.copy(newPath);
-      Directory tempDir = sourceFile.parent;
-      await sourceFile.delete();
-      tempDir.deleteSync();
-      return newFile;
-    }
-  }
-
-  Future<String> getDirectory() async {
-    Directory? directory =
-        await getExternalStorageDirectory(); //from path_provide package
-    if (directory != null) {
-      debugPrint(directory.toString());
-      String path = directory.path + '/' + 'walk';
-      new Directory(path).create(recursive: true)
-// The created directory is returned as a Future.
-          .then((Directory newDirectory) {
-        print('Path of New Dir: ' + newDirectory.path);
-      });
-      return path;
-    }
-    return "null";
-  }
-
-  /// 기능 functions
-  /// 디바이스의 현재 위치 결정
-  /// 위치 서비스가 활성화 되어있지 않거나 권한이 없는 경우 `Future` 에러
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('위치 서비스 비활성화');
-    }
-
-    // 백그라운드 GPS 권한 요청
-    permission = await _geolocatorPlatform.checkPermission();
-    // permission = await Permission.locationAlways.status;
-    if (permission == LocationPermission.denied) {
-      Permission.locationAlways.request();
-      permission = await _geolocatorPlatform.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('위치 정보 권한이 없음');
-      }
-    }
-
-    if (permission == PermissionStatus.granted) {
-      return await _geolocatorPlatform.getCurrentPosition();
-    } else if (permission == PermissionStatus.permanentlyDenied) {
-      return Future.error('백그라운드 위치정보 권한이 영구적으로 거부되어 권한을 요청할 수 없습니다.');
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error('위치정보 권한이 영구적으로 거부되어 권한을 요청할 수 없습니다.');
-    }
-
-    return await _geolocatorPlatform.getCurrentPosition();
   }
 
   void startWalk(Position position, _mapController) {
@@ -453,8 +138,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     _walkPositionStream = _geolocatorPlatform
         .getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {
+      print("location changed");
+      print(_mapController);
       if (!positionList.contains(position)) {
-        if (positionList.length > 0 && _mapController != null) {
+        if (positionList.length > 0) {
           drawLine(_mapController, position!, positionList.last);
         }
         positionList.add(position!);
@@ -463,10 +150,13 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         initLat = position!.latitude;
         initLon = position!.longitude;
       }
-      _mapController?.runJavascript('''
+      if (_mapController != null) {
+        _mapController?.runJavascript('''
         markers[markers.length-1].setMap(null);
         addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
       ''');
+      }
+      print("location changed end");
     });
     accessCode = getRandomString(accessCodeLength);
     print(accessCode);
@@ -491,7 +181,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         "homeLon": user["longitude"]
       });
     });
-
+    FirebaseFirestore.instance
+        .collection("location")
+        .doc(accessCode)
+        .set({"latitude": initLat, "longitude": initLon});
     timer = Timer.periodic(Duration(seconds: sendLocationIntervalSec), (timer) {
       print("Interval Activated");
       print(initLat);
@@ -531,6 +224,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   void drawLine(
       WebViewController _mapController, Position position, Position beforePos) {
+    print("draw");
     var lat = 0.0, lon = 0.0;
     var beforeLat = 0.0, beforeLon = 0.0;
 
@@ -605,13 +299,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
     positionList = [];
   }
-
-  final _chars =
-      'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
-  Random _rnd = Random();
-
-  String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-      length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
   @override
   Widget build(BuildContext context) {
@@ -950,6 +637,337 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   @override
   void dispose() {
+    _walkPositionStream?.cancel();
+    _backgroundPositionStream = _geolocatorPlatform
+        .getPositionStream(locationSettings: locationSettings)
+        .listen((Position? position) {
+      if (position != null) {
+        initLat = position!.latitude;
+        initLon = position!.longitude;
+      }
+    });
     super.dispose();
   }
 }
+
+Future _future() async {
+  LocationPermission permission = await Geolocator.requestPermission();
+  WidgetsFlutterBinding.ensureInitialized();
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    locationSettings = AndroidSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 1,
+      intervalDuration: const Duration(milliseconds: 1000),
+    );
+  } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.macOS) {
+    locationSettings = AppleSettings(
+      accuracy: LocationAccuracy.high,
+      activityType: ActivityType.fitness,
+      distanceFilter: 10,
+      pauseLocationUpdatesAutomatically: true,
+      showBackgroundLocationIndicator: false,
+    );
+  } else {
+    locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    );
+  }
+  _backgroundPositionStream?.cancel();
+  _currentPositionStream =
+      Geolocator.getPositionStream(locationSettings: locationSettings)
+          .listen((Position? position) {
+    if (position != null) {
+      initLat = position!.latitude;
+      initLon = position!.longitude;
+    }
+    if (_mapController != null) {
+      _mapController?.runJavascript('''
+          markers[markers.length-1].setMap(null);
+          addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+        ''');
+    }
+  });
+  Position position = await Geolocator.getCurrentPosition();
+  await dotenv.load();
+  kakaoMapKey = dotenv.get('kakaoMapAPIKey');
+  cctvAPIKey = dotenv.get('cctvAPIKey');
+  openAPIKey = dotenv.get('openAPIKey');
+  initLat = position.latitude;
+  initLon = position.longitude;
+  area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
+  await _search();
+  // await registerCCTV();
+  // await registerSafeOpenBox();
+  // await registerEmergencyBell();
+  await _searchSafeArea();
+  await _searchSafeOpenBox();
+  await _searchEmergencyBell();
+  return kakaoMapKey; // 5초 후 '짜잔!' 리턴
+}
+
+Future<void> registerCCTV() async {
+  for (int i = 0; i < guName.length; i++) {
+    cctvList = [];
+    final response = await http.get(Uri.parse(
+        'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/1/1000/${guName[i]}/'));
+    final result = await json.decode(response.body);
+    int count = result['safeOpenCCTV']['list_total_count'];
+    if (result['safeOpenCCTV'] == null) return;
+    if (result['safeOpenCCTV']['row'] != null) {
+      result['safeOpenCCTV']['row'].forEach((value) => {cctvList.add(value)});
+    }
+    for (int i = 1001; i < count; i += 1000) {
+      final response = await http.get(Uri.parse(
+          'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/${i}/${(i + 1000 - 1)}/${area}/'));
+      print(response.body);
+      final result = await json.decode(response.body);
+      if (result['safeOpenCCTV'] == null) return;
+      if (result['safeOpenCCTV']['row'] != null) {
+        result['safeOpenCCTV']['row'].forEach((value) => {cctvList.add(value)});
+      }
+    }
+    await FirebaseFirestore.instance
+        .collection("cctv")
+        .doc(guName[i])
+        .set({"data": cctvList});
+  }
+}
+
+Future<void> registerSafeOpenBox() async {
+  safeOpenBoxList = [];
+  final response = await http.get(Uri.parse(
+      'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenBox/1/300/'));
+  final result = await json.decode(response.body);
+  if (result['safeOpenBox'] == null) return;
+  if (result['safeOpenBox']['row'] != null) {
+    result['safeOpenBox']['row']
+        .forEach((value) => {safeOpenBoxList.add(value)});
+  }
+  await FirebaseFirestore.instance
+      .collection("safeOpenBox")
+      .doc("data")
+      .set({"data": safeOpenBoxList});
+}
+
+Future<void> registerEmergencyBell() async {
+  emergencyBellList = [];
+  for (int i = 0; i < 27; i++) {
+    final response = await http.get(Uri.parse(
+            'http://api.data.go.kr/openapi/tn_pubr_public_safety_emergency_bell_position_api')
+        .replace(queryParameters: {
+      'pageNo': i.toString(),
+      'numOfRows': 1000.toString(),
+      'type': 'json',
+      'serviceKey': openAPIKey
+    }));
+    final result = await json.decode(response.body);
+    if (result['response']['body']['items'] == null) return;
+    if (result['response']['body']['items'] != null) {
+      result['response']['body']['items'].forEach((value) => {
+            if (value['rdnmadr'].contains("서울특별시") ||
+                value['lnmadr'].contains("서울특별시"))
+              emergencyBellList.add(
+                  {"WGSXPT": value['latitude'], "WGSYPT": value['longitude']})
+          });
+    }
+  }
+  await FirebaseFirestore.instance
+      .collection("emergencyBell")
+      .doc("서울특별시")
+      .set({"data": emergencyBellList});
+}
+
+void showMarkers(int idx) {
+  _mapController!.runJavascript('''
+      showMarkers(${idx});
+    ''');
+}
+
+void removeMarkers(int idx) {
+  _mapController!.runJavascript('''
+      removeMarkers(${idx});
+    ''');
+}
+
+Future<void> _searchSafeArea() async {
+  for (int i = 0; i < 4; i++) {
+    Map<String, dynamic> result = await apiKakao.searchArea(
+        safeAreaList[i], initLat.toString(), initLon.toString());
+    if (result['documents'] != null) {
+      safeAreaCoordList[i] = [];
+      result['documents'].forEach((value) => {safeAreaCoordList[i].add(value)});
+    }
+  }
+}
+
+Future<void> _search() async {
+  cctvList = [];
+  final response =
+      await FirebaseFirestore.instance.collection("cctv").doc(area).get();
+  final cctvJson = response.data() as Map<String, dynamic>;
+  for (int i = 0; i < cctvJson['data'].length; i++) {
+    cctvList.add(cctvJson['data'][i]);
+  }
+  getSortedCCTVList();
+}
+
+Future<void> _searchSafeOpenBox() async {
+  safeOpenBoxList = [];
+  final response = await FirebaseFirestore.instance
+      .collection("safeOpenBox")
+      .doc("data")
+      .get();
+  final safeOpenBoxJson = response.data() as Map<String, dynamic>;
+  for (int i = 0; i < safeOpenBoxJson['data'].length; i++) {
+    safeOpenBoxList.add(safeOpenBoxJson['data'][i]);
+  }
+  getSortedSafeOpenBoxList();
+}
+
+Future<void> _searchEmergencyBell() async {
+  emergencyBellList = [];
+  final response = await FirebaseFirestore.instance
+      .collection("emergencyBell")
+      .doc("서울특별시")
+      .get();
+  final emergencyBellJson = response.data() as Map<String, dynamic>;
+  for (int i = 0; i < emergencyBellJson['data'].length; i++) {
+    if (emergencyBellJson['data'][i]['WGSXPT'] != null &&
+        emergencyBellJson['data'][i]['WGSYPT'] != null &&
+        checkIsDouble(emergencyBellJson['data'][i]['WGSXPT']) &&
+        checkIsDouble(emergencyBellJson['data'][i]['WGSYPT']))
+      emergencyBellList.add(emergencyBellJson['data'][i]);
+  }
+  getSortedEmergencyBellList();
+}
+
+bool checkIsDouble(String number) {
+  return double.tryParse(number) != null;
+}
+
+void getSortedCCTVList() {
+  cctvList.sort((a, b) => (calculateDistance(initLat, initLon,
+          double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
+      .compareTo(calculateDistance(initLat, initLon, double.parse(b['WGSXPT']),
+          double.parse(b['WGSYPT']))));
+  sortedcctvList = cctvList.sublist(0, 200);
+}
+
+void getSortedSafeOpenBoxList() {
+  safeOpenBoxList.sort((a, b) => (calculateDistance(initLat, initLon,
+          double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
+      .compareTo(calculateDistance(initLat, initLon, double.parse(b['WGSXPT']),
+          double.parse(b['WGSYPT']))));
+  sortedSafeOpenBoxList = safeOpenBoxList;
+  safeAreaCoordList[4] = sortedSafeOpenBoxList;
+}
+
+void getSortedEmergencyBellList() {
+  emergencyBellList.sort((a, b) => (calculateDistance(initLat, initLon,
+          double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
+      .compareTo(calculateDistance(initLat, initLon, double.parse(b['WGSXPT']),
+          double.parse(b['WGSYPT']))));
+  sortedEmergencyBellList = emergencyBellList;
+  safeAreaCoordList[5] = sortedEmergencyBellList;
+}
+
+double calculateDistance(lat1, lon1, lat2, lon2) {
+  var p = 0.017453292519943295;
+  var c = cos;
+  var a = 0.5 -
+      c((lat2 - lat1) * p) / 2 +
+      c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+  return 12742 * asin(sqrt(a));
+}
+
+Future<void> _capturePng() async {
+  String? path = await NativeScreenshot.takeScreenshot();
+  debugPrint(path);
+  String fileName = formatDateTime(endTime.toIso8601String()) + ".png";
+  String topFolder = await getDirectory();
+  moveFile(File(path!), topFolder + "/" + fileName);
+}
+
+String formatDateTime(String inputTime) {
+  String converted = inputTime.trim().split(".").first;
+  converted = converted.replaceAll("-", "");
+  converted = converted.replaceAll(":", "");
+  converted = converted.replaceAll("T", "");
+  return converted;
+}
+
+Future<File> moveFile(File sourceFile, String newPath) async {
+  try {
+    // prefer using rename as it is probably faster
+    return await sourceFile.rename(newPath);
+  } on FileSystemException catch (e) {
+    // if rename fails, copy the source file and then delete it
+    debugPrint(e.message);
+    final newFile = await sourceFile.copy(newPath);
+    Directory tempDir = sourceFile.parent;
+    await sourceFile.delete();
+    tempDir.deleteSync();
+    return newFile;
+  }
+}
+
+Future<String> getDirectory() async {
+  Directory? directory =
+      await getExternalStorageDirectory(); //from path_provide package
+  if (directory != null) {
+    debugPrint(directory.toString());
+    String path = directory.path + '/' + 'walk';
+    new Directory(path).create(recursive: true)
+// The created directory is returned as a Future.
+        .then((Directory newDirectory) {
+      print('Path of New Dir: ' + newDirectory.path);
+    });
+    return path;
+  }
+  return "null";
+}
+
+/// 기능 functions
+/// 디바이스의 현재 위치 결정
+/// 위치 서비스가 활성화 되어있지 않거나 권한이 없는 경우 `Future` 에러
+Future<Position> _determinePosition() async {
+  bool serviceEnabled;
+  LocationPermission permission;
+
+  // Test if location services are enabled.
+  serviceEnabled = await _geolocatorPlatform.isLocationServiceEnabled();
+  if (!serviceEnabled) {
+    return Future.error('위치 서비스 비활성화');
+  }
+
+  // 백그라운드 GPS 권한 요청
+  permission = await _geolocatorPlatform.checkPermission();
+  // permission = await Permission.locationAlways.status;
+  if (permission == LocationPermission.denied) {
+    Permission.locationAlways.request();
+    permission = await _geolocatorPlatform.requestPermission();
+    if (permission == LocationPermission.denied) {
+      return Future.error('위치 정보 권한이 없음');
+    }
+  }
+
+  if (permission == PermissionStatus.granted) {
+    return await _geolocatorPlatform.getCurrentPosition();
+  } else if (permission == PermissionStatus.permanentlyDenied) {
+    return Future.error('백그라운드 위치정보 권한이 영구적으로 거부되어 권한을 요청할 수 없습니다.');
+  }
+
+  if (permission == LocationPermission.deniedForever) {
+    return Future.error('위치정보 권한이 영구적으로 거부되어 권한을 요청할 수 없습니다.');
+  }
+
+  return await _geolocatorPlatform.getCurrentPosition();
+}
+
+final _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

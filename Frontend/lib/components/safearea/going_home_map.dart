@@ -10,6 +10,21 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
+ApiKakao apiKakao = ApiKakao();
+
+int idx = 0;
+
+Map<String, dynamic> newValue = {};
+
+WebViewController? _mapController;
+String kakaoMapKey = "";
+late LocationSettings locationSettings;
+StreamSubscription<DocumentSnapshot<Map<String, dynamic>>>?
+    _currentPositionStream;
+
+double initLat = 37.5;
+double initLon = 127.5;
+
 class GoingHomeMap extends StatefulWidget {
   const GoingHomeMap(this.homeLat, this.homeLon, this.accessCode, {Key? key})
       : super(key: key);
@@ -22,23 +37,7 @@ class GoingHomeMap extends StatefulWidget {
 }
 
 class _GoingHomeMapState extends State<GoingHomeMap> {
-  ApiKakao apiKakao = ApiKakao();
-
-  int idx = 0;
-
-  Map<String, dynamic> newValue = {};
-
   late final Future? myFuture = _getKakaoKey();
-
-  WebViewController? _mapController;
-  String kakaoMapKey = "";
-  late LocationSettings locationSettings;
-
-  StreamSubscription<Position>? _walkPositionStream;
-  StreamSubscription<Position>? _currentPositionStream;
-
-  double initLat = 37.5;
-  double initLon = 127.5;
 
   @override
   void initState() {
@@ -54,7 +53,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
         .get();
     initLat = response.data()!["latitude"];
     initLon = response.data()!["longitude"];
-    FirebaseFirestore.instance
+    _currentPositionStream = FirebaseFirestore.instance
         .collection("location")
         .doc(widget.accessCode)
         .snapshots()
@@ -166,7 +165,6 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
 
   @override
   void dispose() {
-    _walkPositionStream?.cancel();
     _currentPositionStream?.cancel();
     super.dispose();
   }
