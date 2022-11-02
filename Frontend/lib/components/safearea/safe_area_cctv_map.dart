@@ -454,7 +454,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         .getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {
       if (!positionList.contains(position)) {
-        if (positionList.length > 0) {
+        if (positionList.length > 0 && _mapController != null) {
           drawLine(_mapController, position!, positionList.last);
         }
         positionList.add(position!);
@@ -463,7 +463,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         initLat = position!.latitude;
         initLon = position!.longitude;
       }
-      _mapController!.runJavascript('''
+      _mapController?.runJavascript('''
         markers[markers.length-1].setMap(null);
         addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
       ''');
@@ -502,7 +502,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           .set({"latitude": initLat, "longitude": initLon});
     });
     if (positionList.length == 0) {
-      _mapController.runJavascript('''
+      _mapController?.runJavascript('''
                   if ('$position') {
                   // 
                   if (polylineList) {
@@ -538,7 +538,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     lon = position.longitude;
     beforeLat = beforePos.latitude;
     beforeLon = beforePos.longitude;
-    _mapController.runJavascript('''
+    _mapController?.runJavascript('''
                     var lat = parseFloat('$lat'), // 위도
                         lon = parseFloat('$lon'); // 경도
                     var beforeLat = parseFloat('$beforeLat'), // 위도
@@ -583,12 +583,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         initLat = position!.latitude;
         initLon = position!.longitude;
       }
-      _mapController!.runJavascript('''
+      _mapController?.runJavascript('''
         markers[markers.length-1].setMap(null);
         addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
       ''');
     });
-    _mapController.runJavascript('''
+    _mapController?.runJavascript('''
                      map.setDraggable(true);
                      map.setZoomable(true);
                      var bounds = new kakao.maps.LatLngBounds();    
@@ -956,8 +956,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   @override
   void dispose() {
-    _walkPositionStream?.cancel();
-    _currentPositionStream?.cancel();
     super.dispose();
   }
 }
