@@ -199,9 +199,12 @@ Future<void> onStart(ServiceInstance service) async {
     onStartWatch(service, flutterLocalNotificationsPlugin);
   }
 
-  Timer.periodic(Duration(seconds: 3), (timer) {
-    print('백그라운드반복');
-  });
+  Timer.periodic(
+    Duration(seconds: 3),
+    (timer) {
+      print('백그라운드반복');
+    },
+  );
 }
 
 void onStartWatch(ServiceInstance service,
