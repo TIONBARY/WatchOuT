@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/googleLogin/sign_up_page.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
 import 'package:sizer/sizer.dart';
 
@@ -11,6 +12,10 @@ import '../pages/record_page.dart';
 import '../pages/set_page.dart';
 
 class TabNavBar extends StatefulWidget {
+  // final User user;
+  //
+  // TabNavBar(this.user);
+
   @override
   State<TabNavBar> createState() => _TabNavBarState();
 }
@@ -22,19 +27,19 @@ class _TabNavBarState extends State<TabNavBar> {
   final _selectedColor = nColor;
   final _unselectedColor = Color(0xff5f6368);
 
-  // Future<void> checkUserInfo() async {
-  //   check = await AuthService().activated();
-  //   if (!check) {
-  //     print("너 왜 가입 안했냐?");
-  //     Navigator.push(
-  //         context, MaterialPageRoute(builder: (context) => SignUpPage()));
-  //   }
-  // }
+  Future<void> checkUserInfo() async {
+    check = await AuthService().activated();
+    if (!check) {
+      print("너 왜 가입 안했냐?");
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => SignUpPage()));
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    // checkUserInfo();
+    checkUserInfo();
   }
 
   @override
