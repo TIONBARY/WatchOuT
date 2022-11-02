@@ -257,7 +257,7 @@ class _SetButtonState extends State<SetButton> {
                                 .registerFirstResponder(_addName, _addContact);
                             _nameFieldController.clear();
                             _contactFieldController.clear();
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
                           });
                         },
                         child: Text(
