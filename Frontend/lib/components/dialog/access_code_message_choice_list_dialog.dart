@@ -81,89 +81,89 @@ class _AccessCodeMessageChoiceListDialogState
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(1.w, 2.h, 1.w, 2.h),
-        height: 30.h,
+        padding: EdgeInsets.fromLTRB(1.w, 2.5.h, 1.w, 1.25.h),
+        height: 25.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
               color: nColor,
               child: Text(
-                "귀갓길 공유",
-                style: TextStyle(fontSize: 20),
+                "귀갓길 공유 (최대 2명)",
+                style: TextStyle(
+                  color: nColor,
+                  fontSize: 15.sp,
+                ),
               ),
             ),
             FutureBuilder(
-                future: emergencyCallListFuture,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData == false) {
-                    return CircularProgressIndicator();
-                    // CircularProgressIndicator();
-                  }
+              future: emergencyCallListFuture,
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasData == false) {
+                  return CircularProgressIndicator();
+                  // CircularProgressIndicator();
+                }
 
-                  //error가 발생하게 될 경우 반환하게 되는 부분
-                  else if (snapshot.hasError) {
-                    return Text(
-                      'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
-                      style: TextStyle(fontSize: 15),
-                    );
-                  }
+                //error가 발생하게 될 경우 반환하게 되는 부분
+                else if (snapshot.hasError) {
+                  return Text(
+                    'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
+                    style: TextStyle(fontSize: 15.sp),
+                  );
+                }
 
-                  // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 부분
-                  else if (snapshot.data.length == 0) {
-                    return Text("등록된 비상연락망이 없습니다.");
-                  } else {
-                    return Container(
-                        height: 12.h,
-                        margin: EdgeInsets.fromLTRB(4.w, 2.h, 4.w, 2.h),
-                        child: GridView.builder(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: emergencyCallList.length, //item 개수
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              childAspectRatio: 3 / 1,
-                              mainAxisSpacing: 1.w,
-                              crossAxisSpacing: 1.h,
-                            ),
-                            itemBuilder: (BuildContext context, int index) {
-                              return isSelected[index]
-                                  ? ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          isSelected[index] = false;
-                                        });
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: yColor,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(7),
-                                        ),
-                                      ),
-                                      child: Text(
-                                          emergencyCallList[index]["name"]))
-                                  : ElevatedButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          isSelected[index] = true;
-                                        });
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: n25Color,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(7),
-                                        ),
-                                      ),
-                                      child: Text(
-                                          emergencyCallList[index]["name"]));
-                            }));
-                  }
-                }),
+                // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 부분
+                else if (snapshot.data.length == 0) {
+                  return Text('등록된 비상 연락망이 없습니다.');
+                } else {
+                  return Container(
+                    height: 5.h,
+                    margin: EdgeInsets.fromLTRB(4.w, 2.h, 4.w, 2.h),
+                    child: GridView.builder(
+                      scrollDirection: Axis.vertical,
+                      shrinkWrap: true,
+                      itemCount: emergencyCallList.length, //item 개수
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        childAspectRatio: 3 / 1,
+                        mainAxisSpacing: 1.w,
+                        crossAxisSpacing: 1.h,
+                      ),
+                      itemBuilder: (BuildContext context, int index) {
+                        return isSelected[index]
+                            ? ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isSelected[index] = false;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: yColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7),
+                                  ),
+                                ),
+                                child: Text(emergencyCallList[index]["name"]))
+                            : ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isSelected[index] = true;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: n25Color,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(7),
+                                  ),
+                                ),
+                                child: Text(emergencyCallList[index]["name"]));
+                      },
+                    ),
+                  );
+                }
+              },
+            ),
             Container(
-              margin: EdgeInsets.fromLTRB(0, 1.h, 0, 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: n25Color,

@@ -192,7 +192,7 @@ class _SetButtonState extends State<SetButton> {
                     '비상 연락망',
                     style: TextStyle(
                       color: nColor,
-                      fontSize: 17.5.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ),

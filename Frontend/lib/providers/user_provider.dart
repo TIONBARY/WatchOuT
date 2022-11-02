@@ -8,6 +8,7 @@ class MyUserInfo with ChangeNotifier {
   String gender = '';
   String phone = '';
   String region = '';
+  String profileImage = '';
 
   void confirmCheck() {
     isCheck = true;
@@ -41,6 +42,10 @@ class MyUserInfo with ChangeNotifier {
     this.region = region;
   }
 
+  void setProfileImage(String profileImage) {
+    this.profileImage = profileImage;
+  }
+
   void setUser(Map<String, dynamic>? userDoc) {
     //파이어베이스 계정 불러온 다음 데이터를 전역변수에 대입
     setName(userDoc?["name"]);
@@ -49,5 +54,6 @@ class MyUserInfo with ChangeNotifier {
     setGender(userDoc?["gender"]);
     setPhone(userDoc?["phone"]);
     setRegion(userDoc?["region"]);
+    setProfileImage(userDoc?["profileImage"]);
   }
 }
