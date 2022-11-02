@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyUserInfo with ChangeNotifier {
-  bool isLogin = false;
+  bool isCheck = false;
   String name = '';
   String nickname = '';
   String birth = '';
@@ -9,8 +9,12 @@ class MyUserInfo with ChangeNotifier {
   String phone = '';
   String region = '';
 
-  void changeIsLogin() {
-    isLogin = !isLogin;
+  void confirmCheck() {
+    isCheck = true;
+  }
+
+  void initCheck() {
+    isCheck = false;
   }
 
   void setName(String name) {
