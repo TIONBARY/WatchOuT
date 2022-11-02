@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:ui';
 
@@ -20,16 +21,18 @@ import 'package:watch_connectivity/watch_connectivity.dart';
 HeartRateProvider heartRateProvider = HeartRateProvider();
 
 void main() {
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider<ContactInfo>(create: (_) => ContactInfo()),
-      ChangeNotifierProvider<SwitchBools>(create: (_) => SwitchBools()),
-      ChangeNotifierProvider<MyUserInfo>(create: (_) => MyUserInfo()),
-      ChangeNotifierProvider<HeartRateProvider>(
-          create: (_) => HeartRateProvider()),
-    ],
-    child: MyApp(),
-  ));
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ContactInfo>(create: (_) => ContactInfo()),
+        ChangeNotifierProvider<SwitchBools>(create: (_) => SwitchBools()),
+        ChangeNotifierProvider<MyUserInfo>(create: (_) => MyUserInfo()),
+        ChangeNotifierProvider<HeartRateProvider>(
+            create: (_) => HeartRateProvider()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -50,19 +53,21 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     _permission();
-    return Sizer(builder: (context, orientation, deviceType) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'WatchOuT',
-        theme: ThemeData(
-          fontFamily: 'HanSan',
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.white,
-          accentColor: Colors.black,
-        ),
-        home: const HomePage(),
-      );
-    });
+    return Sizer(
+      builder: (context, orientation, deviceType) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'WatchOuT',
+          theme: ThemeData(
+            fontFamily: 'HanSan',
+            primarySwatch: Colors.blue,
+            primaryColor: Colors.white,
+            accentColor: Colors.black,
+          ),
+          home: const HomePage(),
+        );
+      },
+    );
   }
 }
 
@@ -165,21 +170,22 @@ Future<void> initializeService() async {
       ?.createNotificationChannel(channel);
 
   await service.configure(
-      androidConfiguration: AndroidConfiguration(
-        // this will be executed when app is in foreground or background in separated isolate
-        onStart: onStart,
+    androidConfiguration: AndroidConfiguration(
+      // this will be executed when app is in foreground or background in separated isolate
+      onStart: onStart,
 
-        // auto start service
-        autoStart: true,
-        isForegroundMode: false,
+      // auto start service
+      autoStart: true,
+      isForegroundMode: false,
 
-        notificationChannelId:
-            notificationChannelId, // this must match with notification channel you created above.
-        initialNotificationTitle: '워치 아웃',
-        initialNotificationContent: '초기화 진행중...',
-        foregroundServiceNotificationId: notificationId,
-      ),
-      iosConfiguration: IosConfiguration());
+      notificationChannelId:
+          notificationChannelId, // this must match with notification channel you created above.
+      initialNotificationTitle: '워치 아웃',
+      initialNotificationContent: '초기화 진행중...',
+      foregroundServiceNotificationId: notificationId,
+    ),
+    iosConfiguration: IosConfiguration(),
+  );
 }
 
 Future<void> onStart(ServiceInstance service) async {
@@ -192,6 +198,13 @@ Future<void> onStart(ServiceInstance service) async {
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin);
   }
+
+  Timer.periodic(
+    Duration(seconds: 3),
+    (timer) {
+      print('백그라운드반복');
+    },
+  );
 }
 
 void onStartWatch(ServiceInstance service,

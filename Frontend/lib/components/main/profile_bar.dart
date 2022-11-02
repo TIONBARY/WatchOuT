@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
@@ -30,7 +32,7 @@ class _ProfileBarState extends State<ProfileBar> {
                 child: CircleAvatar(
                   backgroundColor: nColor,
                   child: GestureDetector(
-                    onTap: () => print('메인페이지 프로필바 프로필 이미지 선택'),
+                    onTap: () => todayCheck(),
                   ),
                 ),
               ),
@@ -50,4 +52,24 @@ class _ProfileBarState extends State<ProfileBar> {
       ),
     );
   }
+}
+
+void addTodayCheck() {}
+
+void todayCheck() {
+  DateTime now = DateTime.now();
+  Timer(
+    Duration(seconds: 20),
+    () {
+      DateTime later = DateTime.now();
+      int time_diff = ((later.year - now.year) * 8760 * 3600) +
+          ((later.month - now.month) * 730 * 3600) +
+          ((later.day - now.day) * 24 * 3600) +
+          ((later.hour - now.hour) * 3600) +
+          ((later.minute - now.minute) * 60) +
+          (later.second - now.second);
+
+      print('시간 차이 ${time_diff}');
+    },
+  );
 }
