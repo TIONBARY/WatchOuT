@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
 
 class MyUserInfo with ChangeNotifier {
-  bool isLogin = false;
+  bool isCheck = false;
   String name = '';
   String nickname = '';
   String birth = '';
   String gender = '';
   String phone = '';
   String region = '';
+  String profileImage = '';
 
-  void changeIsLogin() {
-    isLogin = !isLogin;
+  void confirmCheck() {
+    isCheck = true;
+  }
+
+  void initCheck() {
+    isCheck = false;
   }
 
   void setName(String name) {
@@ -37,6 +42,10 @@ class MyUserInfo with ChangeNotifier {
     this.region = region;
   }
 
+  void setProfileImage(String profileImage) {
+    this.profileImage = profileImage;
+  }
+
   void setUser(Map<String, dynamic>? userDoc) {
     //파이어베이스 계정 불러온 다음 데이터를 전역변수에 대입
     setName(userDoc?["name"]);
@@ -45,6 +54,6 @@ class MyUserInfo with ChangeNotifier {
     setGender(userDoc?["gender"]);
     setPhone(userDoc?["phone"]);
     setRegion(userDoc?["region"]);
-    print("user provider : userDoc${nickname}");
+    setProfileImage(userDoc?["profileImage"]);
   }
 }

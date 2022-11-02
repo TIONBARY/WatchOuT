@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/constants.dart';
@@ -21,7 +20,6 @@ class SetButton extends StatefulWidget {
 class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
-  final _authentication = FirebaseAuth.instance;
   final List<String> _valueList = ['문자', '전화', '사용안함'];
   String _selectedAlert = '문자';
   List<String> _contactList = [];
@@ -194,7 +192,7 @@ class _SetButtonState extends State<SetButton> {
                     '비상 연락망',
                     style: TextStyle(
                       color: nColor,
-                      fontSize: 17.5.sp,
+                      fontSize: 15.sp,
                     ),
                   ),
                 ),
@@ -256,7 +254,7 @@ class _SetButtonState extends State<SetButton> {
                                 .registerFirstResponder(_addName, _addContact);
                             _nameFieldController.clear();
                             _contactFieldController.clear();
-                            Navigator.pop(context);
+                            // Navigator.pop(context);
                           });
                         },
                         child: Text(

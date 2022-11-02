@@ -29,4 +29,17 @@ class ApiKakao {
         json.decode(response.body)["documents"][0]['region_2depth_name'];
     return result;
   }
+
+  Future<String> searchRoadAddr(String lat, String lng) async {
+    final httpUri = Uri.parse(api_url + "/geo/coord2address")
+        .replace(queryParameters: {'y': lat, 'x': lng});
+    await dotenv.load();
+    final kakaoRestAPIKey = dotenv.get('kakaoRestAPIKey');
+    final response = await http
+        .get(httpUri, headers: {"Authorization": "KakaoAK ${kakaoRestAPIKey}"});
+    print(response.body);
+    final result =
+        json.decode(response.body)["documents"][0]['address']['address_name'];
+    return result;
+  }
 }
