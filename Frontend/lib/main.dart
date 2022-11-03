@@ -17,13 +17,12 @@ import 'package:homealone/providers/user_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:usage_stats/usage_stats.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 HeartRateProvider heartRateProvider = HeartRateProvider();
 final isCheck = IsCheck.instance;
-DateTime recent = DateTime.now();
-String recentPackage = 'android';
+// DateTime recent = DateTime.now();
+// String recentPackage = 'android';
 
 void main() {
   runApp(
@@ -48,8 +47,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  List<EventUsageInfo> events = [];
-  Map<String?, NetworkInfo?> _netInfoMap = Map();
+  // List<EventUsageInfo> events = [];
+  // Map<String?, NetworkInfo?> _netInfoMap = Map();
 
   @override
   void initState() {
@@ -207,12 +206,12 @@ Future<void> onStart(ServiceInstance service) async {
     onStartWatch(service, flutterLocalNotificationsPlugin);
   }
 
-  Timer.periodic(
-    Duration(seconds: 10),
-    (timer) {
-      initUsage();
-    },
-  );
+  // Timer.periodic(
+  //   Duration(seconds: 10),
+  //   (timer) {
+  //     initUsage();
+  //   },
+  // );
 
   // Timer.periodic(
   //   Duration(minutes: 1),
@@ -231,47 +230,47 @@ Future<void> onStart(ServiceInstance service) async {
   // );
 }
 
-Future<void> initUsage() async {
-  try {
-    UsageStats.grantUsagePermission();
-
-    DateTime endDate = new DateTime.now();
-    DateTime startDate = endDate.subtract(Duration(days: 1));
-
-    List<EventUsageInfo> queryEvents =
-        await UsageStats.queryEvents(startDate, endDate);
-    List<NetworkInfo> networkInfos = await UsageStats.queryNetworkUsageStats(
-      startDate,
-      endDate,
-      networkType: NetworkType.all,
-    );
-
-    Map<String?, NetworkInfo?> netInfoMap = Map.fromIterable(networkInfos,
-        key: (v) => v.packageName, value: (v) => v);
-
-    List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
-
-    for (var i in t) {
-      if ((i.packageName?.compareTo(recentPackage)) == 0) {
-        DateTime newRecent =
-            DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeUsed!))
-                .toUtc();
-        print('현재시간 : ${recent}');
-        print(i.packageName);
-        print('패지키 마지막 사용 시간 : ${newRecent}');
-
-        int time_diff = ((recent.year - newRecent.year) * 8760) +
-            ((recent.month - newRecent.month) * 730) +
-            ((recent.day - newRecent.day) * 24) +
-            (recent.hour - newRecent.hour);
-
-        print('두 시간 차 : ${time_diff}');
-      }
-    }
-  } catch (err) {
-    print(err);
-  }
-}
+// Future<void> initUsage() async {
+//   try {
+//     UsageStats.grantUsagePermission();
+//
+//     DateTime endDate = new DateTime.now();
+//     DateTime startDate = endDate.subtract(Duration(days: 1));
+//
+//     List<EventUsageInfo> queryEvents =
+//         await UsageStats.queryEvents(startDate, endDate);
+//     List<NetworkInfo> networkInfos = await UsageStats.queryNetworkUsageStats(
+//       startDate,
+//       endDate,
+//       networkType: NetworkType.all,
+//     );
+//
+//     Map<String?, NetworkInfo?> netInfoMap = Map.fromIterable(networkInfos,
+//         key: (v) => v.packageName, value: (v) => v);
+//
+//     List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
+//
+//     for (var i in t) {
+//       if ((i.packageName?.compareTo(recentPackage)) == 0) {
+//         DateTime newRecent =
+//             DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeUsed!))
+//                 .toUtc();
+//         print('현재시간 : ${recent}');
+//         print(i.packageName);
+//         print('패지키 마지막 사용 시간 : ${newRecent}');
+//
+//         int time_diff = ((recent.year - newRecent.year) * 8760) +
+//             ((recent.month - newRecent.month) * 730) +
+//             ((recent.day - newRecent.day) * 24) +
+//             (recent.hour - newRecent.hour);
+//
+//         print('두 시간 차 : ${time_diff}');
+//       }
+//     }
+//   } catch (err) {
+//     print(err);
+//   }
+// }
 
 void onStartWatch(ServiceInstance service,
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) {

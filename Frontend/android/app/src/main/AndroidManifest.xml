@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ssafy.homealone">
 
+
+
     <application
         android:label="homealone"
         android:name="${applicationName}"
