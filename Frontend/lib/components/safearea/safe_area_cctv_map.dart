@@ -135,29 +135,29 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                   map.setZoomable(false);
   ''');
     _currentPositionStream?.cancel();
-    _walkPositionStream = _geolocatorPlatform
-        .getPositionStream(locationSettings: locationSettings)
-        .listen((Position? position) {
-      print("location changed");
-      print(_mapController);
-      if (!positionList.contains(position)) {
-        if (positionList.length > 0) {
-          drawLine(_mapController, position!, positionList.last);
-        }
-        positionList.add(position!);
-      }
-      if (position != null) {
-        initLat = position!.latitude;
-        initLon = position!.longitude;
-      }
-      if (_mapController != null) {
-        _mapController?.runJavascript('''
-        markers[markers.length-1].setMap(null);
-        addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-      ''');
-      }
-      print("location changed end");
-    });
+    // _walkPositionStream = _geolocatorPlatform
+    //     .getPositionStream(locationSettings: locationSettings)
+    //     .listen((Position? position) {
+    //   print("location changed");
+    //   print(_mapController);
+    //   if (!positionList.contains(position)) {
+    //     if (positionList.length > 0) {
+    //       drawLine(_mapController, position!, positionList.last);
+    //     }
+    //     positionList.add(position!);
+    //   }
+    //   if (position != null) {
+    //     initLat = position!.latitude;
+    //     initLon = position!.longitude;
+    //   }
+    //   if (_mapController != null) {
+    //     _mapController?.runJavascript('''
+    //     markers[markers.length-1].setMap(null);
+    //     addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+    //   ''');
+    //   }
+    //   print("location changed end");
+    // });
     accessCode = getRandomString(accessCodeLength);
     print(accessCode);
     showDialog(
@@ -550,11 +550,14 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                         left: 2.w,
                         bottom: 1.h,
                         child: FloatingActionButton(
-                          child: Icon(Icons.emergency_share),
+                          child: Image.asset(
+                            "assets/siren.png",
+                            width: 7.5.w,
+                          ),
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "긴급 신고",
-                          backgroundColor: Colors.red,
+                          backgroundColor: yColor,
                           onPressed: () {
                             UrlLauncher.launchUrl(Uri.parse("tel:112"));
                           },
