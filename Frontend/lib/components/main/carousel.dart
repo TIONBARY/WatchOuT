@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../youtube/models/channel_model.dart';
@@ -35,7 +36,7 @@ class _CarouselState extends State<Carousel> {
           (video) => Container(
             // margin: EdgeInsets.all(5.0),
             child: ClipRRect(
-                borderRadius: BorderRadius.all(Radius.circular(25)),
+                borderRadius: BorderRadius.all(Radius.circular(50)),
                 child: Stack(
                   children: <Widget>[
                     GestureDetector(
@@ -44,7 +45,7 @@ class _CarouselState extends State<Carousel> {
                             'http://www.youtube.com/watch?v=${video.id}');
                       },
                       child: Image(
-                        width: 300.0,
+                        width: 150.w,
                         image: NetworkImage(video.thumbnailUrl),
                       ),
                     ),
@@ -93,7 +94,7 @@ class _CarouselState extends State<Carousel> {
           } else if (snapshot.hasError) {
             return Text(
               'Error: ${snapshot.error}',
-              style: TextStyle(fontSize: 15),
+              style: TextStyle(fontSize: 15.sp),
             );
           } else {
             return Container(

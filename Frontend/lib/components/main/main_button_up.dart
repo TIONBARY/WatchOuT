@@ -149,7 +149,31 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 flexs: 1,
                 margins: EdgeInsets.fromLTRB(1.w, 0.5.h, 2.w, 1.h),
                 boxcolors: Colors.black12,
-                onpresseds: () {},
+                onpresseds: () {
+                  showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(25.0),
+                    ),
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.8,
+                        child: Container(
+                          height: 450.h,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(25),
+                              topRight: Radius.circular(25),
+                            ),
+                          ),
+                          child: Container(), // 모달 내부
+                        ),
+                      );
+                    },
+                  );
+                },
                 texts: '미정',
                 textcolors: nColor,
                 fontsizes: 12.5.sp)
