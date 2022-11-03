@@ -344,7 +344,7 @@ packages:
       name: geolocator_apple
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.2.2"
+    version: "2.2.3"
   geolocator_platform_interface:
     dependency: transitive
     description:
@@ -533,7 +533,7 @@ packages:
       name: path_provider_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.20"
+    version: "2.0.21"
   path_provider_ios:
     dependency: transitive
     description:
@@ -665,6 +665,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  snapping_sheet:
+    dependency: "direct main"
+    description:
+      name: snapping_sheet
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
   source_span:
     dependency: transitive
     description:
@@ -741,7 +748,7 @@ packages:
       name: url_launcher_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.20"
+    version: "6.0.21"
   url_launcher_ios:
     dependency: transitive
     description:

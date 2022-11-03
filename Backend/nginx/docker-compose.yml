@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    restart: always
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+    - ./etc:/etc/nginx
+    - ./certbot/conf:/etc/letsencrypt
+    - ./certbot/www:/var/www/certbot
+    - ./html:/usr/share/nginx/html
+
+  certbot:
+    container_name: certbot
+    image: certbot/certbot:v0.36.0
+    restart: always
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
