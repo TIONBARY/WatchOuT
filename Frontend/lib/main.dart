@@ -8,6 +8,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:homealone/components/login/auth_service.dart';
+import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
@@ -19,7 +20,7 @@ import 'package:sizer/sizer.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 HeartRateProvider heartRateProvider = HeartRateProvider();
-MyUserInfo myuserInfo = MyUserInfo();
+final isCheck = IsCheck.instance;
 
 void main() {
   runApp(
@@ -48,7 +49,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     heartRateProvider = Provider.of<HeartRateProvider>(context, listen: false);
-    myuserInfo = Provider.of<MyUserInfo>(context, listen: false);
     initializeService();
   }
 
@@ -204,17 +204,16 @@ Future<void> onStart(ServiceInstance service) async {
   Timer.periodic(
     Duration(minutes: 1),
     (timer) {
-      myuserInfo.initCheck();
-      print('출석 초기화 ${myuserInfo.isCheck}');
+      isCheck.initCheck();
+      print('출석 초기화${isCheck.check}');
     },
   );
 
   Timer.periodic(
     Duration(seconds: 10),
     (timer) {
-      print('현재 출석 상태 ${myuserInfo.isCheck}');
-      print('메인다트${myuserInfo.toString()}');
-      print('메인다트${myuserInfo.hashCode}');
+      print('현재 출석 상태${isCheck.check}');
+      print('메인다트${isCheck.hashCode}');
     },
   );
 }
