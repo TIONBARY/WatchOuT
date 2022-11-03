@@ -125,9 +125,9 @@ void _permission(BuildContext context) async {
   }
   permissionOnce = true;
   askPermission(context, Permission.location,
-      "워치아웃에서 안전 지도, 보호자 공유 등의 기능을 사용할 수 있도록 위치 권한을 허용해 주세요.");
-  askPermission(
-      context, Permission.sms, "워치아웃에서 SOS 기능을 사용할 수 있도록 SMS 권한을 허용해 주세요.");
+      "WatchOuT에서 \n안전 지도 및 보호자 공유 등의 기능을 \n사용할 수 있도록 \n'위치' 권한을 허용해 주세요.");
+  askPermission(context, Permission.sms,
+      "WatchOuT에서 \nSOS 기능을 사용할 수 있도록 \n'SMS' 권한을 허용해 주세요.");
 }
 
 // void _permission() async {
