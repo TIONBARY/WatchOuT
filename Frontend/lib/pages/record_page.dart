@@ -50,10 +50,17 @@ class _RecordPageState extends State<RecordPage> {
     setState(() {
       isLoading = true;
     });
+
     final response = await FirebaseFirestore.instance
         .collection("goingHomeUserList")
         .doc(_authentication.currentUser?.uid)
         .get();
+    if (!response.exists) {
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
     final info = response.data() as Map<String, dynamic>;
     final _list = info["list"];
     if (_list == null) {
