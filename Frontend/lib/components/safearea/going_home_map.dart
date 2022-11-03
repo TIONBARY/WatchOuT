@@ -13,6 +13,7 @@ import 'package:homealone/constants.dart';
 import 'package:homealone/googleLogin/tab_bar_page.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:sizer/sizer.dart';
+import 'package:snapping_sheet/snapping_sheet.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -121,161 +122,218 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData == false) {
           return Container(
-              alignment: Alignment.center, child: CircularProgressIndicator());
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
+          );
         } else if (snapshot.hasError) {
           return Text(
             'Error: ${snapshot.error}',
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15.sp),
           );
         } else {
           return Container(
             alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  padding: EdgeInsets.fromLTRB(4.w, 0, 4.w, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            child: SnappingSheet(
+              snappingPositions: [
+                SnappingPosition.factor(
+                  positionFactor: 0.8,
+                  snappingCurve: Curves.easeOutExpo,
+                  snappingDuration: Duration(seconds: 1),
+                  grabbingContentOffset: GrabbingContentOffset.top,
+                ),
+                SnappingPosition.factor(
+                  positionFactor: 1.0,
+                  snappingCurve: Curves.bounceOut,
+                  snappingDuration: Duration(seconds: 1),
+                  grabbingContentOffset: GrabbingContentOffset.bottom,
+                ),
+              ],
+              lockOverflowDrag: true,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Stack(
+                      children: [
+                        KakaoMapView(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            // height: size.height * 7 / 10,
+                            // height: size.height - appBarHeight - 130,
+                            // height: 1.sh,
+                            kakaoMapKey: kakaoMapKey,
+                            lat: initLat,
+                            lng: initLon,
+                            // zoomLevel: 1,
+                            showMapTypeControl: false,
+                            showZoomControl: false,
+                            draggableMarker: false,
+                            // mapType: MapType.TERRAIN,
+                            mapController: (controller) {
+                              _mapController = controller;
+                            },
+                            customScript: '''
+            var markers = [];
+
+            function addMarker(position) {
+              var imageSrc = 'https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/home.png?alt=media&token=184f9f09-4d0c-4ffc-a327-9e1277743a5d', // 마커이미지의 주소입니다
+                  imageSize = new kakao.maps.Size(40, 40); // 마커이미지의 크기입니다
+                  // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+              // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+              var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); // 마커가 표시될 위치입니다
+
+              // 마커를 생성합니다
+              var marker = new kakao.maps.Marker({
+                  position: position,
+                  image: markerImage // 마커이미지 설정
+              });
+              marker.setMap(map);
+              markers.push(marker);
+            }
+            function addCurrMarker(position) {
+              var imageSrc = 'https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/currMarker.png?alt=media&token=140772c4-fac1-4619-a7d2-0f3c03153cbb', // 마커이미지의 주소입니다
+                  imageSize = new kakao.maps.Size(30, 45); // 마커이미지의 크기입니다
+                  // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+              // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+              var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); // 마커가 표시될 위치입니다
+
+              // 마커를 생성합니다
+              var marker = new kakao.maps.Marker({
+                  position: position,
+                  image: markerImage // 마커이미지 설정
+              });
+              marker.setMap(map);
+              markers.push(marker);
+            }
+            addMarker(new kakao.maps.LatLng(${widget.homeLat}, ${widget.homeLon}));
+            addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+            var bounds = new kakao.maps.LatLngBounds();
+            bounds.extend(new kakao.maps.LatLng(${widget.homeLat}, ${widget.homeLon}));
+            bounds.extend(new kakao.maps.LatLng(${initLat}, ${initLon}));
+            map.setBounds(bounds);
+                      '''),
+                        Positioned(
+                          left: 2.w,
+                          bottom: 1.h,
+                          child: FloatingActionButton(
+                            child: Image.asset(
+                              "assets/siren.png",
+                              width: 7.5.w,
+                            ),
+                            elevation: 5,
+                            hoverElevation: 10,
+                            tooltip: "긴급 신고",
+                            backgroundColor: yColor,
+                            onPressed: () {
+                              sendEmergencyMessage();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              grabbingHeight: 25,
+              grabbing: Container(
+                decoration: new BoxDecoration(
+                  color: nColor,
+                  borderRadius: new BorderRadius.only(
+                    bottomLeft: const Radius.circular(25.0),
+                    bottomRight: const Radius.circular(25.0),
+                  ),
+                ),
+                child: Container(
+                  // 잡는 버튼
+                  margin: EdgeInsets.fromLTRB(150, 10, 150, 10),
+                  decoration: new BoxDecoration(
+                    color: yColor,
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                ),
+              ),
+              sheetAbove: SnappingSheetContent(
+                draggable: true,
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+                  child: ListView(
                     children: [
-                      Flexible(
-                        flex: 3,
-                        child: Container(
-                          child: SizedBox(
-                            height: 15.h,
-                            width: 15.w,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Container(
+                            height: 75,
+                            width: 75,
                             child: CircleAvatar(
                               backgroundImage:
                                   NetworkImage(widget.profileImage),
                             ),
                           ),
-                        ),
-                      ),
-                      Flexible(
-                        flex: 7,
-                        child: Container(
-                          child: Text(
-                            widget.name + " 님의 현재 위치",
-                            style: TextStyle(fontSize: 17.5.sp),
+                          Column(
+                            children: [
+                              Container(
+                                child: Text(
+                                  widget.name + " 님의 현재 위치",
+                                  style: TextStyle(fontSize: 17.5.sp),
+                                ),
+                              ),
+                              Container(
+                                width: 50.w,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                            primary:
+                                                nColor //elevated btton background color
+                                            ),
+                                        onPressed: () {
+                                          UrlLauncher.launchUrl(
+                                              Uri.parse("tel:${widget.phone}"));
+                                        },
+                                        icon: Icon(Icons.phone),
+                                        label: Text(
+                                          "전화",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                            primary:
+                                                nColor //elevated btton background color
+                                            ),
+                                        onPressed: () {
+                                          sendMessage();
+                                        },
+                                        icon: Icon(Icons.message),
+                                        label: Text(
+                                          "문자",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                      // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  flex: 1,
-                  fit: FlexFit.loose,
-                  child: Stack(
-                    children: [
-                      KakaoMapView(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          // height: size.height * 7 / 10,
-                          // height: size.height - appBarHeight - 130,
-                          // height: 1.sh,
-                          kakaoMapKey: kakaoMapKey,
-                          lat: initLat,
-                          lng: initLon,
-                          // zoomLevel: 1,
-                          showMapTypeControl: false,
-                          showZoomControl: false,
-                          draggableMarker: false,
-                          // mapType: MapType.TERRAIN,
-                          mapController: (controller) {
-                            _mapController = controller;
-                          },
-                          customScript: '''
-    var markers = [];
-
-    function addMarker(position) {
-      var imageSrc = 'https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/home.png?alt=media&token=184f9f09-4d0c-4ffc-a327-9e1277743a5d', // 마커이미지의 주소입니다    
-          imageSize = new kakao.maps.Size(40, 40); // 마커이미지의 크기입니다
-          // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-      
-      // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); // 마커가 표시될 위치입니다
-      
-      // 마커를 생성합니다
-      var marker = new kakao.maps.Marker({
-          position: position, 
-          image: markerImage // 마커이미지 설정 
-      });
-      marker.setMap(map);
-      markers.push(marker);
-    }
-    function addCurrMarker(position) {
-      var imageSrc = 'https://firebasestorage.googleapis.com/v0/b/homealone-6ef54.appspot.com/o/currMarker.png?alt=media&token=140772c4-fac1-4619-a7d2-0f3c03153cbb', // 마커이미지의 주소입니다    
-          imageSize = new kakao.maps.Size(30, 45); // 마커이미지의 크기입니다
-          // imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
-      
-      // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
-      var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize); // 마커가 표시될 위치입니다
-      
-      // 마커를 생성합니다
-      var marker = new kakao.maps.Marker({
-          position: position, 
-          image: markerImage // 마커이미지 설정 
-      });
-      marker.setMap(map);
-      markers.push(marker);
-    }
-    addMarker(new kakao.maps.LatLng(${widget.homeLat}, ${widget.homeLon}));
-    addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-    var bounds = new kakao.maps.LatLngBounds();    
-    bounds.extend(new kakao.maps.LatLng(${widget.homeLat}, ${widget.homeLon}));
-    bounds.extend(new kakao.maps.LatLng(${initLat}, ${initLon}));
-    map.setBounds(bounds);                      
-              '''),
-                      Positioned(
-                        left: 0,
-                        right: 0,
-                        bottom: 3.h,
-                        child: FloatingActionButton.large(
-                          child: Image.asset("assets/siren.png", height: 6.h),
-                          elevation: 5,
-                          hoverElevation: 10,
-                          tooltip: "긴급 신고",
-                          backgroundColor: yColor,
-                          onPressed: () {
-                            sendEmergencyMessage();
-                          },
-                        ),
-                      ),
-                      Positioned(
-                        left: 3.w,
-                        bottom: 3.h,
-                        child: FloatingActionButton(
-                          child: Icon(Icons.phone),
-                          elevation: 5,
-                          hoverElevation: 10,
-                          tooltip: "통화",
-                          backgroundColor: nColor,
-                          onPressed: () {
-                            UrlLauncher.launchUrl(
-                                Uri.parse("tel:${widget.phone}"));
-                          },
-                        ),
-                      ),
-                      Positioned(
-                        right: 3.w,
-                        bottom: 3.h,
-                        child: FloatingActionButton(
-                          child: Icon(Icons.message),
-                          elevation: 5,
-                          hoverElevation: 10,
-                          tooltip: "통화",
-                          backgroundColor: nColor,
-                          onPressed: () {
-                            sendMessage();
-                          },
-                        ),
+                          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              ],
+              ),
             ),
           );
         }
