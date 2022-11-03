@@ -18,12 +18,13 @@ import 'package:homealone/providers/user_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:usage_stats/usage_stats.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 HeartRateProvider heartRateProvider = HeartRateProvider();
 final isCheck = IsCheck.instance;
-// DateTime recent = DateTime.now();
-// String recentPackage = 'android';
+DateTime recent = DateTime.now();
+String recentPackage = 'android';
 
 void main() {
   runApp(
@@ -48,8 +49,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // List<EventUsageInfo> events = [];
-  // Map<String?, NetworkInfo?> _netInfoMap = Map();
+  List<EventUsageInfo> events = [];
+  Map<String?, NetworkInfo?> _netInfoMap = Map();
 
   @override
   void initState() {
