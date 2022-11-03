@@ -550,11 +550,14 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                         left: 2.w,
                         bottom: 1.h,
                         child: FloatingActionButton(
-                          child: Icon(Icons.emergency_share),
+                          child: Image.asset(
+                            "assets/siren.png",
+                            width: 7.5.w,
+                          ),
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "긴급 신고",
-                          backgroundColor: Colors.red,
+                          backgroundColor: yColor,
                           onPressed: () {
                             UrlLauncher.launchUrl(Uri.parse("tel:112"));
                           },
