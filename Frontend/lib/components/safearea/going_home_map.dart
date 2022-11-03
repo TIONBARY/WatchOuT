@@ -13,6 +13,7 @@ import 'package:homealone/constants.dart';
 import 'package:homealone/googleLogin/tab_bar_page.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
 import 'package:sizer/sizer.dart';
+import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 
 ApiKakao apiKakao = ApiKakao();
@@ -31,8 +32,8 @@ double initLat = 37.5;
 double initLon = 127.5;
 
 class GoingHomeMap extends StatefulWidget {
-  const GoingHomeMap(
-      this.homeLat, this.homeLon, this.accessCode, this.profileImage, this.name,
+  const GoingHomeMap(this.homeLat, this.homeLon, this.accessCode,
+      this.profileImage, this.name, this.phone,
       {Key? key})
       : super(key: key);
   final homeLat;
@@ -40,6 +41,7 @@ class GoingHomeMap extends StatefulWidget {
   final accessCode;
   final profileImage;
   final name;
+  final phone;
 
   @override
   State<GoingHomeMap> createState() => _GoingHomeMapState();
@@ -106,6 +108,10 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
         "${widget.name} 님이 현재 위급 상황에 처한 것 같습니다. 확인 부탁드립니다. 현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
     List<String> recipients = ["112"];
     _sendSMS(message, recipients);
+  }
+
+  void sendMessage() async {
+    _sendSMS("", [widget.phone]);
   }
 
   @override
@@ -234,6 +240,35 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                           backgroundColor: yColor,
                           onPressed: () {
                             sendEmergencyMessage();
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        left: 3.w,
+                        bottom: 3.h,
+                        child: FloatingActionButton(
+                          child: Icon(Icons.phone),
+                          elevation: 5,
+                          hoverElevation: 10,
+                          tooltip: "통화",
+                          backgroundColor: nColor,
+                          onPressed: () {
+                            UrlLauncher.launchUrl(
+                                Uri.parse("tel:${widget.phone}"));
+                          },
+                        ),
+                      ),
+                      Positioned(
+                        right: 3.w,
+                        bottom: 3.h,
+                        child: FloatingActionButton(
+                          child: Icon(Icons.message),
+                          elevation: 5,
+                          hoverElevation: 10,
+                          tooltip: "통화",
+                          backgroundColor: nColor,
+                          onPressed: () {
+                            sendMessage();
                           },
                         ),
                       ),

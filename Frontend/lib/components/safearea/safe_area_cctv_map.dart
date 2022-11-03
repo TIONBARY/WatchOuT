@@ -177,6 +177,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           .set({
         "name": user["name"],
         "profileImage": user["profileImage"],
+        "phone": user["phone"],
         "homeLat": user["latitude"],
         "homeLon": user["longitude"]
       });
