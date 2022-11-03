@@ -69,6 +69,7 @@ dependencies:
   assets_audio_player: ^3.0.5
   volume_control: ^0.1.5
   snapping_sheet: ^3.1.0
+  image_picker: ^0.8.5+3
 
 dev_dependencies:
   flutter_test:
