@@ -22,7 +22,6 @@ class _AccessCodeMessageChoiceListDialogState
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> emergencyCallList = [];
   List<Map<String, dynamic>> _selectedEmergencyCallList = [];
-  List<bool> isSelected = [];
   late Future? emergencyCallListFuture = getEmergencyCallList();
   String downloadLink = "Download Link";
 
@@ -39,7 +38,6 @@ class _AccessCodeMessageChoiceListDialogState
           emergencyCallList
               .add({"name": value.id, "number": value.get("number")})
         });
-    isSelected = List.filled(emergencyCallList.length, false);
     return emergencyCallList;
   }
 
@@ -52,6 +50,15 @@ class _AccessCodeMessageChoiceListDialogState
   }
 
   void sendMessageToEmergencyCallList() async {
+    // if (_selectedEmergencyCallList.length > 2) {
+    //   showDialog(
+    //       context: context,
+    //       builder: (BuildContext context) {
+    //         return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+    //             12.5.h, '귀갓길 공유는 최대 2명까지만 가능합니다.', null);
+    //       });
+    //   return;
+    // }
     final response = await FirebaseFirestore.instance
         .collection("user")
         .doc(_auth.currentUser?.uid)
@@ -60,16 +67,10 @@ class _AccessCodeMessageChoiceListDialogState
     String message =
         "${user["name"]} 님이 귀가를 시작했습니다. 귀가 경로를 확인하시려면 WatchOut 앱에서 다음 입장 코드를 입력하세요.\n입장 코드 : ${widget.accessCode}\n앱 다운로드 링크 : ${downloadLink}";
     List<String> recipients = [];
-    int cnt = 0;
-    for (int i = 0; i < emergencyCallList.length; i++) {
-      if (isSelected[i]) {
-        recipients.add(emergencyCallList[i]["number"]);
-        cnt++;
-      }
+    for (int i = 0; i < _selectedEmergencyCallList.length; i++) {
+      recipients.add(_selectedEmergencyCallList[i]["number"]);
     }
-    if (cnt > 0) {
-      _sendSMS(message, recipients);
-    }
+    _sendSMS(message, recipients);
   }
 
   @override
@@ -180,11 +181,17 @@ class _AccessCodeMessageChoiceListDialogState
                     _selectedEmergencyCallList.remove(value);
                   });
                 },
+                chipColor: yColor,
+                textStyle: TextStyle(color: Colors.black),
               ),
               listType: MultiSelectListType.LIST,
               onConfirm: (values) {
                 _selectedEmergencyCallList = values;
               },
+              buttonText: Text("선택", style: TextStyle(color: Colors.black)),
+              confirmText: Text("확인", style: TextStyle(color: Colors.black)),
+              cancelText: Text("취소", style: TextStyle(color: Colors.black)),
+              title: Text("귀갓길 공유 (최대 2명)"),
             ),
             Container(
               child: ElevatedButton(
