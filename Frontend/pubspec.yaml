@@ -68,8 +68,7 @@ dependencies:
   youtube_player_flutter: ^8.1.1
   assets_audio_player: ^3.0.5
   volume_control: ^0.1.5
-
-
+  snapping_sheet: ^3.1.0
 
 dev_dependencies:
   flutter_test:
