@@ -47,6 +47,9 @@ class _RecordPageState extends State<RecordPage> {
   }
 
   void getGoingHomeUserList() async {
+    setState(() {
+      isLoading = true;
+    });
     final response = await FirebaseFirestore.instance
         .collection("goingHomeUserList")
         .doc(_authentication.currentUser?.uid)
@@ -77,6 +80,13 @@ class _RecordPageState extends State<RecordPage> {
     });
   }
 
+  void updateGoingHomeUserList() async {
+    setState(() {
+      _goingHomeUserList = [];
+    });
+    getGoingHomeUserList();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -96,11 +106,9 @@ class _RecordPageState extends State<RecordPage> {
                   _goingHomeUserList.length == 0
                       ? Container(
                           alignment: Alignment.center,
-                          child: Flexible(
-                            child: Text(
-                              "귀가 중인 사용자가 없습니다.",
-                              style: TextStyle(fontSize: 15.sp),
-                            ),
+                          child: Text(
+                            "귀가 중인 사용자가 없습니다.",
+                            style: TextStyle(fontSize: 15.sp),
                           ),
                         )
                       : GridView.builder(
@@ -183,6 +191,20 @@ class _RecordPageState extends State<RecordPage> {
                       backgroundColor: nColor,
                       onPressed: () {
                         _CodeDialog(context);
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    left: 1.25.w,
+                    bottom: 1.25.h,
+                    child: FloatingActionButton(
+                      child: Icon(Icons.refresh),
+                      elevation: 5,
+                      hoverElevation: 10,
+                      tooltip: "귀가 공유 리스트 갱신",
+                      backgroundColor: nColor,
+                      onPressed: () {
+                        updateGoingHomeUserList();
                       },
                     ),
                   ),
