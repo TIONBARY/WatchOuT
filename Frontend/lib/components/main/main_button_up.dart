@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,10 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/providers/switch_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:volume_control/volume_control.dart';
 
 ApiKakao apiKakao = ApiKakao();
 
@@ -34,6 +38,8 @@ class _MainButtonUpState extends State<MainButtonUp> {
   String message = "";
   List<String> recipients = [];
   late BuildContext dialogContext;
+  final assetsAudioPlayer = AssetsAudioPlayer();
+  bool useSiren = false;
 
   Future _getKakaoKey() async {
     await dotenv.load();
@@ -61,6 +67,11 @@ class _MainButtonUpState extends State<MainButtonUp> {
     timer = Timer(Duration(seconds: 5), () {
       Navigator.pop(dialogContext);
       _sendSMS(message, recipients);
+      VolumeControl.setVolume(1);
+      useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
+      if (useSiren) {
+        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"));
+      }
     });
     showDialog(
         context: context,
