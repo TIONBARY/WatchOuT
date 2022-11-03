@@ -8,8 +8,8 @@ import 'package:sizer/sizer.dart';
 import '../components/safearea/going_home_map.dart';
 
 class GoingHomeMapPage extends StatefulWidget {
-  const GoingHomeMapPage(
-      this.homeLat, this.homeLon, this.accessCode, this.profileImage, this.name,
+  const GoingHomeMapPage(this.homeLat, this.homeLon, this.accessCode,
+      this.profileImage, this.name, this.phone,
       {Key? key})
       : super(key: key);
   final homeLat;
@@ -17,6 +17,7 @@ class GoingHomeMapPage extends StatefulWidget {
   final accessCode;
   final profileImage;
   final name;
+  final phone;
 
   @override
   State<GoingHomeMapPage> createState() => _GoingHomeMapPageState();
@@ -52,6 +53,6 @@ class _GoingHomeMapPageState extends State<GoingHomeMapPage> {
           ],
         ),
         body: GoingHomeMap(widget.homeLat, widget.homeLon, widget.accessCode,
-            widget.profileImage, widget.name));
+            widget.profileImage, widget.name, widget.phone));
   }
 }

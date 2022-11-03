@@ -171,7 +171,9 @@ class _RecordPageState extends State<RecordPage> {
                                                   _goingHomeUserList[index]
                                                       ["profileImage"],
                                                   _goingHomeUserList[index]
-                                                      ["name"])));
+                                                      ["name"],
+                                                  _goingHomeUserList[index]
+                                                      ["phone"])));
                                     },
                                     child: Text('위치 확인'),
                                   ),
