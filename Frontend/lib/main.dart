@@ -9,6 +9,7 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
+import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
@@ -17,10 +18,11 @@ import 'package:homealone/providers/user_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:usage_stats/usage_stats.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 HeartRateProvider heartRateProvider = HeartRateProvider();
-MyUserInfo myuserInfo = MyUserInfo();
+final isCheck = IsCheck.instance;
 
 void main() {
   runApp(
@@ -49,8 +51,8 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     heartRateProvider = Provider.of<HeartRateProvider>(context, listen: false);
-    myuserInfo = Provider.of<MyUserInfo>(context, listen: false);
     initializeService();
+    initUsage();
   }
 
   @override
@@ -125,9 +127,9 @@ void _permission(BuildContext context) async {
   }
   permissionOnce = true;
   askPermission(context, Permission.location,
-      "WatchOuT에서 \n안전 지도 및 보호자 공유 등의 기능을 \n사용할 수 있도록 \n'위치' 권한을 허용해 주세요.");
-  askPermission(context, Permission.sms,
-      "WatchOuT에서 \nSOS 기능을 사용할 수 있도록 \n'SMS' 권한을 허용해 주세요.");
+      "워치아웃에서 안전 지도, 보호자 공유 등의 기능을 사용할 수 있도록 위치 권한을 허용해 주세요.");
+  askPermission(
+      context, Permission.sms, "워치아웃에서 SOS 기능을 사용할 수 있도록 SMS 권한을 허용해 주세요.");
 }
 
 // void _permission() async {
@@ -227,21 +229,40 @@ Future<void> onStart(ServiceInstance service) async {
   }
 
   Timer.periodic(
-    Duration(minutes: 1),
+    Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
     (timer) {
-      myuserInfo.initCheck();
-      print('출석 초기화 ${myuserInfo.isCheck}');
+      Future<int> count = initUsage();
+      count.then((value) {
+        print('24시간 이내에 사용한 앱 갯수 : ${value}');
+        if (value == 0)
+          print('비상!!!! 초비상!!!!');
+        else
+          print('24시간 이내 사용 감지');
+      }).catchError((error) {
+        print(error);
+      });
     },
   );
+}
 
-  Timer.periodic(
-    Duration(seconds: 10),
-    (timer) {
-      print('현재 출석 상태 ${myuserInfo.isCheck}');
-      print('메인다트${myuserInfo.toString()}');
-      print('메인다트${myuserInfo.hashCode}');
-    },
-  );
+Future<int> initUsage() async {
+  int count = 0;
+
+  UsageStats.grantUsagePermission();
+
+  DateTime endDate = DateTime.now();
+  DateTime startDate = endDate.subtract(Duration(days: 1));
+
+  List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
+
+  for (var i in t) {
+    DateTime lastUsed =
+        DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeUsed!)).toUtc();
+    if (lastUsed.isAfter(startDate)) {
+      count++;
+    }
+  }
+  return count;
 }
 
 void onStartWatch(ServiceInstance service,

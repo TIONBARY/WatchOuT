@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:homealone/constants.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
@@ -13,22 +12,16 @@ class PermissionRationaleDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(7.5.w, 2.5.h, 7.5.w, 1.25.h),
-        height: 25.h,
+        padding: EdgeInsets.all(5.h),
+        height: 50.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Title(
-              color: Colors.white.withOpacity(1),
-              child: Text(
-                "권한 요청",
-                style: TextStyle(fontSize: 15.sp),
-              ),
-            ),
-            Text(message, textAlign: TextAlign.center),
+            Title(color: Colors.white.withOpacity(1), child: Text("권한 요청")),
+            Text(message),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: yColor,
+                backgroundColor: Colors.blue.withOpacity(1),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7),
                 ),
@@ -40,7 +33,8 @@ class PermissionRationaleDialog extends StatelessWidget {
               },
               child: Text(
                 '확인',
-                style: TextStyle(color: nColor),
+                style:
+                    TextStyle(color: Colors.lightBlueAccent.withOpacity(1.0)),
               ),
             ),
           ],

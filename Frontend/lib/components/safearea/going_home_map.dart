@@ -122,11 +122,13 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData == false) {
           return Container(
-              alignment: Alignment.center, child: CircularProgressIndicator());
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
+          );
         } else if (snapshot.hasError) {
           return Text(
             'Error: ${snapshot.error}',
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15.sp),
           );
         } else {
           return Container(

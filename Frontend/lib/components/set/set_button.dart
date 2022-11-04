@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
+import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
@@ -9,6 +10,8 @@ import 'package:sizer/sizer.dart';
 import '../../providers/contact_provider.dart';
 import '../login/user_service.dart';
 import '../wear/heart_rate_view.dart';
+
+final isCheck = IsCheck.instance;
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -76,6 +79,8 @@ class _SetButtonState extends State<SetButton> {
           onchangeds: (value) {
             setState(() {
               Provider.of<SwitchBools>(context, listen: false).changeGPS();
+              print('셋버튼다트${isCheck.check}');
+              print('셋버튼다트${isCheck.hashCode}');
             });
           },
         ),

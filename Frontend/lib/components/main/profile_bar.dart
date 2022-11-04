@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:homealone/main.dart';
+import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+final isCheck = IsCheck.instance;
 
 class ProfileBar extends StatefulWidget {
   const ProfileBar({Key? key}) : super(key: key);
@@ -51,7 +53,7 @@ class _ProfileBarState extends State<ProfileBar> {
             child: Container(
               margin: EdgeInsets.only(left: 2.5.w),
               child: IconButton(
-                onPressed: () => doCheck(context),
+                onPressed: () => doCheck(),
                 icon: Icon(Icons.check),
               ),
             ),
@@ -63,29 +65,8 @@ class _ProfileBarState extends State<ProfileBar> {
   }
 }
 
-void doCheck(BuildContext context) {
-  myuserInfo.confirmCheck();
-  print('출석 완료 ${myuserInfo.isCheck}');
-
-  print('프로필바다트${myuserInfo.toString()}');
-  print('프로필바다트${myuserInfo.hashCode}');
-  print('프로필바다트${Provider.of<MyUserInfo>(context, listen: false).hashCode}');
+void doCheck() {
+  isCheck.confirmCheck();
+  print('출석 완료${isCheck.check}');
+  print('프로필바다트${isCheck.hashCode}');
 }
-
-// void todayCheck() {
-//   DateTime now = DateTime.now();
-//   Timer(
-//     Duration(seconds: 20),
-//     () {
-//       DateTime later = DateTime.now();
-//       int time_diff = ((later.year - now.year) * 8760 * 3600) +
-//           ((later.month - now.month) * 730 * 3600) +
-//           ((later.day - now.day) * 24 * 3600) +
-//           ((later.hour - now.hour) * 3600) +
-//           ((later.minute - now.minute) * 60) +
-//           (later.second - now.second);
-//
-//       print('시간 차이 ${time_diff}');
-//     },
-//   );
-// }

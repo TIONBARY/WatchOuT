@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../youtube/models/channel_model.dart';
@@ -93,7 +92,7 @@ class _CarouselState extends State<Carousel> {
           } else if (snapshot.hasError) {
             return Text(
               'Error: ${snapshot.error}',
-              style: TextStyle(fontSize: 15.sp),
+              style: TextStyle(fontSize: 15),
             );
           } else {
             return Container(
