@@ -82,9 +82,9 @@ class _MainButtonUpState extends State<MainButtonUp> {
     timer = Timer(Duration(seconds: 5), () {
       Navigator.pop(dialogContext);
       _sendSMS(message, recipients);
-      VolumeControl.setVolume(1);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
+        VolumeControl.setVolume(1);
         assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"));
       }
     });
