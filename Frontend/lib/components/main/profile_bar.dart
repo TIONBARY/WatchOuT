@@ -19,7 +19,6 @@ class _ProfileBarState extends State<ProfileBar> {
     return Container(
       padding: EdgeInsets.fromLTRB(4.w, 3.h, 4.w, 1.h),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Flexible(
             flex: 5,
@@ -48,25 +47,8 @@ class _ProfileBarState extends State<ProfileBar> {
               ),
             ),
           ),
-          Flexible(
-            flex: 2,
-            child: Container(
-              margin: EdgeInsets.only(left: 2.5.w),
-              child: IconButton(
-                onPressed: () => doCheck(),
-                icon: Icon(Icons.check),
-              ),
-            ),
-          ),
-          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
         ],
       ),
     );
   }
-}
-
-void doCheck() {
-  isCheck.confirmCheck();
-  print('출석 완료${isCheck.check}');
-  print('프로필바다트${isCheck.hashCode}');
 }
