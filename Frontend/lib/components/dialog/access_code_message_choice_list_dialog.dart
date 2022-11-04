@@ -10,6 +10,7 @@ import 'package:sizer/sizer.dart';
 class AccessCodeMessageChoiceListDialog extends StatefulWidget {
   const AccessCodeMessageChoiceListDialog(this.accessCode, {Key? key})
       : super(key: key);
+
   final accessCode;
 
   @override
@@ -63,7 +64,7 @@ class _AccessCodeMessageChoiceListDialogState
     print(_result);
   }
 
-  Future<void> sendMessageToEmergencyCallList() async {
+  void sendMessageToEmergencyCallList() async {
     // if (_selectedEmergencyCallList.length > 2) {
     //   showDialog(
     //       context: context,
@@ -98,105 +99,131 @@ class _AccessCodeMessageChoiceListDialogState
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-        height: 27.5.h,
+        padding: EdgeInsets.fromLTRB(1.w, 2.5.h, 1.w, 1.25.h),
+        height: 25.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
               color: nColor,
               child: Text(
-                "귀갓길 공유",
+                "귀갓길 공유 (최대 2명)",
                 style: TextStyle(
                   color: nColor,
                   fontSize: 15.sp,
                 ),
               ),
             ),
-            Container(
-              child: MultiSelectDialogField(
-                decoration: BoxDecoration(
-                  border: Border.all(color: n25Color),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                items: emergencyCallList
+            // FutureBuilder(
+            //     future: emergencyCallListFuture,
+            //     builder: (BuildContext context, AsyncSnapshot snapshot) {
+            //       if (snapshot.hasData == false) {
+            //         return CircularProgressIndicator();
+            //         // CircularProgressIndicator();
+            //       }
+            //
+            //       //error가 발생하게 될 경우 반환하게 되는 부분
+            //       else if (snapshot.hasError) {
+            //         return Text(
+            //           'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
+            //           style: TextStyle(fontSize: 15),
+            //         );
+            //       }
+            //
+            //       // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 부분
+            //       else if (snapshot.data.length == 0) {
+            //         return Text("등록된 비상연락망이 없습니다.");
+            //       } else {
+            //         return Container(
+            //             height: 12.h,
+            //             margin: EdgeInsets.fromLTRB(4.w, 2.h, 4.w, 2.h),
+            //             child: GridView.builder(
+            //                 scrollDirection: Axis.vertical,
+            //                 shrinkWrap: true,
+            //                 itemCount: emergencyCallList.length, //item 개수
+            //                 gridDelegate:
+            //                     SliverGridDelegateWithFixedCrossAxisCount(
+            //                   crossAxisCount: 3,
+            //                   childAspectRatio: 3 / 1,
+            //                   mainAxisSpacing: 1.w,
+            //                   crossAxisSpacing: 1.h,
+            //                 ),
+            //                 itemBuilder: (BuildContext context, int index) {
+            //                   return isSelected[index]
+            //                       ? ElevatedButton(
+            //                           onPressed: () {
+            //                             setState(() {
+            //                               isSelected[index] = false;
+            //                             });
+            //                           },
+            //                           style: ElevatedButton.styleFrom(
+            //                             backgroundColor: yColor,
+            //                             shape: RoundedRectangleBorder(
+            //                               borderRadius:
+            //                                   BorderRadius.circular(7),
+            //                             ),
+            //                           ),
+            //                           child: Text(
+            //                               emergencyCallList[index]["name"]))
+            //                       : ElevatedButton(
+            //                           onPressed: () {
+            //                             setState(() {
+            //                               isSelected[index] = true;
+            //                             });
+            //                           },
+            //                           style: ElevatedButton.styleFrom(
+            //                             backgroundColor: n25Color,
+            //                             shape: RoundedRectangleBorder(
+            //                               borderRadius:
+            //                                   BorderRadius.circular(7),
+            //                             ),
+            //                           ),
+            //                           child: Text(
+            //                               emergencyCallList[index]["name"]));
+            //                 }));
+            //       }
+            //     }),
+            MultiSelectDialogField(
+              items: emergencyCallList
+                  .map((e) => MultiSelectItem(e, e["name"]))
+                  .toList(),
+              chipDisplay: MultiSelectChipDisplay(
+                items: _selectedEmergencyCallList
                     .map((e) => MultiSelectItem(e, e["name"]))
                     .toList(),
-                chipDisplay: MultiSelectChipDisplay(
-                  items: _selectedEmergencyCallList
-                      .map((e) => MultiSelectItem(e, e["name"]))
-                      .toList(),
-                  onTap: (value) {
-                    setState(() {
-                      _selectedEmergencyCallList.remove(value);
-                    });
-                  },
-                  chipColor: nColor,
-                  textStyle: TextStyle(color: Colors.white),
-                ),
-                listType: MultiSelectListType.LIST,
-                onConfirm: (values) {
-                  _selectedEmergencyCallList = values;
+                onTap: (value) {
+                  setState(() {
+                    _selectedEmergencyCallList.remove(value);
+                  });
                 },
-                buttonIcon: Icon(
-                  Icons.arrow_drop_down,
-                  color: nColor,
-                ),
-                buttonText: Text(
-                  "귀갓길을 공유할 보호자를 선택해주세요.",
-                  style: TextStyle(color: nColor),
-                ),
-                dialogHeight: 25.h,
-                title: Text("최대 2명까지 가능합니다.",
-                    style: TextStyle(color: nColor),
-                    textAlign: TextAlign.center),
-                confirmText: Text(
-                  "확인",
-                  style: TextStyle(color: nColor),
-                ),
-                cancelText: Text(
-                  "취소",
-                  style: TextStyle(color: nColor),
-                ),
+                chipColor: yColor,
+                textStyle: TextStyle(color: Colors.black),
               ),
+              listType: MultiSelectListType.LIST,
+              onConfirm: (values) {
+                _selectedEmergencyCallList = values;
+              },
+              buttonText: Text("선택", style: TextStyle(color: Colors.black)),
+              confirmText: Text("확인", style: TextStyle(color: Colors.black)),
+              cancelText: Text("취소", style: TextStyle(color: Colors.black)),
+              title: Text("귀갓길 공유 (최대 2명)"),
             ),
             Container(
-              width: 35.w,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: yColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                    ),
-                    onPressed: () {
-                      sendMessageToEmergencyCallList();
-                    },
-                    child: Text(
-                      '전송',
-                      style: TextStyle(color: nColor),
-                    ),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: n25Color,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(7),
                   ),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: n25Color,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7),
-                      ),
-                    ),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "취소",
-                      style: TextStyle(color: nColor),
-                    ),
-                  ),
-                ],
+                ),
+                onPressed: () {
+                  sendMessageToEmergencyCallList();
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  '전송',
+                  style: TextStyle(color: nColor),
+                ),
               ),
             ),
           ],

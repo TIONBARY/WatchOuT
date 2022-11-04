@@ -12,6 +12,7 @@ import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -156,7 +157,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
                 boxcolors: Colors.black12,
                 onpresseds: () {},
-                texts: '미정',
+                texts: '신고',
                 textcolors: nColor,
                 fontsizes: 12.5.sp),
             MainPageTextButton(
@@ -182,13 +183,13 @@ class _MainButtonUpState extends State<MainButtonUp> {
                               topRight: Radius.circular(25),
                             ),
                           ),
-                          child: Container(), // 모달 내부
+                          child: EmergencyManual(), // 모달 내부
                         ),
                       );
                     },
                   );
                 },
-                texts: '미정',
+                texts: '위기상황 \n대처메뉴얼',
                 textcolors: nColor,
                 fontsizes: 12.5.sp)
           ],
