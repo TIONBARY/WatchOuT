@@ -70,21 +70,3 @@ void doCheck() {
   print('출석 완료${isCheck.check}');
   print('프로필바다트${isCheck.hashCode}');
 }
-
-// void todayCheck() {
-//   DateTime now = DateTime.now();
-//   Timer(
-//     Duration(seconds: 20),
-//     () {
-//       DateTime later = DateTime.now();
-//       int time_diff = ((later.year - now.year) * 8760 * 3600) +
-//           ((later.month - now.month) * 730 * 3600) +
-//           ((later.day - now.day) * 24 * 3600) +
-//           ((later.hour - now.hour) * 3600) +
-//           ((later.minute - now.minute) * 60) +
-//           (later.second - now.second);
-//
-//       print('시간 차이 ${time_diff}');
-//     },
-//   );
-// }

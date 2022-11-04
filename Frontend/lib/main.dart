@@ -23,7 +23,6 @@ import 'package:watch_connectivity/watch_connectivity.dart';
 
 HeartRateProvider heartRateProvider = HeartRateProvider();
 final isCheck = IsCheck.instance;
-int count = 0;
 
 void main() {
   runApp(
@@ -230,37 +229,27 @@ Future<void> onStart(ServiceInstance service) async {
   }
 
   Timer.periodic(
-    Duration(seconds: 10),
+    Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
     (timer) {
-      initUsage();
-      if (count == 0)
-        print('24시간 내에 사용이 없습니다.');
-      else
-        print('24시간 이내 사용 감지');
+      Future<int> count = initUsage();
+      count.then((value) {
+        print('24시간 이내에 사용한 앱 갯수 : ${value}');
+        if (value == 0)
+          print('비상!!!! 초비상!!!!');
+        else
+          print('24시간 이내 사용 감지');
+      }).catchError((error) {
+        print(error);
+      });
     },
   );
-
-  // Timer.periodic(
-  //   Duration(minutes: 1),
-  //   (timer) {
-  //     isCheck.initCheck();
-  //     print('출석 초기화${isCheck.check}');
-  //   },
-  // );
-  //
-  // Timer.periodic(
-  //   Duration(seconds: 10),
-  //   (timer) {
-  //     print('현재 출석 상태${isCheck.check}');
-  //     print('메인다트${isCheck.hashCode}');
-  //   },
-  // );
 }
 
-Future<void> initUsage() async {
+Future<int> initUsage() async {
+  int count = 0;
+
   UsageStats.grantUsagePermission();
 
-  int count = 0;
   DateTime endDate = DateTime.now();
   DateTime startDate = endDate.subtract(Duration(days: 1));
 
@@ -273,7 +262,7 @@ Future<void> initUsage() async {
       count++;
     }
   }
-  print(count);
+  return count;
 }
 
 void onStartWatch(ServiceInstance service,
