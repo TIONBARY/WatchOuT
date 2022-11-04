@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/pages/emergency_manual_kidnap_page.dart';
 import 'package:homealone/pages/emergency_manual_stalking_page.dart';
 
 class EmergencyManual extends StatelessWidget {
@@ -62,7 +63,7 @@ class EmergencyManual extends StatelessWidget {
               ),
               Container(
                 child: Center(
-                  child: Text("Tab 2"),
+                  child: EmergencyKidnap(),
                 ),
               ),
               Container(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class EmergencyStalking extends StatelessWidget {
-  const EmergencyStalking({Key? key}) : super(key: key);
+class EmergencyKidnap extends StatelessWidget {
+  const EmergencyKidnap({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
