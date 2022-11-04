@@ -10,6 +10,7 @@ class SignUpTextField extends StatelessWidget {
     required this.hinttexts,
     required this.helpertexts,
     required this.onchangeds,
+    required this.validations,
   }) : super(key: key);
 
   final paddings;
@@ -17,12 +18,15 @@ class SignUpTextField extends StatelessWidget {
   final hinttexts;
   final helpertexts;
   final onchangeds;
+  final validations;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: paddings,
       child: TextFormField(
+        autocorrect: false,
+        validator: validations,
         keyboardType: keyboardtypes,
         textInputAction: TextInputAction.next,
         cursorColor: nColor,

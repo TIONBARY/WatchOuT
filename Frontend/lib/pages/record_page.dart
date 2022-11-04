@@ -100,6 +100,11 @@ class _RecordPageState extends State<RecordPage> {
     getGoingHomeUserList();
   }
 
+  bool _isValidCode(String val) {
+    if (val.length != 8) return false;
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -224,6 +229,7 @@ class _RecordPageState extends State<RecordPage> {
   }
 
   Future<void> _CodeDialog(BuildContext context) async {
+    final _SignupKey = GlobalKey<FormState>();
     return showDialog(
       context: context,
       builder: (context) {
@@ -236,14 +242,20 @@ class _RecordPageState extends State<RecordPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                SignUpTextField(
-                  paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
-                  keyboardtypes: TextInputType.text,
-                  hinttexts: '코드',
-                  helpertexts: '공유 받은 코드를 입력해주세요.',
-                  onchangeds: (code) {
-                    _code = code;
-                  },
+                Form(
+                  key: _SignupKey,
+                  child: SignUpTextField(
+                    validations: (String? val) {
+                      return _isValidCode(val ?? '') ? null : "올바른 코드를 입력해주세요.";
+                    },
+                    paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
+                    keyboardtypes: TextInputType.text,
+                    hinttexts: '코드',
+                    helpertexts: '공유 받은 코드를 입력해주세요.',
+                    onchangeds: (code) {
+                      _code = code;
+                    },
+                  ),
                 ),
                 Container(
                   width: 40.w,
@@ -258,8 +270,11 @@ class _RecordPageState extends State<RecordPage> {
                           ),
                         ),
                         onPressed: () {
-                          addGoingHomeUser();
-                          Navigator.pop(context);
+                          if (_SignupKey.currentState!.validate()) {
+                            addGoingHomeUser();
+                            Navigator.pop(context);
+                          }
+                          ;
                         },
                         child: Text(
                           '등록',
@@ -276,7 +291,7 @@ class _RecordPageState extends State<RecordPage> {
                           ),
                         ),
                         onPressed: () {
-                          addGoingHomeUser();
+                          // addGoingHomeUser();
                           Navigator.pop(context);
                         },
                         child: Text(
