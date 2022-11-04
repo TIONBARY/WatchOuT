@@ -104,8 +104,11 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     quickActions.setShortcutItems([
-      ShortcutItem(type: "SafeZone", localizedTitle: "안전 구역"),
-      ShortcutItem(type: "EmergencyManual", localizedTitle: "응급상황 메뉴얼"),
+      ShortcutItem(type: "SafeZone", localizedTitle: "안전 구역", icon: 'manual'),
+      ShortcutItem(
+          type: "EmergencyManual",
+          localizedTitle: "응급상황 메뉴얼",
+          icon: 'safezone'),
     ]);
     quickActions.initialize((type) {
       if (type == "SafeZone") {
