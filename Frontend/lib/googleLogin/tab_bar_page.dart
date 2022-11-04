@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/utils/double_click_pop.dart';
 import 'package:homealone/googleLogin/sign_up_page.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
@@ -29,7 +30,7 @@ class _TabNavBarState extends State<TabNavBar> {
   final _unselectedColor = Color(0xff5f6368);
 
   Future<void> checkUserInfo() async {
-    check = await AuthService().activated();
+    check = await UserService().isActivated();
     if (!check) {
       print("너 왜 가입 안했냐?");
       Navigator.push(

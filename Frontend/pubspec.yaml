@@ -73,6 +73,7 @@ dependencies:
 
 
 
+  app_settings: ^4.1.8
 
 dev_dependencies:
   flutter_test:
@@ -103,7 +104,6 @@ flutter:
   assets:
     - .env
     - assets/
-    - assets/sounds/
   fonts:
     - family: HanSan
       fonts:

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../providers/contact_provider.dart';
-import '../login/auth_service.dart';
+import '../login/user_service.dart';
 import '../wear/heart_rate_view.dart';
 
 final isCheck = IsCheck.instance;
@@ -255,7 +255,7 @@ class _SetButtonState extends State<SetButton> {
                           setState(() {
                             _contactList.add(_addContact);
                             _nameList.add(_addName);
-                            AuthService()
+                            UserService()
                                 .registerFirstResponder(_addName, _addContact);
                             _nameFieldController.clear();
                             _contactFieldController.clear();
