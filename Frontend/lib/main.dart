@@ -11,12 +11,15 @@ import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
+import 'package:homealone/pages/emergency_manual_page.dart';
+import 'package:homealone/pages/safe_area_cctv_page.dart';
 import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:quick_actions/quick_actions.dart';
 import 'package:sizer/sizer.dart';
 import 'package:usage_stats/usage_stats.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
@@ -39,6 +42,17 @@ void main() {
   );
 }
 
+// void initQuickActions() {
+//   final QuickActions _quickActions = new QuickActions();
+//   _quickActions.initialize((navigateRoute);
+//   _quickActions.setShortcutItems([
+//     ShortcutItem(type: "SOS", localizedTitle: "SOS"),
+//     ShortcutItem(type: "SafeHome", localizedTitle: "안심귀가"),
+//     ShortcutItem(type: "성범죄자 알림e", localizedTitle: "알림e"),
+//     ShortcutItem(type: "SafeZone", localizedTitle: "안전구역"),
+//   ]);
+// }
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -53,6 +67,7 @@ class _MyAppState extends State<MyApp> {
     heartRateProvider = Provider.of<HeartRateProvider>(context, listen: false);
     initializeService();
     initUsage();
+    // initQuickActions();
   }
 
   @override
@@ -75,8 +90,33 @@ class _MyAppState extends State<MyApp> {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final quickActions = QuickActions();
+
+  @override
+  void initState() {
+    super.initState();
+    quickActions.setShortcutItems([
+      ShortcutItem(type: "SafeZone", localizedTitle: "안전 구역"),
+      ShortcutItem(type: "EmergencyManual", localizedTitle: "응급상황 메뉴얼"),
+    ]);
+    quickActions.initialize((type) {
+      if (type == "SafeZone") {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => SafeAreaCCTVMapPage()));
+      } else if (type == "EmergencyManual") {
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => EmergencyManual()));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

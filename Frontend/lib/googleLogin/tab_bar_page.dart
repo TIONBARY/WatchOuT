@@ -14,10 +14,6 @@ import '../pages/record_page.dart';
 import '../pages/set_page.dart';
 
 class TabNavBar extends StatefulWidget {
-  // final User user;
-  //
-  // TabNavBar(this.user);
-
   @override
   State<TabNavBar> createState() => _TabNavBarState();
 }
