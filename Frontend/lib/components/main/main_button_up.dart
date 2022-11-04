@@ -5,9 +5,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/api/api_message.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
@@ -17,6 +18,7 @@ import 'package:sizer/sizer.dart';
 import 'package:volume_control/volume_control.dart';
 
 ApiKakao apiKakao = ApiKakao();
+ApiMessage apiMessage = ApiMessage();
 
 String kakaoMapKey = "";
 
@@ -55,11 +57,23 @@ class _MainButtonUpState extends State<MainButtonUp> {
   }
 
   void _sendSMS(String message, List<String> recipients) async {
-    String _result = await sendSMS(message: message, recipients: recipients)
-        .catchError((onError) {
-      print(onError);
-    });
-    print(_result);
+    Map<String, dynamic> _result =
+        await apiMessage.sendMessage(recipients, message);
+    if (_result["statusCode"] == 200) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '긴급 호출 메세지를 전송했습니다.', null);
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, _result["message"], null);
+          });
+    }
   }
 
   void sendEmergencyMessage() async {
@@ -92,7 +106,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
     message =
         "${user?["name"]} 님이 WatchOut 앱에서 SOS 버튼을 눌렀습니다. 긴급 조치가 필요합니다. \n현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
     await getEmergencyCallList();
-    recipients = ["112"];
+    recipients = [];
     for (var i = 0; i < emergencyCallList.length; i++) {
       recipients.add(emergencyCallList[i]["number"]);
     }
