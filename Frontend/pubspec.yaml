@@ -74,6 +74,7 @@ dependencies:
 
 
   app_settings: ^4.1.8
+  quick_actions: ^1.0.1
 
 dev_dependencies:
   flutter_test:
