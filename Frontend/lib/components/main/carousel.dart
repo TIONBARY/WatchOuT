@@ -89,7 +89,9 @@ class _CarouselState extends State<Carousel> {
         future: myFuture,
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData == false) {
-            return CircularProgressIndicator();
+            return Container(
+                alignment: Alignment.center,
+                child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Text(
               'Error: ${snapshot.error}',
