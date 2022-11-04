@@ -25,7 +25,7 @@ public class MessageServiceImpl implements MessageService {
 
 	private static final String SMS_OAUTH_TOKEN_URL = "https://sms.gabia.com/oauth/token"; // ACCESS TOKEN 발급 API URL
 																							// 입니다.
-	private static final String SMS_SEND_URL = "https://sms.gabia.com/api/send/mms"; // SMS 발송 API URL입니다.
+	private static final String SMS_SEND_URL = "https://sms.gabia.com/api/send/lms"; // SMS 발송 API URL입니다.
 	
 	private static final String sender = "01090319389";
 	
@@ -84,6 +84,7 @@ public class MessageServiceImpl implements MessageService {
 				.addFormDataPart("callback", sender) // 발신번호를 입력해 주세요.
 				.addFormDataPart("message", requestDto.getMessage()) // SMS 내용을 입력해 주세요.
 				.addFormDataPart("refkey", "WATCH_OUT") // 발송 결과 조회를 위한 임의의 랜덤 키 값을 입력해 주세요.
+				.addFormDataPart("subject", "Watch Out 메세지")
 				.build();
 
 		Request request = new Request.Builder().url(SMS_SEND_URL).post(requestBody)
