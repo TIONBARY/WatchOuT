@@ -1,0 +1,30 @@
+logging:
+  level:
+    org:
+      springframework:
+        boot: INFO
+        security: DEBUG
+      apache:
+        tiles: INFO
+        web: DEBUG
+    root: INFO
+server:
+  servlet:
+    contextPath: /
+    encoding:
+      enabled: 'true'
+      force: 'true'
+      charset: UTF-8
+  port: '8080'
+spring:
+  devtools:
+    livereload:
+      enabled: 'true'
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  config:
+    import: classpath:/message.yml
