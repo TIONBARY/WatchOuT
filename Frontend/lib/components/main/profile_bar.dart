@@ -1,16 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:homealone/components/login/modify_userinfo.dart';
-import 'package:homealone/components/singleton/is_check.dart';
-import 'package:homealone/constants.dart';
-import 'package:homealone/googleLogin/modify_userinfo_page.dart';
+import 'package:homealone/main.dart';
 import 'package:homealone/providers/user_provider.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-
-final isCheck = IsCheck.instance;
 
 class ProfileBar extends StatefulWidget {
   const ProfileBar({Key? key}) : super(key: key);
@@ -20,7 +12,6 @@ class ProfileBar extends StatefulWidget {
 }
 
 class _ProfileBarState extends State<ProfileBar> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -37,6 +28,9 @@ class _ProfileBarState extends State<ProfileBar> {
                   backgroundImage: NetworkImage(
                       Provider.of<MyUserInfo>(context, listen: false)
                           .profileImage),
+                  // child: GestureDetector(
+                  //   onTap: () => doCheck(context),
+                  // ),
                 ),
               ),
               Container(
@@ -79,6 +73,7 @@ class _ProfileBarState extends State<ProfileBar> {
               ),
             ],
           ),
+          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
         ],
       ),
     );
