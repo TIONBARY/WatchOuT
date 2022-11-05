@@ -219,7 +219,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
               grabbingHeight: 25,
               grabbing: Container(
                 decoration: new BoxDecoration(
-                  color: nColor,
+                  color: bColor,
                   borderRadius: new BorderRadius.only(
                     bottomLeft: const Radius.circular(25.0),
                     bottomRight: const Radius.circular(25.0),
@@ -271,7 +271,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
                                             primary:
-                                                nColor //elevated btton background color
+                                                bColor //elevated btton background color
                                             ),
                                         onPressed: () {
                                           UrlLauncher.launchUrl(
@@ -289,7 +289,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
                                             primary:
-                                                nColor //elevated btton background color
+                                                bColor //elevated btton background color
                                             ),
                                         onPressed: () {
                                           showDialog(

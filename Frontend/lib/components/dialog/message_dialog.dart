@@ -62,7 +62,7 @@ class _MessageDialogState extends State<MessageDialog> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
-              color: nColor,
+              color: bColor,
               child: Text(
                 "전송할 메세지 입력",
                 style: TextStyle(fontSize: 20),
@@ -82,7 +82,7 @@ class _MessageDialogState extends State<MessageDialog> {
                 },
                 keyboardType: TextInputType.text,
                 textInputAction: TextInputAction.next,
-                cursorColor: nColor,
+                cursorColor: bColor,
                 decoration: InputDecoration(
                   isCollapsed: true,
                   hintText: "메세지",
@@ -90,13 +90,13 @@ class _MessageDialogState extends State<MessageDialog> {
                   contentPadding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    borderSide: BorderSide(color: n25Color),
+                    borderSide: BorderSide(color: b25Color),
                   ),
                   filled: true,
                   fillColor: Colors.white,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    borderSide: BorderSide(color: nColor),
+                    borderSide: BorderSide(color: bColor),
                   ),
                 ),
                 onChanged: (val) {
@@ -123,12 +123,12 @@ class _MessageDialogState extends State<MessageDialog> {
                     },
                     child: Text(
                       '전송',
-                      style: TextStyle(color: nColor),
+                      style: TextStyle(color: bColor),
                     ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: n25Color,
+                      backgroundColor: b25Color,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(7),
@@ -139,7 +139,7 @@ class _MessageDialogState extends State<MessageDialog> {
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: nColor),
+                      style: TextStyle(color: bColor),
                     ),
                   ),
                 ],

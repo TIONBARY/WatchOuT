@@ -16,13 +16,13 @@ class SOSDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
-              color: nColor,
+              color: bColor,
               child: Text("5초 후 긴급 상황을 전파합니다."),
             ),
             Image.asset("assets/siren.png", height: 6.h),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: n25Color,
+                backgroundColor: b25Color,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7),
                 ),
@@ -32,7 +32,7 @@ class SOSDialog extends StatelessWidget {
               },
               child: Text(
                 '취소',
-                style: TextStyle(color: nColor),
+                style: TextStyle(color: bColor),
               ),
             ),
           ],

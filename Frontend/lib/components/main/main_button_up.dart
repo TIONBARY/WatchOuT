@@ -173,7 +173,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 boxcolors: Colors.black12,
                 onpresseds: () {},
                 texts: '신고',
-                textcolors: nColor,
+                textcolors: bColor,
                 fontsizes: 12.5.sp),
             MainPageTextButton(
                 flexs: 1,
@@ -182,7 +182,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 onpresseds: () {
                   showModalBottomSheet(
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25.0),
+                      borderRadius: BorderRadius.circular(25),
                     ),
                     isScrollControlled: true,
                     context: context,
@@ -192,7 +192,6 @@ class _MainButtonUpState extends State<MainButtonUp> {
                         child: Container(
                           height: 450.h,
                           decoration: BoxDecoration(
-                            color: Colors.white,
                             borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(25),
                               topRight: Radius.circular(25),
@@ -205,7 +204,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                   );
                 },
                 texts: '위기상황 \n대처메뉴얼',
-                textcolors: nColor,
+                textcolors: bColor,
                 fontsizes: 12.5.sp)
           ],
         ))

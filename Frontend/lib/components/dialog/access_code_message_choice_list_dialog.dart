@@ -104,11 +104,11 @@ class _AccessCodeMessageChoiceListDialogState
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
-              color: nColor,
+              color: bColor,
               child: Text(
                 "귀갓길 공유",
                 style: TextStyle(
-                  color: nColor,
+                  color: bColor,
                   fontSize: 15.sp,
                 ),
               ),
@@ -116,7 +116,7 @@ class _AccessCodeMessageChoiceListDialogState
             Container(
               child: MultiSelectDialogField(
                 decoration: BoxDecoration(
-                  border: Border.all(color: n25Color),
+                  border: Border.all(color: b25Color),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 items: emergencyCallList
@@ -131,7 +131,7 @@ class _AccessCodeMessageChoiceListDialogState
                       _selectedEmergencyCallList.remove(value);
                     });
                   },
-                  chipColor: nColor,
+                  chipColor: bColor,
                   textStyle: TextStyle(color: Colors.white),
                 ),
                 listType: MultiSelectListType.LIST,
@@ -140,23 +140,23 @@ class _AccessCodeMessageChoiceListDialogState
                 },
                 buttonIcon: Icon(
                   Icons.arrow_drop_down,
-                  color: nColor,
+                  color: bColor,
                 ),
                 buttonText: Text(
                   "귀갓길을 공유할 보호자를 선택해주세요.",
-                  style: TextStyle(color: nColor),
+                  style: TextStyle(color: bColor),
                 ),
                 dialogHeight: 25.h,
                 title: Text("최대 2명까지 가능합니다.",
-                    style: TextStyle(color: nColor),
+                    style: TextStyle(color: bColor),
                     textAlign: TextAlign.center),
                 confirmText: Text(
                   "확인",
-                  style: TextStyle(color: nColor),
+                  style: TextStyle(color: bColor),
                 ),
                 cancelText: Text(
                   "취소",
-                  style: TextStyle(color: nColor),
+                  style: TextStyle(color: bColor),
                 ),
               ),
             ),
@@ -177,12 +177,12 @@ class _AccessCodeMessageChoiceListDialogState
                     },
                     child: Text(
                       '전송',
-                      style: TextStyle(color: nColor),
+                      style: TextStyle(color: bColor),
                     ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: n25Color,
+                      backgroundColor: b25Color,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(7),
@@ -193,7 +193,7 @@ class _AccessCodeMessageChoiceListDialogState
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: nColor),
+                      style: TextStyle(color: bColor),
                     ),
                   ),
                 ],
