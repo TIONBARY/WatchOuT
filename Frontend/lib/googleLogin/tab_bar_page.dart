@@ -22,7 +22,7 @@ class _TabNavBarState extends State<TabNavBar> {
   final _authentication = FirebaseAuth.instance;
   late bool check;
   late TabController _tabController;
-  final _selectedColor = nColor;
+  final _selectedColor = bColor;
   final _unselectedColor = Color(0xff5f6368);
 
   Future<void> checkUserInfo() async {
@@ -55,7 +55,7 @@ class _TabNavBarState extends State<TabNavBar> {
               title: Text('WatchOuT',
                   style: TextStyle(color: yColor, fontSize: 20.sp)),
               centerTitle: true,
-              backgroundColor: nColor,
+              backgroundColor: bColor,
               actions: [
                 IconButton(
                   icon: Icon(
@@ -88,7 +88,7 @@ class _TabNavBarState extends State<TabNavBar> {
                       indicator: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
                           color: _selectedColor),
-                      unselectedLabelColor: nColor,
+                      unselectedLabelColor: bColor,
                       tabs: [
                         Tab(text: '홈'),
                         Tab(text: '안전 지도'),

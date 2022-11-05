@@ -501,7 +501,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                           },
                                           child: Text(
                                             safeAreaList[i],
-                                            style: TextStyle(color: nColor),
+                                            style: TextStyle(color: bColor),
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
@@ -530,7 +530,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                             minimumSize: Size.zero,
                                             padding: EdgeInsets.fromLTRB(
                                                 2.w, 1.h, 2.w, 1.h),
-                                            backgroundColor: nColor,
+                                            backgroundColor: bColor,
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5.0),
@@ -601,7 +601,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                             },
                             child: Text(
                               pressWalkBtn ? "귀가 종료" : "귀가 시작",
-                              style: TextStyle(fontSize: 20, color: nColor),
+                              style: TextStyle(fontSize: 20, color: bColor),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: yColor,
@@ -622,7 +622,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "CCTV 리스트 갱신",
-                          backgroundColor: nColor,
+                          backgroundColor: bColor,
                           onPressed: () {
                             updateCurrLocation();
                           },
@@ -701,13 +701,13 @@ Future _future() async {
   initLat = position.latitude;
   initLon = position.longitude;
   area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
-  await _search();
-  // await registerCCTV();
-  // await registerSafeOpenBox();
-  // await registerEmergencyBell();
-  await _searchSafeArea();
-  await _searchSafeOpenBox();
-  await _searchEmergencyBell();
+  // await _search();
+  // // await registerCCTV();
+  // // await registerSafeOpenBox();
+  // // await registerEmergencyBell();
+  // await _searchSafeArea();
+  // await _searchSafeOpenBox();
+  // await _searchEmergencyBell();
   return kakaoMapKey; // 5초 후 '짜잔!' 리턴
 }
 

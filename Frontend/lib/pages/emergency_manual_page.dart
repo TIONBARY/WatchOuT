@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:homealone/components/emergencyManual/car_accident.dart';
+import 'package:homealone/components/emergencyManual/kidnap.dart';
+import 'package:homealone/components/emergencyManual/natural_disaster.dart';
+import 'package:homealone/components/emergencyManual/safety_accident.dart';
+import 'package:homealone/components/emergencyManual/stalking.dart';
 import 'package:homealone/constants.dart';
-import 'package:homealone/pages/emergency_manual_caraccident_page.dart';
-import 'package:homealone/pages/emergency_manual_kidnap_page.dart';
-import 'package:homealone/pages/emergency_manual_naturaldisaster_page.dart';
-import 'package:homealone/pages/emergency_manual_safetyaccident_page.dart';
-import 'package:homealone/pages/emergency_manual_stalking_page.dart';
+import 'package:sizer/sizer.dart';
 
 class EmergencyManual extends StatelessWidget {
   const EmergencyManual({Key? key}) : super(key: key);
@@ -14,78 +15,80 @@ class EmergencyManual extends StatelessWidget {
     return DefaultTabController(
       length: 5,
       child: Scaffold(
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text(
-              "위기상황별 대처메뉴얼",
-              style: TextStyle(color: yColor, fontSize: 16.0),
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25),
+              topRight: Radius.circular(25),
             ),
-            backgroundColor: nColor,
-            bottom: PreferredSize(
-                preferredSize: Size.fromHeight(30.0),
-                child: TabBar(
-                    isScrollable: true,
-                    unselectedLabelColor: Colors.white.withOpacity(0.3),
-                    indicatorColor: Colors.yellow,
-                    tabs: [
-                      Tab(
-                        child: Text(
-                          "스토킹/폭행",
-                          style: TextStyle(color: Colors.yellow),
-                        ),
-                      ),
-                      Tab(
-                        child: Text("납치/유괴",
-                            style: TextStyle(color: Colors.yellow)),
-                      ),
-                      Tab(
-                        child: Text("교통사고",
-                            style: TextStyle(color: Colors.yellow)),
-                      ),
-                      Tab(
-                        child: Text("안전사고",
-                            style: TextStyle(color: Colors.yellow)),
-                      ),
-                      Tab(
-                        child: Text("자연재해",
-                            style: TextStyle(color: Colors.yellow)),
-                      )
-                    ])),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-              ),
-            ],
           ),
-          body: TabBarView(
-            children: <Widget>[
-              Container(
-                child: Center(
-                  child: EmergencyStalking(),
+          centerTitle: true,
+          title: Text(
+            "위기상황 대처메뉴얼",
+            style: TextStyle(
+              color: yColor,
+              fontSize: 15.sp,
+            ),
+          ),
+          backgroundColor: bColor,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(4.83.h),
+            child: TabBar(
+              isScrollable: true,
+              unselectedLabelColor: y75Color,
+              labelColor: yColor,
+              indicatorColor: yColor,
+              tabs: [
+                Tab(
+                  child: Text("스토킹/폭행"),
                 ),
-              ),
-              Container(
-                child: Center(
-                  child: EmergencyKidnap(),
+                Tab(
+                  child: Text("납치/유괴"),
                 ),
-              ),
-              Container(
-                child: Center(
-                  child: EmergencyCar(),
+                Tab(
+                  child: Text("교통사고"),
                 ),
-              ),
-              Container(
-                child: Center(
-                  child: EmergencySafety(),
+                Tab(
+                  child: Text("안전사고"),
                 ),
+                Tab(
+                  child: Text("자연재해"),
+                )
+              ],
+            ),
+          ),
+        ),
+        body: TabBarView(
+          children: <Widget>[
+            Container(
+              child: Center(
+                child: EmergencyStalking(),
               ),
-              Container(
-                child: Center(
-                  child: EmergencyDisaster(),
-                ),
+            ),
+            Container(
+              child: Center(
+                child: EmergencyKidnap(),
               ),
-            ],
-          )),
+            ),
+            Container(
+              child: Center(
+                child: EmergencyCar(),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: EmergencySafety(),
+              ),
+            ),
+            Container(
+              child: Center(
+                child: EmergencyDisaster(),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

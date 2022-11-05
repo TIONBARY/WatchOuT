@@ -109,7 +109,7 @@ class _SetButtonState extends State<SetButton> {
             padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
             margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
             decoration: BoxDecoration(
-                color: n25Color, borderRadius: BorderRadius.circular(25)),
+                color: b25Color, borderRadius: BorderRadius.circular(25)),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -192,11 +192,11 @@ class _SetButtonState extends State<SetButton> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Title(
-                  color: nColor,
+                  color: bColor,
                   child: Text(
                     '비상 연락망',
                     style: TextStyle(
-                      color: nColor,
+                      color: bColor,
                       fontSize: 15.sp,
                     ),
                   ),
@@ -212,11 +212,11 @@ class _SetButtonState extends State<SetButton> {
                           });
                         },
                         controller: _nameFieldController,
-                        cursorColor: nColor,
+                        cursorColor: bColor,
                         decoration: InputDecoration(
                           hintText: '이름 또는 닉네임',
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: nColor),
+                            borderSide: BorderSide(color: bColor),
                           ),
                         ),
                       ),
@@ -228,11 +228,11 @@ class _SetButtonState extends State<SetButton> {
                         },
                         controller: _contactFieldController,
                         keyboardType: TextInputType.phone,
-                        cursorColor: nColor,
+                        cursorColor: bColor,
                         decoration: InputDecoration(
                           hintText: '연락처',
                           focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: nColor),
+                            borderSide: BorderSide(color: bColor),
                           ),
                         ),
                       ),
@@ -265,13 +265,13 @@ class _SetButtonState extends State<SetButton> {
                         child: Text(
                           '등록',
                           style: TextStyle(
-                            color: nColor,
+                            color: bColor,
                           ),
                         ),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: n25Color,
+                          backgroundColor: b25Color,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(7),
                           ),
@@ -285,7 +285,7 @@ class _SetButtonState extends State<SetButton> {
                         },
                         child: Text(
                           '닫기',
-                          style: TextStyle(color: nColor),
+                          style: TextStyle(color: bColor),
                         ),
                       ),
                     ],

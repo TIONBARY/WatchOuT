@@ -164,7 +164,7 @@ class _RecordPageState extends State<RecordPage> {
                                   margin: EdgeInsets.only(bottom: 0.25.h),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: n50Color,
+                                      backgroundColor: b50Color,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(7),
                                       ),
@@ -202,7 +202,7 @@ class _RecordPageState extends State<RecordPage> {
                         Icons.edit,
                         size: 20.sp,
                       ),
-                      backgroundColor: nColor,
+                      backgroundColor: bColor,
                       onPressed: () {
                         _CodeDialog(context);
                       },
@@ -216,7 +216,7 @@ class _RecordPageState extends State<RecordPage> {
                       elevation: 5,
                       hoverElevation: 10,
                       tooltip: "귀가 공유 리스트 갱신",
-                      backgroundColor: nColor,
+                      backgroundColor: bColor,
                       onPressed: () {
                         updateGoingHomeUserList();
                       },
@@ -279,13 +279,13 @@ class _RecordPageState extends State<RecordPage> {
                         child: Text(
                           '등록',
                           style: TextStyle(
-                            color: nColor,
+                            color: bColor,
                           ),
                         ),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: n25Color,
+                          backgroundColor: b25Color,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(7),
                           ),
@@ -296,7 +296,7 @@ class _RecordPageState extends State<RecordPage> {
                         },
                         child: Text(
                           '취소',
-                          style: TextStyle(color: nColor),
+                          style: TextStyle(color: bColor),
                         ),
                       ),
                     ],

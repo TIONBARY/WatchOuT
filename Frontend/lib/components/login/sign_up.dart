@@ -100,7 +100,7 @@ class _SignupState extends State<SignUp> {
           children: [
             Container(
               height: 25.h,
-              color: n75Color,
+              color: b75Color,
               child: Container(
                 margin: EdgeInsets.fromLTRB(0, 4.h, 0, 0),
                 child: Image(
@@ -168,14 +168,14 @@ class _SignupState extends State<SignUp> {
                         title: const Text(
                           '남자',
                           style: TextStyle(
-                            color: nColor,
+                            color: bColor,
                           ),
                         ),
                         leading: Radio<String>(
                           value: "M",
                           groupValue: _gender,
                           fillColor: MaterialStateColor.resolveWith(
-                              (states) => nColor),
+                              (states) => bColor),
                           onChanged: (String? value) {
                             setState(() {
                               _gender = value;
@@ -188,14 +188,14 @@ class _SignupState extends State<SignUp> {
                         title: const Text(
                           '여자',
                           style: TextStyle(
-                            color: nColor,
+                            color: bColor,
                           ),
                         ),
                         leading: Radio<String>(
                           value: "F",
                           groupValue: _gender,
                           fillColor: MaterialStateColor.resolveWith(
-                              (states) => nColor),
+                              (states) => bColor),
                           onChanged: (String? value) {
                             setState(() {
                               _gender = value;
@@ -219,12 +219,12 @@ class _SignupState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
                           width: 1.sp,
-                          color: n25Color,
+                          color: b25Color,
                         )),
                     child: (this.postCode.isEmpty && this.region.isEmpty)
                         ? Text(
                             '주소',
-                            style: TextStyle(color: n75Color),
+                            style: TextStyle(color: b75Color),
                           )
                         : Text(
                             '(${this.postCode}) ${this.region}',
@@ -238,7 +238,7 @@ class _SignupState extends State<SignUp> {
                     padding: EdgeInsets.fromLTRB(1.25.w, 1.25.h, 0, 1.25.h),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: nColor,
+                        backgroundColor: bColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
                       ),
@@ -274,7 +274,7 @@ class _SignupState extends State<SignUp> {
               padding: EdgeInsets.fromLTRB(30.w, 1.25.h, 30.w, 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: nColor,
+                  backgroundColor: bColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5)),
                 ),
