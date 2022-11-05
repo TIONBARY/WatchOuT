@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:home_widget/home_widget.dart';
 import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
@@ -25,6 +26,8 @@ String kakaoMapKey = "";
 
 double initLat = 37.5;
 double initLon = 127.5;
+
+bool emergencyFromWidget = false;
 
 class MainButtonUp extends StatefulWidget {
   const MainButtonUp({Key? key}) : super(key: key);
@@ -129,10 +132,22 @@ class _MainButtonUpState extends State<MainButtonUp> {
     return emergencyCallList;
   }
 
+  void _checkForWidgetLaunch() {
+    HomeWidget.initiallyLaunchedFromHomeWidget().then(_launchedFromWidget);
+  }
+
+  void _launchedFromWidget(Uri? uri) {
+    if (uri?.host == 'sos' && !emergencyFromWidget) {
+      sendEmergencyMessage();
+      emergencyFromWidget = true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getKakaoKey();
+    _checkForWidgetLaunch();
   }
 
   @override

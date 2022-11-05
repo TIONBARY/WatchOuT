@@ -85,6 +85,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "androidx.work:work-runtime-ktx:2.7.0"
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
