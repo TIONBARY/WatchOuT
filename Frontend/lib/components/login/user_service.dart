@@ -36,7 +36,7 @@ class UserService {
       "googleUID": "${user?.uid}",
       "profileImage": "${user?.photoURL}",
       "phone": "01012345678",
-      "birth": "12",
+      "birth": "000101",
       "blocked": false,
       "activated": false,
       "region": "12345", //(시군구번호)
@@ -64,7 +64,7 @@ class UserService {
   }
 
   void updateUser(String photoUrl, String phone, String birth, String region,
-      String nickname, String name, String gender) {
+      String nickname, String name, String gender, String latitude, String longitude) {
     db.collection("user").doc("${user?.uid}").update({
       "profileImage": photoUrl,
       "phone": phone,
@@ -73,6 +73,8 @@ class UserService {
       "nickname": nickname,
       "name": name,
       "gender": gender,
+      "latitude": latitude,
+      "longitude": longitude,
     });
   }
 }

@@ -113,7 +113,7 @@ class _SignupState extends State<SignUp> {
               validations: (String? val) {
                 return _isValidname(val ?? '') ? null : "올바른 이름을 입력해주세요.";
               },
-              paddings: EdgeInsets.fromLTRB(7.5.w, 2.5.h, 7.5.w, 1.25.h),
+              paddings: EdgeInsets.fromLTRB(7.5.w, 5.h, 7.5.w, 1.75.h),
               keyboardtypes: TextInputType.text,
               hinttexts: '이름',
               helpertexts: '한글로 입력해주세요.',
@@ -135,7 +135,7 @@ class _SignupState extends State<SignUp> {
               validations: (String? val) {
                 return _isValidBirth(val ?? '') ? null : "올바른 생년월일을 입력해주세요.";
               },
-              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
+              paddings: EdgeInsets.fromLTRB(7.5.w, 1.75.h, 7.5.w, 1.75.h),
               keyboardtypes: TextInputType.number,
               hinttexts: '생년월일',
               helpertexts: 'YYMMDD 형식으로 입력해주세요.',
@@ -143,13 +143,66 @@ class _SignupState extends State<SignUp> {
                 _birth = age;
               },
             ),
+            Container(
+              padding: EdgeInsets.fromLTRB(7.5.w, 0, 7.5.w, 0),
+              child: Column(
+                children: <Widget>[
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                          child: ListTile(
+                            title: const Text(
+                              '남자',
+                              style: TextStyle(
+                                color: bColor,
+                              ),
+                            ),
+                            leading: Radio<String>(
+                              value: "M",
+                              groupValue: _gender,
+                              fillColor: MaterialStateColor.resolveWith(
+                                      (states) => bColor),
+                              onChanged: (String? value) {
+                                setState(() {
+                                  _gender = value;
+                                });
+                              },
+                            ),
+                          )),
+                      Expanded(
+                        child: ListTile(
+                          title: const Text(
+                            '여자',
+                            style: TextStyle(
+                              color: bColor,
+                            ),
+                          ),
+                          leading: Radio<String>(
+                            value: "F",
+                            groupValue: _gender,
+                            fillColor: MaterialStateColor.resolveWith(
+                                    (states) => bColor),
+                            onChanged: (String? value) {
+                              setState(() {
+                                _gender = value;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
             SignUpTextField(
               validations: (String? val) {
                 return _isValidPhone(val ?? '')
                     ? null
                     : "올바른 전화번호 형식으로 입력해주세요.";
               },
-              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
+              paddings: EdgeInsets.fromLTRB(7.5.w, 1.75.h, 7.5.w, 1.75.h),
               keyboardtypes: TextInputType.number,
               hinttexts: '전화번호',
               helpertexts: '숫자만 입력해주세요.',
@@ -157,68 +210,19 @@ class _SignupState extends State<SignUp> {
                 _phone = number;
               },
             ),
-            Container(
-                padding: EdgeInsets.fromLTRB(7.5.w, 0, 7.5.w, 0),
-                child: Column(children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Expanded(
-                          child: ListTile(
-                        title: const Text(
-                          '남자',
-                          style: TextStyle(
-                            color: bColor,
-                          ),
-                        ),
-                        leading: Radio<String>(
-                          value: "M",
-                          groupValue: _gender,
-                          fillColor: MaterialStateColor.resolveWith(
-                              (states) => bColor),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                        ),
-                      )),
-                      Expanded(
-                          child: ListTile(
-                        title: const Text(
-                          '여자',
-                          style: TextStyle(
-                            color: bColor,
-                          ),
-                        ),
-                        leading: Radio<String>(
-                          value: "F",
-                          groupValue: _gender,
-                          fillColor: MaterialStateColor.resolveWith(
-                              (states) => bColor),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                        ),
-                      )),
-                    ],
-                  )
-                ])),
             Row(
               children: [
                 FittedBox(
                   fit: BoxFit.contain,
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 1.25.w, 1.25.h),
+                    margin: EdgeInsets.fromLTRB(7.5.w, 1.75.h, 1.25.w, 1.75.h),
                     padding: EdgeInsets.fromLTRB(5.w, 1.25.h, 1.25.w, 1.25.h),
                     width: 62.5.w,
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
-                          width: 1.sp,
+                          width: 0.75.sp,
                           color: b25Color,
                         )),
                     child: (this.postCode.isEmpty && this.region.isEmpty)
@@ -256,7 +260,7 @@ class _SignupState extends State<SignUp> {
                                   this.region = result.address;
                                   this.latitude = result.latitude.toString();
                                   this.longitude = result.longitude.toString();
-                                });
+                                },);
                               },
                             ),
                           ),
@@ -271,7 +275,7 @@ class _SignupState extends State<SignUp> {
               ],
             ),
             Container(
-              padding: EdgeInsets.fromLTRB(30.w, 1.25.h, 30.w, 0),
+              padding: EdgeInsets.fromLTRB(30.w, 1.75.h, 30.w, 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: bColor,
