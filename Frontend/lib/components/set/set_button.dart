@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
+import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
+import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -32,8 +36,35 @@ class _SetButtonState extends State<SetButton> {
   String _addName = '';
   bool flag = true;
 
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  List<Map<String, dynamic>> emergencyCallList = [];
+  List<Map<String, dynamic>> _selectedEmergencyCallList = [];
+  late Future? emergencyCallListFuture = getEmergencyCallList();
+
+  Future<List<Map<String, dynamic>>> getEmergencyCallList() async {
+    final firstResponder = await FirebaseFirestore.instance
+        .collection("user")
+        .doc(_auth.currentUser?.uid)
+        .collection("firstResponder");
+    final result = await firstResponder.get();
+    setState(() {
+      emergencyCallList = [];
+    });
+    result.docs.forEach((value) => {
+          emergencyCallList
+              .add({"name": value.id, "number": value.get("number")})
+        });
+    return emergencyCallList;
+  }
+
   @override
-  Widget build(BuildContext context) {
+  void initState() {
+    super.initState();
+    setFirstResponderProvider();
+    getEmergencyCallList();
+  }
+
+  void setFirstResponderProvider() {
     Map<String, String> firstResponder =
         Provider.of<ContactInfo>(context, listen: false).getResponder();
     if (!firstResponder.isEmpty && flag) {
@@ -42,6 +73,10 @@ class _SetButtonState extends State<SetButton> {
       flag = false; //최초 한번만 실행되도록 설정
     }
     if (!_nameList.isEmpty) _selectedContact = _nameList[0];
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         SetPageRadioButton(
@@ -110,59 +145,65 @@ class _SetButtonState extends State<SetButton> {
             decoration: BoxDecoration(
                 color: b25Color, borderRadius: BorderRadius.circular(25)),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _nameList.isEmpty
                     ? Text('비상연락처를 등록해주세요.')
-                    : Row(
-                        children: [
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton(
-                              value: _selectedContact,
-                              items: _nameList.map(
-                                (value) {
-                                  return DropdownMenuItem(
-                                    value: value,
-                                    child: firstResponderText(
-                                        _nameList, _contactList),
-                                    // Text("${value} ${_contactList[0]}"),
-                                  );
-                                },
-                              ).toList(),
-                              onChanged: (value) {
-                                setState(
-                                  () {
-                                    _selectedContact = value!;
-                                  },
-                                );
-                              },
-                            ),
+                    : Flexible(
+                        child: MultiSelectDialogField(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: b25Color),
+                            borderRadius: BorderRadius.circular(5),
                           ),
-                          // Container(
-                          //   margin: EdgeInsets.symmetric(horizontal: 5.w),
-                          //   child: DropdownButtonHideUnderline(
-                          //     child: DropdownButton(
-                          //       value: _selectedAlert,
-                          //       items: _valueList.map(
-                          //         (value) {
-                          //           return DropdownMenuItem(
-                          //             value: value,
-                          //             child: Text(value),
-                          //           );
-                          //         },
-                          //       ).toList(),
-                          //       onChanged: (value) {
-                          //         setState(
-                          //           () {
-                          //             _selectedAlert = value!;
-                          //           },
-                          //         );
-                          //       },
-                          //     ),
-                          //   ),
-                          // ),
-                        ],
+                          items: emergencyCallList
+                              .map((e) => MultiSelectItem(e, e["name"]))
+                              .toList(),
+                          chipDisplay: MultiSelectChipDisplay(
+                            items: _selectedEmergencyCallList
+                                .map((e) => MultiSelectItem(e, e["name"]))
+                                .toList(),
+                            onTap: (value) {
+                              setState(() {
+                                _selectedEmergencyCallList.remove(value);
+                              });
+                            },
+                            chipColor: bColor,
+                            textStyle: TextStyle(color: Colors.white),
+                          ),
+                          listType: MultiSelectListType.LIST,
+                          onConfirm: (values) {
+                            _selectedEmergencyCallList = values;
+                          },
+                          buttonIcon: Icon(
+                            Icons.arrow_drop_down,
+                            color: bColor,
+                          ),
+                          buttonText: Text(
+                            "보호자를 선택해주세요.",
+                            style: TextStyle(color: bColor),
+                          ),
+                          dialogHeight: 25.h,
+                          title: Text("삭제할 비상 연락망을 선택해주세요.",
+                              style: TextStyle(color: bColor),
+                              textAlign: TextAlign.center),
+                          confirmText: Text(
+                            "확인",
+                            style: TextStyle(color: bColor),
+                          ),
+                          cancelText: Text(
+                            "취소",
+                            style: TextStyle(color: bColor),
+                          ),
+                        ),
                       ),
+                IconButton(
+                  icon: Icon(Icons.delete_sweep_rounded),
+                  onPressed: () {
+                    setState(() {
+                      UserService()
+                          .deleteFirstResponderList(_selectedEmergencyCallList);
+                    });
+                  },
+                ),
                 IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
@@ -268,25 +309,6 @@ class _SetButtonState extends State<SetButton> {
           ),
         );
       },
-    );
-  }
-
-  Widget firstResponderText(List name, List contact) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Text(name[0]),
-          Text(contact[0]),
-          ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  UserService().deleteFirstResponder(name[0]);
-                });
-              },
-              child: Text("삭제")),
-        ],
-      ),
     );
   }
 
