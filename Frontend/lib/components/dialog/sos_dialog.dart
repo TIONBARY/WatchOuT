@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
+import 'package:slide_countdown/slide_countdown.dart';
 
 class SOSDialog extends StatelessWidget {
   SOSDialog();
@@ -17,7 +18,14 @@ class SOSDialog extends StatelessWidget {
           children: [
             Title(
               color: bColor,
-              child: Text("5초 후 긴급 상황을 전파합니다."),
+              child: Column(
+                children: [
+                  SlideCountdown(
+                    duration: const Duration(seconds: 5),
+                  ),
+                  Text("\n긴급 상황을 전파합니다."),
+                ],
+              ),
             ),
             Image.asset("assets/siren.png", height: 6.h),
             ElevatedButton(
