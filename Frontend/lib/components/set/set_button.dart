@@ -32,7 +32,6 @@ class _SetButtonState extends State<SetButton> {
   String _addName = '';
   bool flag = true;
 
-  // Button context에서 Navigator.pop(context)로 해당 context를 벗어나면, setState의 re-rendering 적용이 안되는 듯?
   @override
   Widget build(BuildContext context) {
     Map<String, String> firstResponder =
@@ -58,9 +57,9 @@ class _SetButtonState extends State<SetButton> {
         Provider.of<SwitchBools>(context, listen: true).useWearOS
             ? HeartRateView(
                 margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-                heartRate:
-                    Provider.of<HeartRateProvider>(context, listen: false)
-                        .heartRate)
+                provider:
+                    Provider.of<HeartRateProvider>(context, listen: false),
+              )
             : Container(),
         SetPageRadioButton(
           margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
@@ -124,7 +123,9 @@ class _SetButtonState extends State<SetButton> {
                                 (value) {
                                   return DropdownMenuItem(
                                     value: value,
-                                    child: Text(value),
+                                    child: firstResponderText(
+                                        _nameList, _contactList),
+                                    // Text("${value} ${_contactList[0]}"),
                                   );
                                 },
                               ).toList(),
@@ -137,29 +138,29 @@ class _SetButtonState extends State<SetButton> {
                               },
                             ),
                           ),
-                          Container(
-                            margin: EdgeInsets.symmetric(horizontal: 5.w),
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton(
-                                value: _selectedAlert,
-                                items: _valueList.map(
-                                  (value) {
-                                    return DropdownMenuItem(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  },
-                                ).toList(),
-                                onChanged: (value) {
-                                  setState(
-                                    () {
-                                      _selectedAlert = value!;
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                          ),
+                          // Container(
+                          //   margin: EdgeInsets.symmetric(horizontal: 5.w),
+                          //   child: DropdownButtonHideUnderline(
+                          //     child: DropdownButton(
+                          //       value: _selectedAlert,
+                          //       items: _valueList.map(
+                          //         (value) {
+                          //           return DropdownMenuItem(
+                          //             value: value,
+                          //             child: Text(value),
+                          //           );
+                          //         },
+                          //       ).toList(),
+                          //       onChanged: (value) {
+                          //         setState(
+                          //           () {
+                          //             _selectedAlert = value!;
+                          //           },
+                          //         );
+                          //       },
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                 IconButton(
@@ -173,6 +174,25 @@ class _SetButtonState extends State<SetButton> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget firstResponderText(List name, List contact) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(name[0]),
+          Text(contact[0]),
+          ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  UserService().deleteFirstResponder(name[0]);
+                });
+              },
+              child: Text("삭제")),
+        ],
+      ),
     );
   }
 

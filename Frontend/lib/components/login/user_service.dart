@@ -22,7 +22,6 @@ class UserService {
     DocumentReference<Map<String, dynamic>> documentReference =
         db.collection("user").doc("${user?.uid}");
     Map<String, dynamic>? documentData;
-    // Map<String, dynamic>? documentData;
     var docSnapshot = await documentReference.get();
     if (docSnapshot.exists) {
       documentData = docSnapshot.data();
@@ -55,7 +54,21 @@ class UserService {
         .doc("${user?.uid}")
         .collection("firstResponder")
         .doc(name)
-        .set({"number": number, "phone": false, "message": false});
+        .set({
+      "number": number,
+      // "phone": false,
+      // "message": false,
+      // "activated": false
+    });
+  }
+
+  void deleteFirstResponder(String name) {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("firstResponder")
+        .doc(name)
+        .delete();
   }
 
   void deleteUser() {

@@ -71,9 +71,14 @@ dependencies:
   snapping_sheet: ^3.1.0
   image_picker: ^0.8.5+3
   usage_stats: ^1.2.0
+  gallery_saver: ^2.3.2
+
 
   app_settings: ^4.1.8
   quick_actions: ^1.0.1
+  slide_countdown: ^0.3.4
+  http_parser: ^4.0.2
+  syncfusion_flutter_sliders: ^20.3.52
 
 dev_dependencies:
   flutter_test:
@@ -104,6 +109,7 @@ flutter:
   assets:
     - .env
     - assets/
+    - assets/sounds/
   fonts:
     - family: HanSan
       fonts:
