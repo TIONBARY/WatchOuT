@@ -14,3 +14,5 @@ const nColor = Color(0xFF2B648F);
 const n75Color = Color(0xBF2B648F);
 const n50Color = Color(0x802B648F);
 const n25Color = Color(0x402B648F);
+
+const sbColor = Color(0xFFb7c3f3);
