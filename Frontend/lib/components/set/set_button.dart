@@ -17,7 +17,6 @@ import '../wear/heart_rate_view.dart';
 
 final isCheck = IsCheck.instance;
 
-// db와 local list 둘 다 넣고 빼고 해줘야됨
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
 
@@ -28,6 +27,8 @@ class SetButton extends StatefulWidget {
 class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
+  final List<String> _valueList = ['문자', '전화', '사용안함'];
+  String _selectedAlert = '문자';
   List<String> _contactList = [];
   List<String> _nameList = [];
   String _selectedContact = '';
@@ -91,9 +92,9 @@ class _SetButtonState extends State<SetButton> {
         Provider.of<SwitchBools>(context, listen: true).useWearOS
             ? HeartRateView(
                 margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-                heartRate:
-                    Provider.of<HeartRateProvider>(context, listen: false)
-                        .heartRate)
+                provider:
+                    Provider.of<HeartRateProvider>(context, listen: false),
+              )
             : Container(),
         SetPageRadioButton(
           margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
@@ -140,7 +141,7 @@ class _SetButtonState extends State<SetButton> {
         Flexible(
           child: Container(
             padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
             decoration: BoxDecoration(
                 color: b25Color, borderRadius: BorderRadius.circular(25)),
             child: Row(
@@ -213,7 +214,101 @@ class _SetButtonState extends State<SetButton> {
             ),
           ),
         ),
+        Flexible(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+            height: 5.5.h,
+            width: double.maxFinite,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: bColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              onPressed: () {
+                UserDeleteDialog(context);
+              },
+              child: Text(
+                '회원 탈퇴',
+                style: TextStyle(
+                  color: yColor,
+                ),
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Future<void> UserDeleteDialog(BuildContext context) async {
+    final _SignupKey = GlobalKey<FormState>();
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+            height: 16.h,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Title(
+                  color: bColor,
+                  child: Text(
+                    'WatchOuT을 \n정말 탈퇴하시겠습니까?',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Container(
+                  width: 40.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: yColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          UserService().deleteUser();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '확인',
+                          style: TextStyle(
+                            color: bColor,
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: b25Color,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '취소',
+                          style: TextStyle(color: bColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -340,25 +435,3 @@ class _SetButtonState extends State<SetButton> {
     );
   }
 }
-
-// ListView.builder(
-//     shrinkWrap: true,
-//     scrollDirection: Axis.vertical,
-//     itemCount: _nameList.length,
-//     itemBuilder: (BuildContext context, int idx) {
-//       return Row(
-//         children: [
-//           Text("${_nameList[idx]} "),
-//           Text("${_contactList[idx]} "),
-//           ElevatedButton(
-//               onPressed: () {
-//                 setState(() {
-//                   UserService()
-//                       .deleteFirstResponder(
-//                           _nameList[idx]);
-//                 });
-//               },
-//               child: Text("삭제"))
-//         ],
-//       );
-//     })

@@ -18,15 +18,14 @@ class ApiKakao {
     return result;
   }
 
-  Future<String> searchAddr(String lat, String lng) async {
+  Future<Map<String, dynamic>> searchAddr(String lat, String lng) async {
     final httpUri = Uri.parse(api_url + "/geo/coord2regioncode")
         .replace(queryParameters: {'y': lat, 'x': lng});
     await dotenv.load();
     final kakaoRestAPIKey = dotenv.get('kakaoRestAPIKey');
     final response = await http
         .get(httpUri, headers: {"Authorization": "KakaoAK ${kakaoRestAPIKey}"});
-    final result =
-        json.decode(response.body)["documents"][0]['region_2depth_name'];
+    final result = json.decode(response.body)["documents"][0];
     return result;
   }
 

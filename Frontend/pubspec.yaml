@@ -69,16 +69,17 @@ dependencies:
   assets_audio_player: ^3.0.5
   volume_control: ^0.1.5
   snapping_sheet: ^3.1.0
+  image_picker: ^0.8.5+3
   usage_stats: ^1.2.0
-  image_picker: ^0.8.4+2
+  firebase_storage: ^10.3.11
   gallery_saver: ^2.3.2
-
-
   app_settings: ^4.1.8
   quick_actions: ^1.0.1
   slide_countdown: ^0.3.4
   multiselect: ^0.0.7
   multi_dropdown: ^1.0.2
+  http_parser: ^4.0.2
+  syncfusion_flutter_sliders: ^20.3.52
 
 dev_dependencies:
   flutter_test:
@@ -110,6 +111,12 @@ flutter:
     - .env
     - assets/
     - assets/sounds/
+    - assets/icons/
+    - assets/car_accident/
+    - assets/kidnap/
+    - assets/natural_disaster/
+    - assets/safety_accident/
+    - assets/stalking/
   fonts:
     - family: HanSan
       fonts:

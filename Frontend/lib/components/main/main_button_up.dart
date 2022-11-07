@@ -11,6 +11,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
+import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
@@ -48,6 +49,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
   late BuildContext dialogContext;
   final assetsAudioPlayer = AssetsAudioPlayer();
   bool useSiren = false;
+  String address = "";
 
   Future _getKakaoKey() async {
     await dotenv.load();
@@ -82,6 +84,26 @@ class _MainButtonUpState extends State<MainButtonUp> {
     }
   }
 
+  void _sendMMS(XFile file, String message, List<String> recipients) async {
+    Map<String, dynamic> _result =
+        await apiMessage.sendMMSMessage(file, recipients, message);
+    if (_result["statusCode"] == 200) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '신고 메세지를 전송했습니다.', null);
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, _result["message"], null);
+          });
+    }
+  }
+
   void sendEmergencyMessage() async {
     prepareMessage();
     timer = Timer(Duration(seconds: 5), () {
@@ -103,12 +125,16 @@ class _MainButtonUpState extends State<MainButtonUp> {
     });
   }
 
-  void prepareMessage() async {
+  Future<void> getCurrentLocation() async {
     Position position = await Geolocator.getCurrentPosition();
     initLat = position.latitude;
     initLon = position.longitude;
-    String address =
+    address =
         await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
+  }
+
+  void prepareMessage() async {
+    await getCurrentLocation();
     message =
         "${user?["name"]} 님이 WatchOut 앱에서 SOS 버튼을 눌렀습니다. 긴급 조치가 필요합니다. \n현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
     await getEmergencyCallList();
@@ -134,6 +160,40 @@ class _MainButtonUpState extends State<MainButtonUp> {
     return emergencyCallList;
   }
 
+  void sendReportMessage(XFile file) async {
+    await getCurrentLocation();
+    message =
+        "${user?["name"]} 님이 WatchOut 앱에서 신고 버튼을 눌렀습니다. 현재 상황은 위 사진과 같습니다. 긴급 조치가 필요합니다. \n신고자 번호 : ${user?["phone"]}\n현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+    recipients = [user?["phone"]];
+    _sendMMS(file, message, recipients);
+  }
+
+  void _takePhoto() async {
+    ImagePicker()
+        .getImage(
+            source: ImageSource.camera,
+            maxHeight: 1500,
+            maxWidth: 1500,
+            imageQuality: 50)
+        .then((PickedFile? recordedImage) {
+      if (recordedImage != null) {
+        GallerySaver.saveImage(recordedImage.path, albumName: 'Watch OuT')
+            .then((bool? success) {});
+
+        XFile file = XFile(recordedImage!.path);
+        sendReportMessage(file);
+      }
+    });
+  }
+
+  void _showReportDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ReportDialog(_takePhoto);
+        });
+  }
+
   void _checkForWidgetLaunch() {
     HomeWidget.initiallyLaunchedFromHomeWidget().then(_launchedFromWidget);
   }
@@ -156,16 +216,14 @@ class _MainButtonUpState extends State<MainButtonUp> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        MainPageTextButton(
-            flexs: 2,
-            margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 1.h),
-            boxcolors: Colors.red,
-            onpresseds: () {
-              sendEmergencyMessage();
-            },
-            texts: 'SOS',
-            textcolors: Colors.white,
-            fontsizes: 40.sp),
+        IconButton(
+          onPressed: () {
+            return sendEmergencyMessage();
+          },
+          icon: Image.asset("assets/icons/siren_logo.png"),
+          iconSize: 200,
+          alignment: Alignment(-0.55, 0),
+        ),
         Flexible(
             child: Column(
           children: [
@@ -173,7 +231,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 flexs: 1,
                 margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
                 boxcolors: Colors.black12,
-                onpresseds: _takePhoto,
+                onpresseds: _showReportDialog,
                 texts: '신고',
                 textcolors: bColor,
                 fontsizes: 12.5.sp),
@@ -213,15 +271,4 @@ class _MainButtonUpState extends State<MainButtonUp> {
       ],
     );
   }
-}
-
-void _takePhoto() async {
-  ImagePicker()
-      .getImage(source: ImageSource.camera)
-      .then((PickedFile? recordedImage) {
-    if (recordedImage != null) {
-      GallerySaver.saveImage(recordedImage.path, albumName: 'Watch OuT')
-          .then((bool? success) {});
-    }
-  });
 }

@@ -35,7 +35,7 @@ class UserService {
       "googleUID": "${user?.uid}",
       "profileImage": "${user?.photoURL}",
       "phone": "01012345678",
-      "birth": "12",
+      "birth": "000101",
       "blocked": false,
       "activated": false,
       "region": "12345", //(시군구번호)
@@ -76,6 +76,16 @@ class UserService {
     authentication.signOut();
   }
 
+  void updateUser(
+      String photoUrl,
+      String phone,
+      String birth,
+      String region,
+      String nickname,
+      String name,
+      String gender,
+      String latitude,
+      String longitude) {
   void deleteFirstResponderList(List<Map<String, dynamic>> selectedList) {
     for (int i = 0; i < selectedList.length; i++) {
       db
@@ -97,6 +107,8 @@ class UserService {
       "nickname": nickname,
       "name": name,
       "gender": gender,
+      "latitude": latitude,
+      "longitude": longitude,
     });
   }
 }

@@ -28,7 +28,7 @@ class SignUpTextField extends StatelessWidget {
         autocorrect: false,
         validator: validations,
         keyboardType: keyboardtypes,
-        textInputAction: TextInputAction.next,
+        textInputAction: TextInputAction.done,
         cursorColor: bColor,
         decoration: InputDecoration(
           isCollapsed: true,
