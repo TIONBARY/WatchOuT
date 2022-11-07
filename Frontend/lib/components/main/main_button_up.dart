@@ -205,11 +205,24 @@ class _MainButtonUpState extends State<MainButtonUp> {
     }
   }
 
+  void _widgetClicked(Uri? uri) {
+    if (uri?.host == 'sos') {
+      sendEmergencyMessage();
+      emergencyFromWidget = true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getKakaoKey();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _checkForWidgetLaunch();
+    HomeWidget.widgetClicked.listen(_widgetClicked);
   }
 
   @override
