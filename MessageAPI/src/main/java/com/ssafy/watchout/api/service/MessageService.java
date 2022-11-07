@@ -9,5 +9,5 @@ import com.ssafy.watchout.api.domain.dto.TokenDto;
 public interface MessageService {
 	TokenDto authorize() throws IOException;
 	void sendMessage(String accessToken, MessageRequestDto requestDto) throws IOException;
-	void sendMMSMessage(String accessToken, MMSMessageRequestDto requestDto) throws IOException;
+	void sendMMSMessage(String accessToken, MMSMessageRequestDto requestDto) throws Exception;
 }

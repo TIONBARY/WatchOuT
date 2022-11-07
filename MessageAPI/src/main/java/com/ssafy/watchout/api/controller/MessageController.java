@@ -43,7 +43,7 @@ public class MessageController {
 	
 	@PostMapping("/mms")
 	public ResponseEntity<BaseResponseDto> sendMMSMessage(@RequestPart(value = "message") MMSMessageRequestDto requestDto,
-			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws IOException {
+			@RequestPart(value = "files", required = false) List<MultipartFile> files) throws Exception {
 		TokenDto token = messageService.authorize();
 		String accessToken = token.getAccessToken();
 		try {
