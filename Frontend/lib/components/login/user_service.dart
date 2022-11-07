@@ -71,6 +71,17 @@ class UserService {
         .delete();
   }
 
+  void deleteFirstResponderList(List<Map<String, dynamic>> data) {
+    for (int i = 0; i < data.length; i++) {
+      db
+          .collection("user")
+          .doc("${user?.uid}")
+          .collection("firstResponder")
+          .doc(data[i]["name"])
+          .delete();
+    }
+  }
+
   void deleteUser() {
     db.collection("user").doc("${user?.uid}").delete();
     authentication.signOut();
@@ -86,29 +97,30 @@ class UserService {
       String gender,
       String latitude,
       String longitude) {
-  void deleteFirstResponderList(List<Map<String, dynamic>> selectedList) {
-    for (int i = 0; i < selectedList.length; i++) {
-      db
-          .collection("user")
-          .doc("${user?.uid}")
-          .collection("firstResponder")
-          .doc(selectedList[i]["name"])
-          .delete();
+    void deleteFirstResponderList(List<Map<String, dynamic>> selectedList) {
+      for (int i = 0; i < selectedList.length; i++) {
+        db
+            .collection("user")
+            .doc("${user?.uid}")
+            .collection("firstResponder")
+            .doc(selectedList[i]["name"])
+            .delete();
+      }
     }
-  }
 
-  void updateUser(String photoUrl, String phone, String birth, String region,
-      String nickname, String name, String gender) {
-    db.collection("user").doc("${user?.uid}").update({
-      "profileImage": photoUrl,
-      "phone": phone,
-      "birth": birth,
-      "region": region,
-      "nickname": nickname,
-      "name": name,
-      "gender": gender,
-      "latitude": latitude,
-      "longitude": longitude,
-    });
+    void updateUser(String photoUrl, String phone, String birth, String region,
+        String nickname, String name, String gender) {
+      db.collection("user").doc("${user?.uid}").update({
+        "profileImage": photoUrl,
+        "phone": phone,
+        "birth": birth,
+        "region": region,
+        "nickname": nickname,
+        "name": name,
+        "gender": gender,
+        "latitude": latitude,
+        "longitude": longitude,
+      });
+    }
   }
 }
