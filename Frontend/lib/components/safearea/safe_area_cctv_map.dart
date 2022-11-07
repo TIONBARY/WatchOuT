@@ -12,6 +12,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/components/dialog/access_code_message_choice_list_dialog.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:http/http.dart' as http;
@@ -100,7 +101,7 @@ String area = "";
 
 ScreenshotController screenshotController = ScreenshotController();
 
-late final Future? myFuture = _future();
+Future? myFuture;
 
 Map<String, dynamic> newValue = {};
 
@@ -119,6 +120,109 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   @override
   void initState() {
     super.initState();
+    myFuture ??= _future();
+  }
+
+  Future _future() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+    WidgetsFlutterBinding.ensureInitialized();
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 1,
+        intervalDuration: const Duration(milliseconds: 1000),
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS) {
+      locationSettings = AppleSettings(
+        accuracy: LocationAccuracy.high,
+        activityType: ActivityType.fitness,
+        distanceFilter: 10,
+        pauseLocationUpdatesAutomatically: true,
+        showBackgroundLocationIndicator: false,
+      );
+    } else {
+      locationSettings = LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 10,
+      );
+    }
+    _backgroundPositionStream?.cancel();
+    _currentPositionStream =
+        Geolocator.getPositionStream(locationSettings: locationSettings)
+            .listen((Position? position) {
+      if (position != null) {
+        initLat = position!.latitude;
+        initLon = position!.longitude;
+      }
+      if (_mapController != null) {
+        _mapController?.runJavascript('''
+          markers[markers.length-1].setMap(null);
+          addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+        ''');
+      }
+    });
+    Position position = await Geolocator.getCurrentPosition();
+    await dotenv.load();
+    kakaoMapKey = dotenv.get('kakaoMapAPIKey');
+    cctvAPIKey = dotenv.get('cctvAPIKey');
+    openAPIKey = dotenv.get('openAPIKey');
+    initLat = position.latitude;
+    initLon = position.longitude;
+    Map<String, dynamic> response =
+        await apiKakao.searchAddr(initLat.toString(), initLon.toString());
+    bool isInSeoul = response["region_1depth_name"] == "서울특별시";
+    area = response["region_2depth_name"];
+    if (!isInSeoul) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '안전 지대 정보는 서울에서만 제공됩니다.', null);
+          });
+      return kakaoMapKey;
+    }
+    await _search();
+    // await registerCCTV();
+    // await registerSafeOpenBox();
+    // await registerEmergencyBell();
+    await _searchSafeArea();
+    await _searchSafeOpenBox();
+    await _searchEmergencyBell();
+    return kakaoMapKey; // 5초 후 '짜잔!' 리턴
+  }
+
+  Future<void> updateCurrLocation() async {
+    Map<String, dynamic> response =
+        await apiKakao.searchAddr(initLat.toString(), initLon.toString());
+    area = response["region_2depth_name"];
+    bool isInSeoul = response["region_1depth_name"] == "서울특별시";
+    if (!isInSeoul) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '안전 지대 정보는 서울에서만 제공됩니다.', null);
+          });
+      return;
+    }
+    await _search();
+    await _searchSafeArea();
+    _mapController?.runJavascript('''
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(null);
+    }
+    markers = [];
+    _cctvList = ${json.encode({"list": sortedcctvList})}["list"];
+    for(var i = 0 ; i < ${sortedcctvList.length} ; i++){
+      addMarker(new kakao.maps.LatLng(_cctvList[i]['WGSXPT'], _cctvList[i]['WGSYPT']));
+    }
+    addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+    var _safeAreaCoordList = ${json.encode({
+          "list": safeAreaCoordList
+        })}["list"];
+    createSafeAreaMarkers();
+  ''');
   }
 
   void startWalk(Position position, _mapController) {
@@ -654,63 +758,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   }
 }
 
-Future _future() async {
-  LocationPermission permission = await Geolocator.requestPermission();
-  WidgetsFlutterBinding.ensureInitialized();
-  if (defaultTargetPlatform == TargetPlatform.android) {
-    locationSettings = AndroidSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 1,
-      intervalDuration: const Duration(milliseconds: 1000),
-    );
-  } else if (defaultTargetPlatform == TargetPlatform.iOS ||
-      defaultTargetPlatform == TargetPlatform.macOS) {
-    locationSettings = AppleSettings(
-      accuracy: LocationAccuracy.high,
-      activityType: ActivityType.fitness,
-      distanceFilter: 10,
-      pauseLocationUpdatesAutomatically: true,
-      showBackgroundLocationIndicator: false,
-    );
-  } else {
-    locationSettings = LocationSettings(
-      accuracy: LocationAccuracy.high,
-      distanceFilter: 10,
-    );
-  }
-  _backgroundPositionStream?.cancel();
-  _currentPositionStream =
-      Geolocator.getPositionStream(locationSettings: locationSettings)
-          .listen((Position? position) {
-    if (position != null) {
-      initLat = position!.latitude;
-      initLon = position!.longitude;
-    }
-    if (_mapController != null) {
-      _mapController?.runJavascript('''
-          markers[markers.length-1].setMap(null);
-          addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-        ''');
-    }
-  });
-  Position position = await Geolocator.getCurrentPosition();
-  await dotenv.load();
-  kakaoMapKey = dotenv.get('kakaoMapAPIKey');
-  cctvAPIKey = dotenv.get('cctvAPIKey');
-  openAPIKey = dotenv.get('openAPIKey');
-  initLat = position.latitude;
-  initLon = position.longitude;
-  area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
-  // await _search();
-  // // await registerCCTV();
-  // // await registerSafeOpenBox();
-  // // await registerEmergencyBell();
-  // await _searchSafeArea();
-  // await _searchSafeOpenBox();
-  // await _searchEmergencyBell();
-  return kakaoMapKey; // 5초 후 '짜잔!' 리턴
-}
-
 Future<void> registerCCTV() async {
   for (int i = 0; i < guName.length; i++) {
     cctvList = [];
@@ -886,27 +933,6 @@ double calculateDistance(lat1, lon1, lat2, lon2) {
   return 12742 * asin(sqrt(a));
 }
 
-Future<void> updateCurrLocation() async {
-  area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
-  await _search();
-  await _searchSafeArea();
-  _mapController?.runJavascript('''
-    for (var i = 0; i < markers.length; i++) {
-      markers[i].setMap(null);
-    }
-    markers = [];
-    _cctvList = ${json.encode({"list": sortedcctvList})}["list"];
-    for(var i = 0 ; i < ${sortedcctvList.length} ; i++){
-      addMarker(new kakao.maps.LatLng(_cctvList[i]['WGSXPT'], _cctvList[i]['WGSYPT']));
-    }
-    addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-    var _safeAreaCoordList = ${json.encode({
-        "list": safeAreaCoordList
-      })}["list"];
-    createSafeAreaMarkers();
-  ''');
-}
-
 String formatDateTime(String inputTime) {
   String converted = inputTime.trim().split(".").first;
   converted = converted.replaceAll("-", "");
@@ -952,7 +978,7 @@ Future<Position> _determinePosition() async {
   return await _geolocatorPlatform.getCurrentPosition();
 }
 
-final _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+final _chars = '1234567890';
 Random _rnd = Random();
 
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
