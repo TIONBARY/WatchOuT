@@ -4,7 +4,6 @@ import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
-import 'package:homealone/pages/safe_area_cctv_page.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -107,19 +106,12 @@ class _MainButtonDownState extends State<MainButtonDown> {
             ],
           ),
         ),
-        MainPageTextButton(
-            flexs: 2,
-            margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 1.h),
-            boxcolors: bColor,
-            onpresseds: () {
-              // Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //         builder: (context) => SafeAreaCCTVMapPage()));
-            },
-            texts: 'CCTV',
-            textcolors: Colors.white,
-            fontsizes: 40.sp),
+        IconButton(
+          onPressed: () {},
+          icon: Image.asset("assets/icons/cctv_logo.png"),
+          iconSize: 200,
+          alignment: Alignment(0.55, 0),
+        ),
       ],
     );
   }

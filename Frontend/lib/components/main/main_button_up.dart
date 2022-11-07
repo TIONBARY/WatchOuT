@@ -216,16 +216,14 @@ class _MainButtonUpState extends State<MainButtonUp> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        MainPageTextButton(
-            flexs: 2,
-            margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 1.h),
-            boxcolors: Colors.red,
-            onpresseds: () {
-              sendEmergencyMessage();
-            },
-            texts: 'SOS',
-            textcolors: Colors.white,
-            fontsizes: 40.sp),
+        IconButton(
+          onPressed: () {
+            return sendEmergencyMessage();
+          },
+          icon: Image.asset("assets/icons/siren_logo.png"),
+          iconSize: 200,
+          alignment: Alignment(-0.55, 0),
+        ),
         Flexible(
             child: Column(
           children: [

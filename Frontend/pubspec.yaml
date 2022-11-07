@@ -109,6 +109,7 @@ flutter:
     - .env
     - assets/
     - assets/sounds/
+    - assets/icons/
   fonts:
     - family: HanSan
       fonts:
