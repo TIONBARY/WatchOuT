@@ -274,7 +274,7 @@ Future<void> onStart(ServiceInstance service) async {
     (timer) {
       Future<int> count = initUsage();
       count.then((value) {
-        print('24시간 이내에 사용한 앱 갯수 : ${value}');
+        print('24시간 이내에 사용한 앱 갯수 : $value');
         if (value == 0)
           print('비상!!!! 초비상!!!!');
         else
@@ -294,15 +294,36 @@ Future<int> initUsage() async {
   DateTime endDate = DateTime.now();
   DateTime startDate = endDate.subtract(Duration(days: 1));
 
-  List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
+  // List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
+  // for (var i in t) {
+  //   DateTime lastUsed =
+  //       DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeUsed!)).toUtc();
+  //   if (lastUsed.isAfter(startDate)) count++;
+  // }
 
-  for (var i in t) {
+  List<ConfigurationInfo> t2 =
+      await UsageStats.queryConfiguration(startDate, endDate);
+  for (var i in t2) {
     DateTime lastUsed =
-        DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeUsed!)).toUtc();
-    if (lastUsed.isAfter(startDate)) {
-      count++;
-    }
+        DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeActive!))
+            .toUtc();
+    if (lastUsed.isAfter(startDate)) count++;
+    print('================${i.configuration}');
+    print('----------------${i.totalTimeActive}');
+    print('-=-=-=-=-=-=-=-=${i.activationCount}');
   }
+
+  // List<EventInfo> t3 = await UsageStats.queryEventStats(startDate, endDate);
+  // for (var i in t3) {
+  //   DateTime lastUsed =
+  //       DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastEventTime!))
+  //           .toUtc();
+  //   if (lastUsed.isAfter(startDate)) count++;
+  //   print('=============${i.count}');
+  //   print('-------------${i.eventType}');
+  //   print('=-=-=-=-=-=-=${i.totalTime}');
+  // }
+
   return count;
 }
 
