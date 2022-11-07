@@ -294,17 +294,15 @@ Future<int> initUsage() async {
   DateTime endDate = DateTime.now();
   DateTime startDate = endDate.subtract(Duration(days: 1));
 
-  List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
-  List<ConfigurationInfo> t2 =
-      await UsageStats.queryConfiguration(startDate, endDate);
-  List<EventInfo> t3 = await UsageStats.queryEventStats(startDate, endDate);
-
+  // List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
   // for (var i in t) {
   //   DateTime lastUsed =
   //       DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeUsed!)).toUtc();
   //   if (lastUsed.isAfter(startDate)) count++;
   // }
 
+  List<ConfigurationInfo> t2 =
+      await UsageStats.queryConfiguration(startDate, endDate);
   for (var i in t2) {
     DateTime lastUsed =
         DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeActive!))
@@ -315,6 +313,7 @@ Future<int> initUsage() async {
     print('-=-=-=-=-=-=-=-=${i.activationCount}');
   }
 
+  // List<EventInfo> t3 = await UsageStats.queryEventStats(startDate, endDate);
   // for (var i in t3) {
   //   DateTime lastUsed =
   //       DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastEventTime!))
