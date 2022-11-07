@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:homealone/api/api_kakao.dart';
@@ -15,6 +16,7 @@ import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:homealone/providers/switch_provider.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:volume_control/volume_control.dart';
@@ -171,7 +173,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 flexs: 1,
                 margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
                 boxcolors: Colors.black12,
-                onpresseds: () {},
+                onpresseds: _takePhoto,
                 texts: '신고',
                 textcolors: bColor,
                 fontsizes: 12.5.sp),
@@ -211,4 +213,15 @@ class _MainButtonUpState extends State<MainButtonUp> {
       ],
     );
   }
+}
+
+void _takePhoto() async {
+  ImagePicker()
+      .getImage(source: ImageSource.camera)
+      .then((PickedFile? recordedImage) {
+    if (recordedImage != null) {
+      GallerySaver.saveImage(recordedImage.path, albumName: 'Watch OuT')
+          .then((bool? success) {});
+    }
+  });
 }
