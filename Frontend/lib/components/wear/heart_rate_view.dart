@@ -79,6 +79,7 @@ class _HeartRateViewState extends State<HeartRateView> {
               values: _values,
               activeColor: yColor,
               inactiveColor: y50Color,
+              shouldAlwaysShowTooltip: true,
               showLabels: true,
               enableTooltip: true,
               onChanged: (SfRangeValues values) {

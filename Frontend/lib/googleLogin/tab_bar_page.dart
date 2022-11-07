@@ -43,74 +43,76 @@ class _TabNavBarState extends State<TabNavBar> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-        onWillPop: () async {
-          bool result = doubleClickPop();
-          return await Future.value(result);
-        },
-        child: DefaultTabController(
-          length: 4,
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: AppBar(
-              title: Text('WatchOuT',
-                  style: TextStyle(color: yColor, fontSize: 20.sp)),
-              centerTitle: true,
-              backgroundColor: bColor,
-              actions: [
-                IconButton(
-                  icon: Icon(
-                    Icons.exit_to_app_sharp,
-                    color: Colors.white,
+      onWillPop: () async {
+        bool result = doubleClickPop();
+        return await Future.value(result);
+      },
+      child: DefaultTabController(
+        length: 4,
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          appBar: AppBar(
+            title: Text('WatchOuT',
+                style: TextStyle(color: yColor, fontSize: 20.sp)),
+            centerTitle: true,
+            backgroundColor: bColor,
+            actions: [
+              IconButton(
+                icon: Icon(
+                  Icons.exit_to_app_sharp,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  AuthService().signOut();
+                  Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                          builder: (BuildContext context) => HomePage()),
+                      (route) => false);
+                },
+              )
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Container(
+                  height: kToolbarHeight - 8.0,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  onPressed: () {
-                    AuthService().signOut();
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (BuildContext context) => HomePage()),
-                        (route) => false);
-                  },
-                )
+                  child: TabBar(
+                    labelColor: yColor,
+                    indicator: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        color: _selectedColor),
+                    unselectedLabelColor: bColor,
+                    tabs: [
+                      Tab(text: '홈'),
+                      Tab(text: '안전 지도'),
+                      Tab(text: '귀가 공유'),
+                      Tab(text: '설정'),
+                    ],
+                  ),
+                ),
+                const Expanded(
+                  child: TabBarView(
+                    physics: RangeMaintainingScrollPhysics(),
+                    children: [
+                      MainPage(),
+                      SafeAreaCCTVMapPage(),
+                      RecordPage(),
+                      SetPage(),
+                    ],
+                  ),
+                ),
               ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Container(
-                    height: kToolbarHeight - 8.0,
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: TabBar(
-                      labelColor: yColor,
-                      indicator: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          color: _selectedColor),
-                      unselectedLabelColor: bColor,
-                      tabs: [
-                        Tab(text: '홈'),
-                        Tab(text: '안전 지도'),
-                        Tab(text: '귀가 공유'),
-                        Tab(text: '설정'),
-                      ],
-                    ),
-                  ),
-                  const Expanded(
-                    child: TabBarView(
-                      children: [
-                        MainPage(),
-                        SafeAreaCCTVMapPage(),
-                        RecordPage(),
-                        SetPage(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
