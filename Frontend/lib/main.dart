@@ -308,9 +308,6 @@ Future<int> initUsage() async {
         DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeActive!))
             .toUtc();
     if (lastUsed.isAfter(startDate)) count++;
-    print('================${i.configuration}');
-    print('----------------${i.totalTimeActive}');
-    print('-=-=-=-=-=-=-=-=${i.activationCount}');
   }
 
   // List<EventInfo> t3 = await UsageStats.queryEventStats(startDate, endDate);
@@ -319,9 +316,6 @@ Future<int> initUsage() async {
   //       DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastEventTime!))
   //           .toUtc();
   //   if (lastUsed.isAfter(startDate)) count++;
-  //   print('=============${i.count}');
-  //   print('-------------${i.eventType}');
-  //   print('=-=-=-=-=-=-=${i.totalTime}');
   // }
 
   return count;
