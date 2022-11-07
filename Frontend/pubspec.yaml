@@ -110,6 +110,11 @@ flutter:
     - assets/
     - assets/sounds/
     - assets/icons/
+    - assets/car_accident/
+    - assets/kidnap/
+    - assets/natural_disaster/
+    - assets/safety_accident/
+    - assets/stalking/
   fonts:
     - family: HanSan
       fonts:
