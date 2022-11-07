@@ -78,6 +78,7 @@ dependencies:
   quick_actions: ^1.0.1
   slide_countdown: ^0.3.4
   http_parser: ^4.0.2
+  syncfusion_flutter_sliders: ^20.3.52
 
 dev_dependencies:
   flutter_test:

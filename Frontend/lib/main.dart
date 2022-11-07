@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -17,6 +19,7 @@ import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:homealone/providers/user_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
@@ -65,6 +68,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     heartRateProvider = Provider.of<HeartRateProvider>(context, listen: false);
+    loadHeartRate();
     initializeService();
     initUsage();
     // initQuickActions();
@@ -173,47 +177,29 @@ void _permission(BuildContext context) async {
   //     context, Permission.sms, "워치아웃에서 SOS 기능을 사용할 수 있도록 SMS 권한을 허용해 주세요.");
 }
 
-// void _permission() async {
-//   var requestStatus = await Permission.location.request();
-//   // var requestStatus = await Permission.locationAlways.request();
-//
-//   if (await Permission.contacts.request().isGranted) {
-//     // Either the permission was already granted before or the user just granted it.
-//   }
-// // You can request multiple permissions at once.
-//   Map<Permission, PermissionStatus> statuses = await [
-//     Permission.locationAlways,
-//     Permission.manageExternalStorage,
-//     Permission.storage,
-//   ].request();
-//   print(statuses[Permission.location]);
-//
-//   var status = await Permission.location.status;
-//   if (requestStatus.isGranted && status.isLimited) {
-//     // isLimited - 제한적 동의 (ios 14 < )
-//     // 요청 동의됨
-//     print("isGranted");
-//     if (await Permission.locationWhenInUse.serviceStatus.isEnabled) {
-//       // 요청 동의 + gps 켜짐
-//     } else {
-//       // 요청 동의 + gps 꺼짐
-//       print("serviceStatusIsDisabled");
-//     }
-//   } else if (requestStatus.isPermanentlyDenied || status.isPermanentlyDenied) {
-//     // 권한 요청 거부, 해당 권한에 대한 요청에 대해 다시 묻지 않음 선택하여 설정화면에서 변경해야함. android
-//     print("isPermanentlyDenied");
-//     openAppSettings();
-//   } else if (status.isRestricted) {
-//     // 권한 요청 거부, 해당 권한에 대한 요청을 표시하지 않도록 선택하여 설정화면에서 변경해야함. ios
-//     print("isRestricted");
-//     openAppSettings();
-//   } else if (status.isDenied) {
-//     // 권한 요청 거절
-//     print("isDenied");
-//   }
-//   print("requestStatus ${requestStatus.name}");
-//   print("status ${status.name}");
-// }
+double heartRate = heartRateProvider.heartRate;
+double minValue = 0.0;
+double maxValue = 300.0;
+
+void loadHeartRate() {
+  getApplicationDocumentsDirectory().then((dir) =>
+      File('${dir.path}/heartRate.txt')
+          .readAsString()
+          .then((value) => {docodeHeartRate(value)}));
+}
+
+void docodeHeartRate(String saved) {
+  final data = jsonDecode(saved);
+  heartRateProvider.heartRate = data['heartRate'];
+  heartRateProvider.minValue = data['minValue'];
+  heartRateProvider.maxValue = data['maxValue'];
+  heartRate = data['heartRate'];
+  // debugPrint(data['heartRate'].toString());
+  minValue = data['minValue'];
+  // debugPrint(data['minValue'].toString());
+  maxValue = data['maxValue'];
+  // debugPrint(data['maxValue'].toString());
+}
 
 // this will be used as notification channel id
 const notificationChannelId = 'emergency_notification';
@@ -223,7 +209,6 @@ const notificationId = 119;
 
 Future<void> initializeService() async {
   final service = FlutterBackgroundService();
-
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     notificationChannelId, // id
     '응급 상황 발생', // title
@@ -324,50 +309,65 @@ Future<int> initUsage() async {
 void onStartWatch(ServiceInstance service,
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) {
   final watch = WatchConnectivity();
+  // var newGap = "0.0";
   double heartRateBPM = 0.0;
   Map<String, String> msg = HashMap<String, String>();
-
   watch.receivedApplicationContexts
       .then((value) => heartRateBPM = double.parse(value.last.values.last));
-  watch.contextStream.listen((e) async => {
-        heartRateBPM = double.parse(e.values.last),
-        // Provider.of<HeartRateProvider>(context, listen: false)
-        //     .heartRate = heartRateBPM,
-        heartRateProvider.heartRate = heartRateBPM,
-        debugPrint("BPM 심박수 $heartRateBPM"),
-        msg.clear(),
-        msg.addEntries({"HEART_RATE": heartRateBPM.toString()}.entries),
-        watch.sendMessage(msg),
-        // 임시 이상상황 감지 로직
-        if (heartRateBPM >
-                heartRateProvider.maxValue + heartRateProvider.gapValue ||
-            heartRateProvider.minValue - heartRateProvider.gapValue >
-                heartRateBPM)
-          {
-            flutterLocalNotificationsPlugin.show(
-              notificationId,
-              '워치아웃',
-              '위기 상황 발생!!! $heartRateBPM ${DateTime.now()}',
-              const NotificationDetails(
-                android: AndroidNotificationDetails(
-                    notificationChannelId, '포그라운드 서비스',
-                    icon: 'launch_background',
-                    ongoing: false,
-                    enableVibration: true,
-                    fullScreenIntent: true,
-                    importance: Importance.max,
-                    autoCancel: true, // 알림 터치시 해제
-                    timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
-                    actions: [
-                      AndroidNotificationAction("ignore", "무시",
-                          cancelNotification: true),
-                      AndroidNotificationAction("open", "바로가기",
-                          showsUserInterface: true, cancelNotification: true),
-                    ]
-                    // sound:
-                    ),
-              ),
-            )
-          }
-      });
+  watch.contextStream.listen(
+    (e) async => {
+      loadHeartRate(),
+      heartRateBPM = double.parse(e.values.last),
+      // Provider.of<HeartRateProvider>(context, listen: false)
+      //     .heartRate = heartRateBPM,
+      heartRate = heartRateBPM,
+      debugPrint("BPM 심박수 $heartRateBPM"),
+      msg.clear(),
+      msg.addEntries({"HEART_RATE": heartRateBPM.toString()}.entries),
+      watch.sendMessage(msg),
+      // 임시 이상상황 감지 로직
+      if (heartRateBPM > maxValue || minValue > heartRateBPM)
+        {
+          debugPrint("최대 최소 실시간: $maxValue, $minValue"),
+          flutterLocalNotificationsPlugin.show(
+            notificationId,
+            '워치아웃',
+            '위기 상황 발생!!! $heartRateBPM ${DateTime.now()}',
+            // payload: newGap,
+            const NotificationDetails(
+              android:
+                  AndroidNotificationDetails(notificationChannelId, '포그라운드 서비스',
+                      icon: 'launch_background',
+                      ongoing: false,
+                      enableVibration: true,
+                      fullScreenIntent: true,
+                      importance: Importance.max,
+                      channelShowBadge: true,
+                      channelDescription: "워치아웃 심박수 알림 채널",
+                      autoCancel: true, // 알림 터치시 해제
+                      timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
+                      actions: [
+                    AndroidNotificationAction("ignore", "무시",
+                        cancelNotification: true),
+                    AndroidNotificationAction("expand", "범위 확장",
+                        cancelNotification: true,
+                        contextual: false,
+                        showsUserInterface: true,
+                        inputs: [
+                          AndroidNotificationActionInput(
+                            choices: ["-5", "+5"],
+                            label: "추가",
+                          )
+                        ]),
+                    AndroidNotificationAction("open", "바로가기",
+                        showsUserInterface: true, cancelNotification: true),
+                  ]
+                      // playSound: ,
+                      // sound:
+                      ),
+            ),
+          ),
+        },
+    },
+  );
 }

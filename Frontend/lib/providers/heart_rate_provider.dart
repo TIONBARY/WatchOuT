@@ -4,7 +4,7 @@ class HeartRateProvider with ChangeNotifier {
   double heartRate = 0.0;
   double minValue = 60.0;
   double maxValue = 120.0;
-  double gapValue = 10.0;
+  double gapValue = 0.0;
   bool isEmergency = false;
 
   void changeHeartRate(value) {
