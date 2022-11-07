@@ -8,16 +8,16 @@ class EmergencyKidnap extends StatelessWidget {
     return SingleChildScrollView(
       child: Column(
         children: [
-          Image.asset("assets/유괴1.png"),
-          Image.asset("assets/유괴2.png"),
-          Image.asset("assets/유괴3.png"),
-          Image.asset("assets/유괴4.png"),
-          Image.asset("assets/유괴5.png"),
-          Image.asset("assets/유괴6.png"),
-          Image.asset("assets/유괴7.png"),
-          Image.asset("assets/유괴8.png"),
-          Image.asset("assets/유괴9.png"),
-          Image.asset("assets/유괴10.jpg"),
+          Image.asset("assets/kidnap/유괴1.png"),
+          Image.asset("assets/kidnap/유괴2.png"),
+          Image.asset("assets/kidnap/유괴3.png"),
+          Image.asset("assets/kidnap/유괴4.png"),
+          Image.asset("assets/kidnap/유괴5.png"),
+          Image.asset("assets/kidnap/유괴6.png"),
+          Image.asset("assets/kidnap/유괴7.png"),
+          Image.asset("assets/kidnap/유괴8.png"),
+          Image.asset("assets/kidnap/유괴9.png"),
+          Image.asset("assets/kidnap/유괴10.jpg"),
         ],
       ),
     );
