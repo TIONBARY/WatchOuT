@@ -76,4 +76,3 @@ class _ProfileBarState extends State<ProfileBar> {
     );
   }
 }
-
