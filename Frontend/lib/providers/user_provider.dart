@@ -9,6 +9,8 @@ class MyUserInfo with ChangeNotifier {
   String phone = '';
   String region = '';
   String profileImage = '';
+  String latitude = '';
+  String longitude = '';
 
   void confirmCheck() {
     isCheck = true;
@@ -46,6 +48,15 @@ class MyUserInfo with ChangeNotifier {
     this.profileImage = profileImage;
   }
 
+  void setLatitude(String latitude) {
+    this.latitude = latitude;
+  }
+
+  void setLongitude(String longitude) {
+    this.longitude = longitude;
+  }
+
+
   void setUser(Map<String, dynamic>? userDoc) {
     //파이어베이스 계정 불러온 다음 데이터를 전역변수에 대입
     setName(userDoc?["name"]);
@@ -55,5 +66,7 @@ class MyUserInfo with ChangeNotifier {
     setPhone(userDoc?["phone"]);
     setRegion(userDoc?["region"]);
     setProfileImage(userDoc?["profileImage"]);
+    setLatitude(userDoc?["latitude"]);
+    setLongitude(userDoc?["longitude"]);
   }
 }
