@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_sms/flutter_sms.dart';
+import 'package:homealone/api/api_message.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:sizer/sizer.dart';
@@ -9,7 +10,6 @@ import 'package:sizer/sizer.dart';
 class AccessCodeMessageChoiceListDialog extends StatefulWidget {
   const AccessCodeMessageChoiceListDialog(this.accessCode, {Key? key})
       : super(key: key);
-
   final accessCode;
 
   @override
@@ -24,6 +24,7 @@ class _AccessCodeMessageChoiceListDialogState
   List<Map<String, dynamic>> _selectedEmergencyCallList = [];
   late Future? emergencyCallListFuture = getEmergencyCallList();
   String downloadLink = "Download Link";
+  ApiMessage apiMessage = ApiMessage();
 
   Future<List<Map<String, dynamic>>> getEmergencyCallList() async {
     final firstResponder = await FirebaseFirestore.instance
@@ -42,10 +43,23 @@ class _AccessCodeMessageChoiceListDialogState
   }
 
   void _sendSMS(String message, List<String> recipients) async {
-    String _result = await sendSMS(message: message, recipients: recipients)
-        .catchError((onError) {
-      print(onError);
-    });
+    Map<String, dynamic> _result =
+        await apiMessage.sendMessage(recipients, message);
+    if (_result["statusCode"] == 200) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '귀갓길 공유 메세지를 전송했습니다.', null);
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, _result["message"], null);
+          });
+    }
     print(_result);
   }
 
@@ -90,11 +104,11 @@ class _AccessCodeMessageChoiceListDialogState
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
-              color: nColor,
+              color: bColor,
               child: Text(
                 "귀갓길 공유",
                 style: TextStyle(
-                  color: nColor,
+                  color: bColor,
                   fontSize: 15.sp,
                 ),
               ),
@@ -102,7 +116,7 @@ class _AccessCodeMessageChoiceListDialogState
             Container(
               child: MultiSelectDialogField(
                 decoration: BoxDecoration(
-                  border: Border.all(color: n25Color),
+                  border: Border.all(color: b25Color),
                   borderRadius: BorderRadius.circular(5),
                 ),
                 items: emergencyCallList
@@ -117,7 +131,7 @@ class _AccessCodeMessageChoiceListDialogState
                       _selectedEmergencyCallList.remove(value);
                     });
                   },
-                  chipColor: nColor,
+                  chipColor: bColor,
                   textStyle: TextStyle(color: Colors.white),
                 ),
                 listType: MultiSelectListType.LIST,
@@ -126,23 +140,23 @@ class _AccessCodeMessageChoiceListDialogState
                 },
                 buttonIcon: Icon(
                   Icons.arrow_drop_down,
-                  color: nColor,
+                  color: bColor,
                 ),
                 buttonText: Text(
                   "귀갓길을 공유할 보호자를 선택해주세요.",
-                  style: TextStyle(color: nColor),
+                  style: TextStyle(color: bColor),
                 ),
                 dialogHeight: 25.h,
                 title: Text("최대 2명까지 가능합니다.",
-                    style: TextStyle(color: nColor),
+                    style: TextStyle(color: bColor),
                     textAlign: TextAlign.center),
                 confirmText: Text(
                   "확인",
-                  style: TextStyle(color: nColor),
+                  style: TextStyle(color: bColor),
                 ),
                 cancelText: Text(
                   "취소",
-                  style: TextStyle(color: nColor),
+                  style: TextStyle(color: bColor),
                 ),
               ),
             ),
@@ -160,16 +174,15 @@ class _AccessCodeMessageChoiceListDialogState
                     ),
                     onPressed: () {
                       sendMessageToEmergencyCallList();
-                      Navigator.of(context).pop();
                     },
                     child: Text(
                       '전송',
-                      style: TextStyle(color: nColor),
+                      style: TextStyle(color: bColor),
                     ),
                   ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: n25Color,
+                      backgroundColor: b25Color,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(7),
@@ -180,7 +193,7 @@ class _AccessCodeMessageChoiceListDialogState
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: nColor),
+                      style: TextStyle(color: bColor),
                     ),
                   ),
                 ],

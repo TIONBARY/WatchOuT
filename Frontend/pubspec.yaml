@@ -70,6 +70,10 @@ dependencies:
   volume_control: ^0.1.5
   snapping_sheet: ^3.1.0
   image_picker: ^0.8.5+3
+  usage_stats: ^1.2.0
+
+  app_settings: ^4.1.8
+  quick_actions: ^1.0.1
 
 dev_dependencies:
   flutter_test:

@@ -355,4 +355,8 @@ fabric.properties
 
 !/gradle/wrapper/gradle-wrapper.jar
 
+### Spring Boot ###
+
+**/message.yml
+
 # End of https://www.toptal.com/developers/gitignore/api/firebase,flutter,androidstudio,java,gradle,eclipse

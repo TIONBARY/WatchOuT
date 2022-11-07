@@ -16,8 +16,6 @@ import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:kakaomap_webview/kakaomap_webview.dart';
-import 'package:native_screenshot/native_screenshot.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:sizer/sizer.dart';
@@ -503,7 +501,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                           },
                                           child: Text(
                                             safeAreaList[i],
-                                            style: TextStyle(color: nColor),
+                                            style: TextStyle(color: bColor),
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
@@ -532,7 +530,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                             minimumSize: Size.zero,
                                             padding: EdgeInsets.fromLTRB(
                                                 2.w, 1.h, 2.w, 1.h),
-                                            backgroundColor: nColor,
+                                            backgroundColor: bColor,
                                             shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(5.0),
@@ -595,21 +593,15 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                     // 카카오 맵 이동 기록 중단
                                     stopWalk(_mapController!);
 
-                                    // 타이머 정지
-                                    // _stopWatchTimer.dispose();
                                     endTime = DateTime.now();
-                                    // 백엔드 서버로 전송
-
                                     sleep(Duration(milliseconds: 500));
-                                    // 스크린샷 저장
-                                    _capturePng();
                                   }
                                 },
                               );
                             },
                             child: Text(
                               pressWalkBtn ? "귀가 종료" : "귀가 시작",
-                              style: TextStyle(fontSize: 20, color: nColor),
+                              style: TextStyle(fontSize: 20, color: bColor),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: yColor,
@@ -630,7 +622,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "CCTV 리스트 갱신",
-                          backgroundColor: nColor,
+                          backgroundColor: bColor,
                           onPressed: () {
                             updateCurrLocation();
                           },
@@ -709,13 +701,13 @@ Future _future() async {
   initLat = position.latitude;
   initLon = position.longitude;
   area = await apiKakao.searchAddr(initLat.toString(), initLon.toString());
-  await _search();
-  // await registerCCTV();
-  // await registerSafeOpenBox();
-  // await registerEmergencyBell();
-  await _searchSafeArea();
-  await _searchSafeOpenBox();
-  await _searchEmergencyBell();
+  // await _search();
+  // // await registerCCTV();
+  // // await registerSafeOpenBox();
+  // // await registerEmergencyBell();
+  // await _searchSafeArea();
+  // await _searchSafeOpenBox();
+  // await _searchEmergencyBell();
   return kakaoMapKey; // 5초 후 '짜잔!' 리턴
 }
 
@@ -915,51 +907,12 @@ Future<void> updateCurrLocation() async {
   ''');
 }
 
-Future<void> _capturePng() async {
-  String? path = await NativeScreenshot.takeScreenshot();
-  debugPrint(path);
-  String fileName = formatDateTime(endTime.toIso8601String()) + ".png";
-  String topFolder = await getDirectory();
-  moveFile(File(path!), topFolder + "/" + fileName);
-}
-
 String formatDateTime(String inputTime) {
   String converted = inputTime.trim().split(".").first;
   converted = converted.replaceAll("-", "");
   converted = converted.replaceAll(":", "");
   converted = converted.replaceAll("T", "");
   return converted;
-}
-
-Future<File> moveFile(File sourceFile, String newPath) async {
-  try {
-    // prefer using rename as it is probably faster
-    return await sourceFile.rename(newPath);
-  } on FileSystemException catch (e) {
-    // if rename fails, copy the source file and then delete it
-    debugPrint(e.message);
-    final newFile = await sourceFile.copy(newPath);
-    Directory tempDir = sourceFile.parent;
-    await sourceFile.delete();
-    tempDir.deleteSync();
-    return newFile;
-  }
-}
-
-Future<String> getDirectory() async {
-  Directory? directory =
-      await getExternalStorageDirectory(); //from path_provide package
-  if (directory != null) {
-    debugPrint(directory.toString());
-    String path = directory.path + '/' + 'walk';
-    new Directory(path).create(recursive: true)
-// The created directory is returned as a Future.
-        .then((Directory newDirectory) {
-      print('Path of New Dir: ' + newDirectory.path);
-    });
-    return path;
-  }
-  return "null";
 }
 
 /// 기능 functions

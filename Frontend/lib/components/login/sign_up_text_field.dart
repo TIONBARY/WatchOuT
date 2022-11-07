@@ -10,6 +10,7 @@ class SignUpTextField extends StatelessWidget {
     required this.hinttexts,
     required this.helpertexts,
     required this.onchangeds,
+    required this.validations,
   }) : super(key: key);
 
   final paddings;
@@ -17,15 +18,18 @@ class SignUpTextField extends StatelessWidget {
   final hinttexts;
   final helpertexts;
   final onchangeds;
+  final validations;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: paddings,
       child: TextFormField(
+        autocorrect: false,
+        validator: validations,
         keyboardType: keyboardtypes,
         textInputAction: TextInputAction.next,
-        cursorColor: nColor,
+        cursorColor: bColor,
         decoration: InputDecoration(
           isCollapsed: true,
           hintText: hinttexts,
@@ -33,13 +37,13 @@ class SignUpTextField extends StatelessWidget {
           contentPadding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
-            borderSide: BorderSide(color: n25Color),
+            borderSide: BorderSide(color: b25Color),
           ),
           filled: true,
           fillColor: Colors.white,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
-            borderSide: BorderSide(color: nColor),
+            borderSide: BorderSide(color: bColor),
           ),
         ),
         onChanged: onchangeds,

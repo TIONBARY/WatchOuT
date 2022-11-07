@@ -20,14 +20,14 @@ class BasicDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
-              color: nColor,
+              color: bColor,
               child: Text(
                 titles,
               ),
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: n25Color,
+                backgroundColor: b25Color,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7),
                 ),
@@ -42,7 +42,7 @@ class BasicDialog extends StatelessWidget {
               },
               child: Text(
                 '확인',
-                style: TextStyle(color: nColor),
+                style: TextStyle(color: bColor),
               ),
             ),
           ],

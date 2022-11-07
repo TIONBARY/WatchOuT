@@ -34,23 +34,7 @@ class _GoingHomeMapPageState extends State<GoingHomeMapPage> {
           title: Text('WatchOuT',
               style: TextStyle(color: yColor, fontSize: 20.sp)),
           centerTitle: true,
-          backgroundColor: nColor,
-          actions: [
-            IconButton(
-              icon: Icon(
-                Icons.exit_to_app_sharp,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                AuthService().signOut();
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(
-                        builder: (BuildContext context) => HomePage()),
-                    (route) => false);
-              },
-            )
-          ],
+          backgroundColor: bColor,
         ),
         body: GoingHomeMap(widget.homeLat, widget.homeLon, widget.accessCode,
             widget.profileImage, widget.name, widget.phone));

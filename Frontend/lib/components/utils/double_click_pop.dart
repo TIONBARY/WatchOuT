@@ -13,7 +13,7 @@ doubleClickPop() {
     Fluttertoast.showToast(
         msg: "한 번 더 누르면 종료됩니다.",
         gravity: ToastGravity.BOTTOM,
-        backgroundColor: nColor,
+        backgroundColor: bColor,
         fontSize: 12.5.sp,
         toastLength: Toast.LENGTH_SHORT);
     return false;

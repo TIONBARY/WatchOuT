@@ -5,10 +5,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_sms/flutter_sms.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
+import 'package:homealone/components/dialog/message_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/googleLogin/tab_bar_page.dart';
 import 'package:kakaomap_webview/kakaomap_webview.dart';
@@ -94,27 +94,6 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
     return kakaoMapKey;
   }
 
-  void _sendSMS(String message, List<String> recipients) async {
-    String _result = await sendSMS(message: message, recipients: recipients)
-        .catchError((onError) {
-      print(onError);
-    });
-    print(_result);
-  }
-
-  void sendEmergencyMessage() async {
-    String address =
-        await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
-    String message =
-        "${widget.name} 님이 현재 위급 상황에 처한 것 같습니다. 확인 부탁드립니다. 현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
-    List<String> recipients = ["112"];
-    _sendSMS(message, recipients);
-  }
-
-  void sendMessage() async {
-    _sendSMS("", [widget.phone]);
-  }
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -122,11 +101,13 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData == false) {
           return Container(
-              alignment: Alignment.center, child: CircularProgressIndicator());
+            alignment: Alignment.center,
+            child: CircularProgressIndicator(),
+          );
         } else if (snapshot.hasError) {
           return Text(
             'Error: ${snapshot.error}',
-            style: TextStyle(fontSize: 15),
+            style: TextStyle(fontSize: 15.sp),
           );
         } else {
           return Container(
@@ -226,7 +207,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                             tooltip: "긴급 신고",
                             backgroundColor: yColor,
                             onPressed: () {
-                              sendEmergencyMessage();
+                              UrlLauncher.launchUrl(Uri.parse("tel:112"));
                             },
                           ),
                         ),
@@ -238,7 +219,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
               grabbingHeight: 25,
               grabbing: Container(
                 decoration: new BoxDecoration(
-                  color: nColor,
+                  color: bColor,
                   borderRadius: new BorderRadius.only(
                     bottomLeft: const Radius.circular(25.0),
                     bottomRight: const Radius.circular(25.0),
@@ -290,7 +271,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
                                             primary:
-                                                nColor //elevated btton background color
+                                                bColor //elevated btton background color
                                             ),
                                         onPressed: () {
                                           UrlLauncher.launchUrl(
@@ -308,10 +289,15 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
                                             primary:
-                                                nColor //elevated btton background color
+                                                bColor //elevated btton background color
                                             ),
                                         onPressed: () {
-                                          sendMessage();
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return MessageDialog(
+                                                    widget.phone);
+                                              });
                                         },
                                         icon: Icon(Icons.message),
                                         label: Text(

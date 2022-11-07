@@ -6,6 +6,7 @@ import 'package:sizer/sizer.dart';
 class PermissionRationaleDialog extends StatelessWidget {
   Permission permission = Permission.unknown;
   String message = '';
+
   PermissionRationaleDialog(this.permission, this.message);
 
   @override
@@ -19,13 +20,16 @@ class PermissionRationaleDialog extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
-              color: Colors.white.withOpacity(1),
+              color: bColor,
               child: Text(
                 "권한 요청",
                 style: TextStyle(fontSize: 15.sp),
               ),
             ),
-            Text(message, textAlign: TextAlign.center),
+            Text(
+              message,
+              textAlign: TextAlign.center,
+            ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: yColor,
@@ -40,7 +44,8 @@ class PermissionRationaleDialog extends StatelessWidget {
               },
               child: Text(
                 '확인',
-                style: TextStyle(color: nColor),
+                style:
+                    TextStyle(color: bColor),
               ),
             ),
           ],

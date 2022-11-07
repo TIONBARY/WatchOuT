@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/utils/double_click_pop.dart';
 import 'package:homealone/googleLogin/sign_up_page.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
@@ -13,10 +14,6 @@ import '../pages/record_page.dart';
 import '../pages/set_page.dart';
 
 class TabNavBar extends StatefulWidget {
-  // final User user;
-  //
-  // TabNavBar(this.user);
-
   @override
   State<TabNavBar> createState() => _TabNavBarState();
 }
@@ -25,11 +22,11 @@ class _TabNavBarState extends State<TabNavBar> {
   final _authentication = FirebaseAuth.instance;
   late bool check;
   late TabController _tabController;
-  final _selectedColor = nColor;
+  final _selectedColor = bColor;
   final _unselectedColor = Color(0xff5f6368);
 
   Future<void> checkUserInfo() async {
-    check = await AuthService().activated();
+    check = await UserService().isActivated();
     if (!check) {
       print("너 왜 가입 안했냐?");
       Navigator.push(
@@ -58,7 +55,7 @@ class _TabNavBarState extends State<TabNavBar> {
               title: Text('WatchOuT',
                   style: TextStyle(color: yColor, fontSize: 20.sp)),
               centerTitle: true,
-              backgroundColor: nColor,
+              backgroundColor: bColor,
               actions: [
                 IconButton(
                   icon: Icon(
@@ -91,7 +88,7 @@ class _TabNavBarState extends State<TabNavBar> {
                       indicator: BoxDecoration(
                           borderRadius: BorderRadius.circular(8.0),
                           color: _selectedColor),
-                      unselectedLabelColor: nColor,
+                      unselectedLabelColor: bColor,
                       tabs: [
                         Tab(text: '홈'),
                         Tab(text: '안전 지도'),

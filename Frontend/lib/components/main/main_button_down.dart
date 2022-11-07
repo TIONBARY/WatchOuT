@@ -91,7 +91,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                           );
                   },
                   texts: '안심귀가\n서비스',
-                  textcolors: nColor,
+                  textcolors: bColor,
                   fontsizes: 12.5.sp),
               MainPageTextButton(
                   flexs: 1,
@@ -102,7 +102,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                         forceWebView: false, forceSafariVC: false);
                   },
                   texts: '성범죄자\n알림e',
-                  textcolors: nColor,
+                  textcolors: bColor,
                   fontsizes: 12.5.sp),
             ],
           ),
@@ -110,12 +110,12 @@ class _MainButtonDownState extends State<MainButtonDown> {
         MainPageTextButton(
             flexs: 2,
             margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 1.h),
-            boxcolors: nColor,
+            boxcolors: bColor,
             onpresseds: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => SafeAreaCCTVMapPage()));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => SafeAreaCCTVMapPage()));
             },
             texts: 'CCTV',
             textcolors: Colors.white,

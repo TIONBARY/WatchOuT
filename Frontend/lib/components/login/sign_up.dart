@@ -58,7 +58,6 @@ class _SignupState extends State<SignUp> {
 
   Future<void> _register() async {
     _SignupKey.currentState!.save();
-    print("nickname은 ${_nickname}");
     db.collection("user").doc("${loggedUser!.uid}").update({
       "nickname": _nickname,
       "name": _name,
@@ -70,6 +69,23 @@ class _SignupState extends State<SignUp> {
       "longitude": '${this.longitude}',
       "activated": true,
     });
+  }
+
+  bool _isValidPhone(String val) {
+    return RegExp(r'^010\d{7,8}$').hasMatch(val);
+  }
+
+  bool _isValidBirth(String val) {
+    if (val.length != 6) return false;
+    return RegExp(r'(?:[0]9)?[0-9]{6}$').hasMatch(val);
+  }
+
+  bool _isValidname(String val) {
+    if (val.length > 10 && val.length < 2) // 길이 검사
+      return false;
+    if (val.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) //특수 기호 있으면 false
+      return false;
+    return true;
   }
 
   @override
@@ -84,7 +100,7 @@ class _SignupState extends State<SignUp> {
           children: [
             Container(
               height: 25.h,
-              color: n75Color,
+              color: b75Color,
               child: Container(
                 margin: EdgeInsets.fromLTRB(0, 4.h, 0, 0),
                 child: Image(
@@ -94,6 +110,9 @@ class _SignupState extends State<SignUp> {
               ),
             ),
             SignUpTextField(
+              validations: (String? val) {
+                return _isValidname(val ?? '') ? null : "올바른 이름을 입력해주세요.";
+              },
               paddings: EdgeInsets.fromLTRB(7.5.w, 2.5.h, 7.5.w, 1.25.h),
               keyboardtypes: TextInputType.text,
               hinttexts: '이름',
@@ -102,16 +121,20 @@ class _SignupState extends State<SignUp> {
                 _name = name;
               },
             ),
+            // SignUpTextField(
+            //   validations: (String? val) {return _isValidname(val ?? '') ? null : "올바른 이름을 입력해주세요."},
+            //   paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
+            //   keyboardtypes: TextInputType.text,
+            //   hinttexts: '닉네임',
+            //   helpertexts: '10글자 이내로 입력해주세요.',
+            //   onchangeds: (nickname) {
+            //     _nickname = nickname;
+            //   },
+            // ),
             SignUpTextField(
-              paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
-              keyboardtypes: TextInputType.text,
-              hinttexts: '닉네임',
-              helpertexts: '10글자 이내로 입력해주세요.',
-              onchangeds: (nickname) {
-                _nickname = nickname;
+              validations: (String? val) {
+                return _isValidBirth(val ?? '') ? null : "올바른 생년월일을 입력해주세요.";
               },
-            ),
-            SignUpTextField(
               paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
               keyboardtypes: TextInputType.number,
               hinttexts: '생년월일',
@@ -121,6 +144,11 @@ class _SignupState extends State<SignUp> {
               },
             ),
             SignUpTextField(
+              validations: (String? val) {
+                return _isValidPhone(val ?? '')
+                    ? null
+                    : "올바른 전화번호 형식으로 입력해주세요.";
+              },
               paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
               keyboardtypes: TextInputType.number,
               hinttexts: '전화번호',
@@ -140,14 +168,14 @@ class _SignupState extends State<SignUp> {
                         title: const Text(
                           '남자',
                           style: TextStyle(
-                            color: nColor,
+                            color: bColor,
                           ),
                         ),
                         leading: Radio<String>(
                           value: "M",
                           groupValue: _gender,
                           fillColor: MaterialStateColor.resolveWith(
-                              (states) => nColor),
+                              (states) => bColor),
                           onChanged: (String? value) {
                             setState(() {
                               _gender = value;
@@ -160,14 +188,14 @@ class _SignupState extends State<SignUp> {
                         title: const Text(
                           '여자',
                           style: TextStyle(
-                            color: nColor,
+                            color: bColor,
                           ),
                         ),
                         leading: Radio<String>(
                           value: "F",
                           groupValue: _gender,
                           fillColor: MaterialStateColor.resolveWith(
-                              (states) => nColor),
+                              (states) => bColor),
                           onChanged: (String? value) {
                             setState(() {
                               _gender = value;
@@ -191,12 +219,12 @@ class _SignupState extends State<SignUp> {
                         borderRadius: BorderRadius.circular(5),
                         border: Border.all(
                           width: 1.sp,
-                          color: n25Color,
+                          color: b25Color,
                         )),
                     child: (this.postCode.isEmpty && this.region.isEmpty)
                         ? Text(
                             '주소',
-                            style: TextStyle(color: n75Color),
+                            style: TextStyle(color: b75Color),
                           )
                         : Text(
                             '(${this.postCode}) ${this.region}',
@@ -210,7 +238,7 @@ class _SignupState extends State<SignUp> {
                     padding: EdgeInsets.fromLTRB(1.25.w, 1.25.h, 0, 1.25.h),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: nColor,
+                        backgroundColor: bColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5)),
                       ),
@@ -246,12 +274,15 @@ class _SignupState extends State<SignUp> {
               padding: EdgeInsets.fromLTRB(30.w, 1.25.h, 30.w, 0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: nColor,
+                  backgroundColor: bColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5)),
                 ),
                 onPressed: () {
-                  _register();
+                  if (_SignupKey.currentState!.validate()) {
+                    _register();
+                  }
+                  ;
                 },
                 child: Text(
                   '회원가입',

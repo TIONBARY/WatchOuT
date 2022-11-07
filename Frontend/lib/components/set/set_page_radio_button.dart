@@ -27,7 +27,7 @@ class _SetPageRadioButtonState extends State<SetPageRadioButton> {
         padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
         margin: widget.margins,
         decoration: BoxDecoration(
-          color: n25Color,
+          color: b25Color,
           borderRadius: BorderRadius.circular(25),
         ),
         child: Row(
