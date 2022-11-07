@@ -70,7 +70,8 @@ dependencies:
   volume_control: ^0.1.5
   snapping_sheet: ^3.1.0
   usage_stats: ^1.2.0
-
+  image_picker: ^0.8.4+2
+  gallery_saver: ^2.3.2
 
 
   app_settings: ^4.1.8
