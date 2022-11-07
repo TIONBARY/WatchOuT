@@ -62,18 +62,23 @@ class _HeartRateViewState extends State<HeartRateView> {
         SfRangeValues(widget.provider.minValue, widget.provider.maxValue);
     return Flexible(
       child: Container(
-        padding: EdgeInsets.fromLTRB(5.w, 2.h, 5.w, 2.h),
+        padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
         margin: widget.margins,
         decoration: BoxDecoration(
             color: b25Color, borderRadius: BorderRadius.circular(25)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("현재 심박수: ${widget.provider.heartRate}"),
+            Text(
+              "나의 심박수 범위 : ",
+            ),
+            // ${widget.provider.heartRate}
             SfRangeSlider(
               min: 40,
               max: 200,
               values: _values,
+              activeColor: yColor,
+              inactiveColor: y50Color,
               showLabels: true,
               enableTooltip: true,
               onChanged: (SfRangeValues values) {

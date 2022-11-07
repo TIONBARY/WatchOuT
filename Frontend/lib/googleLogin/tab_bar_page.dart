@@ -10,8 +10,8 @@ import '../components/login/auth_service.dart';
 import '../constants.dart';
 import '../main.dart';
 import '../pages/main_page.dart';
-import '../pages/record_page.dart';
 import '../pages/set_page.dart';
+import '../pages/shared_page.dart';
 
 class TabNavBar extends StatefulWidget {
   @override
@@ -92,7 +92,7 @@ class _TabNavBarState extends State<TabNavBar> {
                       tabs: [
                         Tab(text: '홈'),
                         Tab(text: '안전 지도'),
-                        Tab(text: '보호자'),
+                        Tab(text: '귀가 공유'),
                         Tab(text: '설정'),
                       ],
                     ),
