@@ -76,6 +76,17 @@ class UserService {
     authentication.signOut();
   }
 
+  void deleteFirstResponderList(List<Map<String, dynamic>> selectedList) {
+    for (int i = 0; i < selectedList.length; i++) {
+      db
+          .collection("user")
+          .doc("${user?.uid}")
+          .collection("firstResponder")
+          .doc(selectedList[i]["name"])
+          .delete();
+    }
+  }
+
   void updateUser(String photoUrl, String phone, String birth, String region,
       String nickname, String name, String gender) {
     db.collection("user").doc("${user?.uid}").update({
