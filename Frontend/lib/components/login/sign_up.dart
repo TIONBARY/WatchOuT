@@ -24,8 +24,8 @@ class _SignupState extends State<SignUp> {
 
   String postCode = '';
   String region = '';
-  String latitude = '-';
-  String longitude = '-';
+  String latitude = '';
+  String longitude = '';
 
   String? _name = '';
   String? _nickname = '';
@@ -64,7 +64,7 @@ class _SignupState extends State<SignUp> {
       "gender": _gender,
       "birth": _birth,
       "phone": _phone,
-      "region": '(${this.postCode}) ${this.region}',
+      "region": '(${this.postCode})${this.region}',
       "latitude": '${this.latitude}',
       "longitude": '${this.longitude}',
       "activated": true,
@@ -152,24 +152,24 @@ class _SignupState extends State<SignUp> {
                     children: [
                       Expanded(
                           child: ListTile(
-                            title: const Text(
-                              '남자',
-                              style: TextStyle(
-                                color: bColor,
-                              ),
-                            ),
-                            leading: Radio<String>(
-                              value: "M",
-                              groupValue: _gender,
-                              fillColor: MaterialStateColor.resolveWith(
-                                      (states) => bColor),
-                              onChanged: (String? value) {
-                                setState(() {
-                                  _gender = value;
-                                });
-                              },
-                            ),
-                          )),
+                        title: const Text(
+                          '남자',
+                          style: TextStyle(
+                            color: bColor,
+                          ),
+                        ),
+                        leading: Radio<String>(
+                          value: "M",
+                          groupValue: _gender,
+                          fillColor: MaterialStateColor.resolveWith(
+                              (states) => bColor),
+                          onChanged: (String? value) {
+                            setState(() {
+                              _gender = value;
+                            });
+                          },
+                        ),
+                      )),
                       Expanded(
                         child: ListTile(
                           title: const Text(
@@ -182,7 +182,7 @@ class _SignupState extends State<SignUp> {
                             value: "F",
                             groupValue: _gender,
                             fillColor: MaterialStateColor.resolveWith(
-                                    (states) => bColor),
+                                (states) => bColor),
                             onChanged: (String? value) {
                               setState(() {
                                 _gender = value;
@@ -231,7 +231,7 @@ class _SignupState extends State<SignUp> {
                             style: TextStyle(color: b75Color),
                           )
                         : Text(
-                            '(${this.postCode}) ${this.region}',
+                            '(${this.postCode})${this.region}',
                             overflow: TextOverflow.ellipsis,
                           ),
                   ),
@@ -255,12 +255,15 @@ class _SignupState extends State<SignUp> {
                               localPort: 8080,
                               // kakaoKey: kakaoMapAPIKey,
                               callback: (Kpostal result) {
-                                setState(() {
-                                  this.postCode = result.postCode;
-                                  this.region = result.address;
-                                  this.latitude = result.latitude.toString();
-                                  this.longitude = result.longitude.toString();
-                                },);
+                                setState(
+                                  () {
+                                    this.postCode = result.postCode;
+                                    this.region = result.address;
+                                    this.latitude = result.latitude.toString();
+                                    this.longitude =
+                                        result.longitude.toString();
+                                  },
+                                );
                               },
                             ),
                           ),

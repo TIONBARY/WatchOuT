@@ -63,8 +63,16 @@ class UserService {
     authentication.signOut();
   }
 
-  void updateUser(String photoUrl, String phone, String birth, String region,
-      String nickname, String name, String gender, String latitude, String longitude) {
+  void updateUser(
+      String photoUrl,
+      String phone,
+      String birth,
+      String region,
+      String nickname,
+      String name,
+      String gender,
+      String latitude,
+      String longitude) {
     db.collection("user").doc("${user?.uid}").update({
       "profileImage": photoUrl,
       "phone": phone,

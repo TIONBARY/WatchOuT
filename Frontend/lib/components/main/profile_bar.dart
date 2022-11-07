@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:homealone/main.dart';
+import 'package:homealone/googleLogin/modify_userinfo_page.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -28,9 +28,6 @@ class _ProfileBarState extends State<ProfileBar> {
                   backgroundImage: NetworkImage(
                       Provider.of<MyUserInfo>(context, listen: false)
                           .profileImage),
-                  // child: GestureDetector(
-                  //   onTap: () => doCheck(context),
-                  // ),
                 ),
               ),
               Container(

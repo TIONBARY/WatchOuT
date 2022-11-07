@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,26 +27,19 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
 
   final _SignupKey = GlobalKey<FormState>();
 
+  String? _phone = '';
+
   String postCode = '';
   String region = '';
-  String latitude = '-';
-  String longitude = '-';
-
-  String? _nickname = '';
-  String? _phone = '';
+  String latitude = '';
+  String longitude = '';
 
   late TextEditingController _phoneController;
 
-  File? profileImage;
+  XFile? profileImage;
   final picker = ImagePicker();
-
-  Future<void> chooseImage() async {
-    var choosedimage = await picker.pickImage(source: ImageSource.gallery);
-    //set source: ImageSource.camera to get image from camera
-    setState(() {
-      profileImage = File(choosedimage!.path);
-    });
-  }
+  FirebaseStorage _firebaseStorage = FirebaseStorage.instance;
+  String _profileImageURL = "";
 
   final FirebaseAuth _authentication = FirebaseAuth.instance;
   User? loggedUser;
@@ -59,6 +52,14 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
       if (user != null) {
         loggedUser = user;
         print("sign_up.dart에서 user 정보를 잘 받아왔습니다.");
+        String address = Provider.of<MyUserInfo>(context, listen: false).region;
+        this.postCode = address.substring(1, 6);
+        this.region = address.substring(7);
+        print('지역: $this.region');
+        this.latitude =
+            Provider.of<MyUserInfo>(context, listen: false).latitude;
+        this.longitude =
+            Provider.of<MyUserInfo>(context, listen: false).longitude;
       }
     } catch (e) {
       print("sign_up.dart에서 유저 정보를 받아오지 못했습니다.");
@@ -76,15 +77,11 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
   Future<void> _update() async {
     _SignupKey.currentState!.save();
     db.collection("user").doc("${loggedUser!.uid}").update({
-      "nickname": _nickname,
-      "name": Provider.of<MyUserInfo>(context, listen: false).name,
-      "gender": Provider.of<MyUserInfo>(context, listen: false).gender,
-      "birth": Provider.of<MyUserInfo>(context, listen: false).birth,
       "phone": _phone,
-      "region": '(${this.postCode}) ${this.region}',
+      "region": '(${this.postCode})${this.region}',
       "latitude": '${this.latitude}',
       "longitude": '${this.longitude}',
-      "profileImage": '',
+      "profileImage": '${_profileImageURL}',
       "activated": true,
     });
   }
@@ -93,17 +90,32 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
     return RegExp(r'^010\d{7,8}$').hasMatch(val);
   }
 
-  bool _isValidBirth(String val) {
-    if (val.length != 6) return false;
-    return RegExp(r'(?:[0]9)?[0-9]{6}$').hasMatch(val);
-  }
+  void _uploadImageToStorage() async {
+    XFile? choosedimage =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
 
-  bool _isValidname(String val) {
-    if (val.length > 10 && val.length < 2) // 길이 검사
-      return false;
-    if (val.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) //특수 기호 있으면 false
-      return false;
-    return true;
+    if (choosedimage == null) return;
+    setState(() {
+      profileImage = choosedimage!;
+    });
+
+    // 프로필 사진을 업로드할 경로와 파일명을 정의. 사용자의 uid를 이용하여 파일명의 중복 가능성 제거
+    Reference storageReference =
+        _firebaseStorage.ref().child("profile/${loggedUser!.uid}");
+
+    // 파일 업로드
+    UploadTask storageUploadTask =
+        storageReference.putFile(new File(profileImage!.path));
+
+    // 파일 업로드 완료까지 대기
+    TaskSnapshot taskSnapshot = await storageUploadTask;
+    // 업로드한 사진의 URL 획득
+    String downloadURL = await storageReference.getDownloadURL();
+
+    // 업로드된 사진의 URL을 페이지에 반영
+    setState(() {
+      _profileImageURL = downloadURL;
+    });
   }
 
   @override
@@ -176,12 +188,13 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                     padding: EdgeInsets.fromLTRB(5.w, 1.25.h, 1.25.w, 1.25.h),
                     width: 63.w,
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(5),
-                        border: Border.all(
-                          width: 0.75.sp,
-                          color: b25Color,
-                        )),
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                      border: Border.all(
+                        width: 0.75.sp,
+                        color: b25Color,
+                      ),
+                    ),
                     child: Text(
                       Provider.of<MyUserInfo>(context, listen: false).birth,
                       textAlign: TextAlign.left,
@@ -233,10 +246,9 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
               ),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  margin: EdgeInsets.fromLTRB(5.w, 0, 0, 0),
                   height: 75,
                   width: 75,
                   child: Center(
@@ -260,7 +272,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                 Container(
                   child: ElevatedButton.icon(
                     onPressed: () {
-                      chooseImage(); // call choose image function
+                      _uploadImageToStorage();
                     },
                     icon: Icon(Icons.image),
                     style: ElevatedButton.styleFrom(
@@ -306,6 +318,14 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                 ),
                 onChanged: (number) {
                   _phone = number;
+                  print('onChanged: $number');
+                },
+                onSaved: (number) {
+                  setState(
+                    () {
+                      this._phone = number;
+                    },
+                  );
                 },
               ),
             ),
@@ -331,46 +351,42 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                             overflow: TextOverflow.ellipsis,
                           )
                         : Text(
-                            '(${this.postCode}) ${this.region}',
+                            '(${this.postCode})${this.region}',
                             overflow: TextOverflow.ellipsis,
                           ),
                   ),
                 ),
-                GestureDetector(
-                  onTap: () {},
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(1.25.w, 1.25.h, 0, 1.25.h),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: bColor,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5)),
-                      ),
-                      onPressed: () async {
-                        await Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => KpostalView(
-                              useLocalServer: true,
-                              localPort: 8080,
-                              callback: (Kpostal result) {
-                                setState(
-                                  () {
-                                    this.postCode = result.postCode;
-                                    this.region = result.address;
-                                    this.latitude = result.latitude.toString();
-                                    this.longitude =
-                                        result.longitude.toString();
-                                  },
-                                );
-                              },
-                            ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(1.25.w, 1.25.h, 0, 1.25.h),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: bColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                    ),
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => KpostalView(
+                            useLocalServer: true,
+                            localPort: 8080,
+                            callback: (Kpostal result) {
+                              setState(
+                                () {
+                                  this.postCode = result.postCode;
+                                  this.region = result.address;
+                                  this.latitude = result.latitude.toString();
+                                  this.longitude = result.longitude.toString();
+                                },
+                              );
+                            },
                           ),
-                        );
-                      },
-                      child: Text(
-                        '우편번호',
-                      ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      '우편번호',
                     ),
                   ),
                 ),
