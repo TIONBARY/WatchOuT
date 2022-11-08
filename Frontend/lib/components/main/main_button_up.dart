@@ -111,8 +111,10 @@ class _MainButtonUpState extends State<MainButtonUp> {
       _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
-        VolumeControl.setVolume(1);
-        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"));
+        VolumeControl.setVolume(0.1);
+        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
+            audioFocusStrategy:
+                AudioFocusStrategy.request(resumeAfterInterruption: true));
       }
     });
     showDialog(
@@ -205,11 +207,24 @@ class _MainButtonUpState extends State<MainButtonUp> {
     }
   }
 
+  void _widgetClicked(Uri? uri) {
+    if (uri?.host == 'sos') {
+      sendEmergencyMessage();
+      emergencyFromWidget = true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getKakaoKey();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _checkForWidgetLaunch();
+    HomeWidget.widgetClicked.listen(_widgetClicked);
   }
 
   @override

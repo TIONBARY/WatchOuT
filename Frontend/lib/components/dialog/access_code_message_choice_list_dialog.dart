@@ -23,7 +23,8 @@ class _AccessCodeMessageChoiceListDialogState
   List<Map<String, dynamic>> emergencyCallList = [];
   List<Map<String, dynamic>> _selectedEmergencyCallList = [];
   late Future? emergencyCallListFuture = getEmergencyCallList();
-  String downloadLink = "Download Link";
+  String downloadLink =
+      "https://play.google.com/store/apps/details?id=com.ssafy.homealone";
   ApiMessage apiMessage = ApiMessage();
 
   Future<List<Map<String, dynamic>>> getEmergencyCallList() async {
