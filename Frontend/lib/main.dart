@@ -26,7 +26,6 @@ import 'package:sizer/sizer.dart';
 import 'package:usage_stats/usage_stats.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
-HeartRateProvider heartRateProvider = HeartRateProvider();
 final isCheck = IsCheck.instance;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -67,9 +66,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    heartRateProvider = Provider.of<HeartRateProvider>(context, listen: false);
-    heartRateProvider.onCreate();
-    // loadHeartRate();
     initializeService();
     initUsage();
     // debugPrint("메인꺼");
@@ -188,7 +184,7 @@ void _permission(BuildContext context) async {
   //     context, Permission.sms, "워치아웃에서 SOS 기능을 사용할 수 있도록 SMS 권한을 허용해 주세요.");
 }
 
-double heartRate = heartRateProvider.heartRate;
+double heartRate = 0.0;
 double minValue = 0.0;
 double maxValue = 300.0;
 
@@ -344,9 +340,8 @@ void onStartWatch(
       .then((value) => heartRate = double.parse(value.last.values.last));
   watch.contextStream.listen(
     (e) async => {
-      // Provider.of<HeartRateProvider>(context, listen: false)
-      //     .heartRate = heartRateBPM,
       heartRate = double.parse(e.values.last),
+      useWearOS = pref.getBool("useWearOS")!,
       debugPrint("BPM 심박수 $heartRate"),
       msg.clear(),
       msg.addEntries({"HEART_RATE": heartRate.toString()}.entries),
@@ -354,9 +349,8 @@ void onStartWatch(
       // 임시 이상상황 감지 로직
       if (useWearOS)
         {
-          await heartRateProvider.onCreate(),
-          maxValue = heartRateProvider.maxValue,
-          minValue = heartRateProvider.minValue,
+          maxValue = pref.getDouble("maxValue")!,
+          minValue = pref.getDouble("minValue")!,
           if (heartRate > maxValue || minValue > heartRate)
             {
               debugPrint("최대 최소 실시간: $maxValue, $minValue"),
