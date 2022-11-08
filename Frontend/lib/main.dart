@@ -29,7 +29,6 @@ import 'package:watch_connectivity/watch_connectivity.dart';
 HeartRateProvider heartRateProvider = HeartRateProvider();
 final isCheck = IsCheck.instance;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-Timer? tempTimer;
 
 void main() {
   runApp(
@@ -276,29 +275,30 @@ Future<void> onStart(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final SharedPreferences pref = await SharedPreferences.getInstance();
+  if (pref.getString('username') != null)
+    Timer.periodic(
+      Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
+      (timer) {
+        Future<int> count = initUsage();
+        count.then((value) {
+          print('24시간 이내에 사용한 앱 갯수 : $value');
+          if (value != 0) {
+            print('비상!!!! 초비상!!!!');
+            print('==================${pref.getString('username')}');
+            print('==================${pref.getString('userphone')}');
+            print(
+                '==================${pref.getStringList('contactlist')?.elementAt(0)}');
+          } else
+            print('24시간 이내 사용 감지');
+        }).catchError((error) {
+          print(error);
+        });
+      },
+    );
 
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin, pref);
   }
-  tempTimer = Timer.periodic(
-    Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
-    (timer) {
-      Future<int> count = initUsage();
-      count.then((value) {
-        print('24시간 이내에 사용한 앱 갯수 : $value');
-        if (value != 0) {
-          print('비상!!!! 초비상!!!!');
-          print('==================${pref.getString('username')}');
-          print('==================${pref.getString('userphone')}');
-          print(
-              '==================${pref.getStringList('contactlist')?.elementAt(0)}');
-        } else
-          print('24시간 이내 사용 감지');
-      }).catchError((error) {
-        print(error);
-      });
-    },
-  );
 }
 
 Future<int> initUsage() async {
