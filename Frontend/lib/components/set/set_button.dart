@@ -520,7 +520,7 @@ class _SetButtonState extends State<SetButton> {
                       "비상연락망",
                       style: TextStyle(color: bColor),
                     ),
-                    dialogHeight: 20.h,
+                    dialogHeight: 25.h,
                     title: Text(
                       "삭제할 비상연락망을 선택해주세요.",
                       style: TextStyle(
@@ -540,9 +540,9 @@ class _SetButtonState extends State<SetButton> {
                   ),
                 ),
                 Container(
-                  width: 35.w,
+                  width: 37.5.w,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
