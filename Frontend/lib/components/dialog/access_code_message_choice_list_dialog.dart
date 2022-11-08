@@ -144,12 +144,15 @@ class _AccessCodeMessageChoiceListDialogState
                   color: bColor,
                 ),
                 buttonText: Text(
-                  "귀갓길을 공유할 보호자를 선택해주세요.",
+                  "비상연락망",
                   style: TextStyle(color: bColor),
                 ),
                 dialogHeight: 25.h,
-                title: Text("최대 2명까지 가능합니다.",
-                    style: TextStyle(color: bColor),
+                title: Text("귀갓길을 공유할 \n보호자를 선택해주세요.",
+                    style: TextStyle(
+                      color: bColor,
+                      fontSize: 12.5.sp,
+                    ),
                     textAlign: TextAlign.center),
                 confirmText: Text(
                   "확인",
@@ -162,9 +165,9 @@ class _AccessCodeMessageChoiceListDialogState
               ),
             ),
             Container(
-              width: 35.w,
+              width: 37.5.w,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(

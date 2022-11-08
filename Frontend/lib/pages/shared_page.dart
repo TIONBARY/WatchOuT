@@ -238,7 +238,7 @@ class _RecordPageState extends State<RecordPage> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
             padding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
-            height: 19.5.h,
+            height: 20.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -258,9 +258,9 @@ class _RecordPageState extends State<RecordPage> {
                   ),
                 ),
                 Container(
-                  width: 40.w,
+                  width: 37.5.w,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
