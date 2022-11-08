@@ -122,7 +122,6 @@ class MainActivity : AppCompatActivity() {
                 binding.enablePassiveData.isChecked = it
             }
         }
-        showNotification()
     }
 
     private fun updateViewVisiblity(uiState: UiState) {
@@ -221,36 +220,6 @@ class MainActivity : AppCompatActivity() {
         dataClient.removeListener(clientDataViewModel)
         messageClient.removeListener(clientDataViewModel)
         capabilityClient.removeListener(clientDataViewModel)
-    }
-
-    @Composable
-    fun PopUpAlert(data: Any) {
-        var heartRate: Double = data.toString().toDouble()
-
-        return EmergencyAlert().Open()
-    }
-
-    private fun showNotification() {
-        val notificationId = 1
-        // The channel ID of the notification.
-        val id = "my_channel_01"
-        // Build intent for notification content
-        val viewPendingIntent = Intent(this, EmergencyAlert::class.java).let { viewIntent ->
-            viewIntent.putExtra(EXTRA_EVENT_ID, id)
-            PendingIntent.getActivity(this, 0, viewIntent, PendingIntent.FLAG_IMMUTABLE)
-        }
-
-        // Notification channel ID is ignored for Android 7.1.1
-        // (API level 25) and lower.
-        val notificationBuilder = NotificationCompat.Builder(this, id)
-            .setSmallIcon(R.drawable.ic_heart)
-            .setContentTitle("zzz")
-            .setContentText("dsaaaaa")
-            .setContentIntent(viewPendingIntent)
-
-        NotificationManagerCompat.from(this).apply {
-            notify(notificationId, notificationBuilder.build())
-        }
     }
 
     companion object {
