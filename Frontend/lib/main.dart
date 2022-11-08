@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_background_service_android/flutter_background_service_an
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
+import 'package:homealone/components/main/main_button_up.dart';
 import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
@@ -27,6 +30,7 @@ import 'package:watch_connectivity/watch_connectivity.dart';
 
 HeartRateProvider heartRateProvider = HeartRateProvider();
 final isCheck = IsCheck.instance;
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() {
   runApp(
@@ -94,6 +98,8 @@ class _MyAppState extends State<MyApp> {
             primaryColor: Colors.white,
             accentColor: Colors.black,
           ),
+          navigatorKey: navigatorKey,
+          routes: {'/emergency': (context) => MainButtonUp()},
           home: const HomePage(),
         );
       },
@@ -281,12 +287,11 @@ Future<void> onStart(ServiceInstance service) async {
     (timer) {
       Future<int> count = initUsage();
       count.then((value) {
-        debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
-        if (value == 0) {
-          debugPrint('비상!!!! 초비상!!!!');
-        } else {
-          debugPrint('24시간 이내 사용 감지');
-        }
+        print('24시간 이내에 사용한 앱 갯수 : $value');
+        if (value == 0)
+          print('비상!!!! 초비상!!!!');
+        else
+          print('24시간 이내 사용 감지');
       }).catchError((error) {
         debugPrint(error);
       });

@@ -6,6 +6,7 @@ import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
+import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
 import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
@@ -27,15 +28,13 @@ class SetButton extends StatefulWidget {
 class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
-  final List<String> _valueList = ['문자', '전화', '사용안함'];
-  String _selectedAlert = '문자';
-  List<String> _contactList = [];
-  List<String> _nameList = [];
-  String _selectedContact = '';
+
+  List<Map<String, dynamic>> localEmergencyCallList = [];
+  // List<String> _contactList = [];
+  // List<String> _nameList = [];
+
   String _addContact = '';
   String _addName = '';
-  bool flag = true;
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> emergencyCallList = [];
   List<Map<String, dynamic>> _selectedEmergencyCallList = [];
@@ -67,12 +66,16 @@ class _SetButtonState extends State<SetButton> {
   void setFirstResponderProvider() {
     Map<String, String> firstResponder =
         Provider.of<ContactInfo>(context, listen: false).getResponder();
-    if (!firstResponder.isEmpty && flag) {
+    List<String> _nameList;
+    List<String> _contactList;
+    if (!firstResponder.isEmpty) {
       _nameList = firstResponder.keys.toList();
       _contactList = firstResponder.values.toList();
-      flag = false; //최초 한번만 실행되도록 설정
+      for (int i = 0; i < _nameList.length; i++) {
+        localEmergencyCallList
+            .add({"name": _nameList[i], "number": _contactList[i]});
+      }
     }
-    if (!_nameList.isEmpty) _selectedContact = _nameList[0];
   }
 
   @override
@@ -86,9 +89,11 @@ class _SetButtonState extends State<SetButton> {
           texts: 'WearOS 사용',
           values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
           onchangeds: (value) {
-            setState(() {
-              Provider.of<SwitchBools>(context, listen: false).changeWearOS();
-            });
+            setState(
+              () {
+                Provider.of<SwitchBools>(context, listen: false).changeWearOS();
+              },
+            );
           },
         ),
         Provider.of<SwitchBools>(context, listen: true).useWearOS
@@ -103,9 +108,11 @@ class _SetButtonState extends State<SetButton> {
           texts: '스크린 사용 감지',
           values: Provider.of<SwitchBools>(context, listen: false).useScreen,
           onchangeds: (value) {
-            setState(() {
-              Provider.of<SwitchBools>(context, listen: false).changeScreen();
-            });
+            setState(
+              () {
+                Provider.of<SwitchBools>(context, listen: false).changeScreen();
+              },
+            );
           },
         ),
         SetPageRadioButton(
@@ -113,11 +120,13 @@ class _SetButtonState extends State<SetButton> {
           texts: '위치 정보 전송',
           values: Provider.of<SwitchBools>(context, listen: false).useGPS,
           onchangeds: (value) {
-            setState(() {
-              Provider.of<SwitchBools>(context, listen: false).changeGPS();
-              print('셋버튼다트${isCheck.check}');
-              print('셋버튼다트${isCheck.hashCode}');
-            });
+            setState(
+              () {
+                Provider.of<SwitchBools>(context, listen: false).changeGPS();
+                print('셋버튼다트${isCheck.check}');
+                print('셋버튼다트${isCheck.hashCode}');
+              },
+            );
           },
         ),
         SetPageRadioButton(
@@ -125,9 +134,11 @@ class _SetButtonState extends State<SetButton> {
           texts: '경보음 사용',
           values: Provider.of<SwitchBools>(context, listen: false).useSiren,
           onchangeds: (value) {
-            setState(() {
-              Provider.of<SwitchBools>(context, listen: false).changeSiren();
-            });
+            setState(
+              () {
+                Provider.of<SwitchBools>(context, listen: false).changeSiren();
+              },
+            );
           },
         ),
         SetPageRadioButton(
@@ -135,9 +146,11 @@ class _SetButtonState extends State<SetButton> {
           texts: '위험 지대 알림',
           values: Provider.of<SwitchBools>(context, listen: false).useDzone,
           onchangeds: (value) {
-            setState(() {
-              Provider.of<SwitchBools>(context, listen: false).changeDzone();
-            });
+            setState(
+              () {
+                Provider.of<SwitchBools>(context, listen: false).changeDzone();
+              },
+            );
           },
         ),
         Flexible(
@@ -146,73 +159,46 @@ class _SetButtonState extends State<SetButton> {
             margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
             decoration: BoxDecoration(
                 color: b25Color, borderRadius: BorderRadius.circular(25)),
-            child: Row(
-              children: [
-                _nameList.isEmpty
-                    ? Text('비상연락처를 등록해주세요.')
-                    : Flexible(
-                        child: MultiSelectDialogField(
-                          decoration: BoxDecoration(
-                            border: Border.all(color: b25Color),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          items: emergencyCallList
-                              .map((e) => MultiSelectItem(e, e["name"]))
-                              .toList(),
-                          chipDisplay: MultiSelectChipDisplay(
-                            items: _selectedEmergencyCallList
-                                .map((e) => MultiSelectItem(e, e["name"]))
-                                .toList(),
-                            onTap: (value) {
-                              setState(() {
-                                _selectedEmergencyCallList.remove(value);
-                              });
-                            },
-                            chipColor: bColor,
-                            textStyle: TextStyle(color: Colors.white),
-                          ),
-                          listType: MultiSelectListType.LIST,
-                          onConfirm: (values) {
-                            _selectedEmergencyCallList = values;
-                          },
-                          buttonIcon: Icon(
-                            Icons.arrow_drop_down,
-                            color: bColor,
-                          ),
-                          buttonText: Text(
-                            "보호자를 선택해주세요.",
-                            style: TextStyle(color: bColor),
-                          ),
-                          dialogHeight: 25.h,
-                          title: Text("삭제할 비상 연락망을 선택해주세요.",
-                              style: TextStyle(color: bColor),
-                              textAlign: TextAlign.center),
-                          confirmText: Text(
-                            "확인",
-                            style: TextStyle(color: bColor),
-                          ),
-                          cancelText: Text(
-                            "취소",
-                            style: TextStyle(color: bColor),
-                          ),
-                        ),
+            child: localEmergencyCallList.isEmpty
+                ? Row(
+                    children: [
+                      Text('비상연락망을 등록해주세요.'),
+                      IconButton(
+                        onPressed: () {
+                          _displayTextInputDiaLog(context);
+                        },
+                        icon: Icon(Icons.add_circle, size: 20.sp),
                       ),
-                IconButton(
-                  icon: Icon(Icons.delete_sweep_rounded),
-                  onPressed: () {
-                    setState(() {
-                      UserService()
-                          .deleteFirstResponderList(_selectedEmergencyCallList);
-                    });
-                  },
-                ),
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    _displayTextInputDiaLog(context);
-                  },
-                ),
-              ],
+                    ],
+                  )
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('비상연락망'),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              _displayTextInputDiaLog(context);
+                            },
+                            icon: Icon(Icons.add_circle, size: 20.sp),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              EmergencyCallDialog(context);
+                            },
+                            icon: Icon(Icons.delete, size: 20.sp),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            child: Row(
+              children: [],
             ),
           ),
         ),
@@ -245,7 +231,7 @@ class _SetButtonState extends State<SetButton> {
   }
 
   Future<void> UserDeleteDialog(BuildContext context) async {
-    final _SignupKey = GlobalKey<FormState>();
+    // final _SignupKey = GlobalKey<FormState>();
     return showDialog(
       context: context,
       builder: (context) {
@@ -325,14 +311,14 @@ class _SetButtonState extends State<SetButton> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
             padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-            height: 27.5.h,
+            height: 22.5.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Title(
                   color: bColor,
                   child: Text(
-                    '비상 연락망',
+                    '비상연락망 추가',
                     style: TextStyle(
                       color: bColor,
                       fontSize: 15.sp,
@@ -340,37 +326,80 @@ class _SetButtonState extends State<SetButton> {
                   ),
                 ),
                 Container(
-                  height: 12.5.h,
-                  child: Column(
+                  height: 7.5.h,
+                  child: Row(
                     children: [
-                      TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            _addName = value;
-                          });
-                        },
-                        controller: _nameFieldController,
-                        cursorColor: bColor,
-                        decoration: InputDecoration(
-                          hintText: '이름 또는 닉네임',
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: bColor),
+                      Flexible(
+                        flex: 1,
+                        child: Container(
+                          padding: EdgeInsets.only(right: 0.5.w),
+                          child: TextField(
+                            autocorrect: false,
+                            keyboardType: TextInputType.text,
+                            textInputAction: TextInputAction.next,
+                            cursorColor: bColor,
+                            controller: _nameFieldController,
+                            decoration: InputDecoration(
+                              isCollapsed: true,
+                              hintText: '이름',
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                borderSide: BorderSide(color: b25Color),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                borderSide: BorderSide(color: bColor),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                _addName = value;
+                              });
+                            },
                           ),
                         ),
                       ),
-                      TextField(
-                        onChanged: (value) {
-                          setState(() {
-                            _addContact = value;
-                          });
-                        },
-                        controller: _contactFieldController,
-                        keyboardType: TextInputType.phone,
-                        cursorColor: bColor,
-                        decoration: InputDecoration(
-                          hintText: '연락처',
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: bColor),
+                      Flexible(
+                        flex: 2,
+                        child: Container(
+                          padding: EdgeInsets.only(left: 0.5.w),
+                          child: TextField(
+                            autocorrect: false,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            cursorColor: bColor,
+                            controller: _contactFieldController,
+                            decoration: InputDecoration(
+                              isCollapsed: true,
+                              hintText: '전화번호',
+                              contentPadding:
+                                  EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                borderSide: BorderSide(color: b25Color),
+                              ),
+                              filled: true,
+                              fillColor: Colors.white,
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(5)),
+                                borderSide: BorderSide(color: bColor),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(
+                                () {
+                                  _addContact = value;
+                                },
+                              );
+                            },
                           ),
                         ),
                       ),
@@ -390,15 +419,18 @@ class _SetButtonState extends State<SetButton> {
                           ),
                         ),
                         onPressed: () {
-                          setState(() {
-                            _contactList.add(_addContact);
-                            _nameList.add(_addName);
-                            UserService()
-                                .registerFirstResponder(_addName, _addContact);
-                            _nameFieldController.clear();
-                            _contactFieldController.clear();
-                            // Navigator.pop(context);
-                          });
+                          setState(
+                            () {
+                              localEmergencyCallList.add(
+                                  {"name": _addName, "number": _addContact});
+                              UserService().registerFirstResponder(
+                                  _addName, _addContact);
+                              getEmergencyCallList();
+                              _nameFieldController.clear();
+                              _contactFieldController.clear();
+                              Navigator.pop(context);
+                            },
+                          );
                         },
                         child: Text(
                           '등록',
@@ -422,7 +454,141 @@ class _SetButtonState extends State<SetButton> {
                           });
                         },
                         child: Text(
-                          '닫기',
+                          '취소',
+                          style: TextStyle(color: bColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> EmergencyCallDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+            height: 27.5.h,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Title(
+                  color: bColor,
+                  child: Text(
+                    "비상연락망 삭제",
+                    style: TextStyle(
+                      color: bColor,
+                      fontSize: 15.sp,
+                    ),
+                  ),
+                ),
+                Container(
+                  child: MultiSelectDialogField(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: b25Color),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    items: localEmergencyCallList
+                        .map((e) => MultiSelectItem(e, e["name"]))
+                        .toList(),
+                    chipDisplay: MultiSelectChipDisplay(
+                      items: _selectedEmergencyCallList
+                          .map((e) => MultiSelectItem(e, e["name"]))
+                          .toList(),
+                      onTap: (value) {
+                        setState(() {
+                          _selectedEmergencyCallList.remove(value);
+                        });
+                      },
+                      chipColor: yColor,
+                      textStyle: TextStyle(color: bColor),
+                    ),
+                    listType: MultiSelectListType.LIST,
+                    onConfirm: (values) {
+                      _selectedEmergencyCallList = values;
+                    },
+                    buttonIcon: Icon(
+                      Icons.arrow_drop_down,
+                      color: bColor,
+                    ),
+                    buttonText: Text(
+                      "비상연락망",
+                      style: TextStyle(color: bColor),
+                    ),
+                    dialogHeight: 25.h,
+                    title: Text(
+                      "삭제할 비상연락망을 선택해주세요.",
+                      style: TextStyle(
+                        color: bColor,
+                        fontSize: 12.5.sp,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    confirmText: Text(
+                      "확인",
+                      style: TextStyle(color: bColor),
+                    ),
+                    cancelText: Text(
+                      "취소",
+                      style: TextStyle(color: bColor),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 37.5.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: yColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(
+                            () {
+                              for (int i = 0;
+                                  i < _selectedEmergencyCallList.length;
+                                  i++) {
+                                localEmergencyCallList
+                                    .remove(_selectedEmergencyCallList[i]);
+                              }
+                              UserService().deleteFirstResponderList(
+                                  _selectedEmergencyCallList);
+                              Navigator.of(context).pop();
+                            },
+                          );
+                        },
+                        child: Text(
+                          '삭제',
+                          style: TextStyle(color: bColor),
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: b25Color,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          "취소",
                           style: TextStyle(color: bColor),
                         ),
                       ),

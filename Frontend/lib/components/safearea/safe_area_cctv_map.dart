@@ -148,20 +148,24 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
       );
     }
     _backgroundPositionStream?.cancel();
-    _currentPositionStream =
-        Geolocator.getPositionStream(locationSettings: locationSettings)
-            .listen((Position? position) {
-      if (position != null) {
-        initLat = position!.latitude;
-        initLon = position!.longitude;
+    final userResponse = await FirebaseFirestore.instance
+        .collection("userAccessCode")
+        .doc(_auth.currentUser?.uid)
+        .get();
+    print(userResponse.exists);
+    if (!userResponse.exists) {
+      await FirebaseFirestore.instance
+          .collection("userAccessCode")
+          .doc(_auth.currentUser?.uid)
+          .set({"accessCode": ""});
+    } else {
+      final userAccessCode = userResponse.data() as Map<String, dynamic>;
+      if (userAccessCode["accessCode"] != null &&
+          userAccessCode["accessCode"].length > 0) {
+        pressWalkBtn = true;
+        accessCode = userAccessCode["accessCode"];
       }
-      if (_mapController != null) {
-        _mapController?.runJavascript('''
-          markers[markers.length-1].setMap(null);
-          addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-        ''');
-      }
-    });
+    }
     Position position = await Geolocator.getCurrentPosition();
     await dotenv.load();
     kakaoMapKey = dotenv.get('kakaoMapAPIKey');
@@ -236,37 +240,16 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                   map.setDraggable(false);
                   map.setZoomable(false);
   ''');
-    _currentPositionStream?.cancel();
-    // _walkPositionStream = _geolocatorPlatform
-    //     .getPositionStream(locationSettings: locationSettings)
-    //     .listen((Position? position) {
-    //   print("location changed");
-    //   print(_mapController);
-    //   if (!positionList.contains(position)) {
-    //     if (positionList.length > 0) {
-    //       drawLine(_mapController, position!, positionList.last);
-    //     }
-    //     positionList.add(position!);
-    //   }
-    //   if (position != null) {
-    //     initLat = position!.latitude;
-    //     initLon = position!.longitude;
-    //   }
-    //   if (_mapController != null) {
-    //     _mapController?.runJavascript('''
-    //     markers[markers.length-1].setMap(null);
-    //     addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
-    //   ''');
-    //   }
-    //   print("location changed end");
-    // });
     accessCode = getRandomString(accessCodeLength);
-    print(accessCode);
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AccessCodeMessageChoiceListDialog(accessCode);
         });
+    FirebaseFirestore.instance
+        .collection("userAccessCode")
+        .doc(_auth.currentUser?.uid)
+        .update({"accessCode": accessCode});
     FirebaseFirestore.instance
         .collection("user")
         .doc(_auth.currentUser?.uid)
@@ -297,77 +280,15 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           .doc(accessCode)
           .set({"latitude": initLat, "longitude": initLon});
     });
-    if (positionList.length == 0) {
-      _mapController?.runJavascript('''
-                  if ('$position') {
-                  // 
-                  if (polylineList) {
-                      for (i = 0; i < polylineList.length; i++) {
-                          // 기존 기록된 경로 삭제
-                          polylineList[i].setMap(null);
-                      }
-                  } 
-                  
-                  // GeoLocator을 이용해서 얻어온 접속 위치로 이동합니다
-                    var lat = parseFloat('$lat'), // 위도
-                        lon = parseFloat('$lon'); // 경도
-                    var locPosition = new kakao.maps.LatLng(lat, lon);
-                    map.setCenter(locPosition);
-                      
-                  } else { // 위치정보를 사용할 수 없을때 이동할 위치를 설정합니다
-                  
-                    var locPosition = new kakao.maps.LatLng(37.5013068, 127.0396597); // 멀티캠퍼스 위치
-                    map.setCenter(locPosition);
-                  }
-                  var polylineList = [];
-                  var boundList = [];
-            ''');
-    }
-  }
-
-  void drawLine(
-      WebViewController _mapController, Position position, Position beforePos) {
-    print("draw");
-    var lat = 0.0, lon = 0.0;
-    var beforeLat = 0.0, beforeLon = 0.0;
-
-    lat = position.latitude;
-    lon = position.longitude;
-    beforeLat = beforePos.latitude;
-    beforeLon = beforePos.longitude;
-    _mapController?.runJavascript('''
-                    var lat = parseFloat('$lat'), // 위도
-                        lon = parseFloat('$lon'); // 경도
-                    var beforeLat = parseFloat('$beforeLat'), // 위도
-                        beforeLon = parseFloat('$beforeLon'); // 경도
-                    var locPosition = new kakao.maps.LatLng(lat, lon);
-                    var beforeLocPosition = new kakao.maps.LatLng(beforeLat, beforeLon);
-                    var linePath = [];
-                    
-                    boundList.push(locPosition); // 바운드 영역 계산용 위치 추가
-                    
-                    map.setCenter(locPosition);
-                    linePath.push(beforeLocPosition);
-                    linePath.push(locPosition);
-                    
-                    // 지도에 표시할 선을 생성합니다
-                    var polyline = new kakao.maps.Polyline({
-                        path: linePath, // 선을 구성하는 좌표배열 입니다
-                        strokeWeight: 5, // 선의 두께 입니다
-                        strokeColor: '#FFAE00', // 선의 색깔입니다
-                        strokeOpacity: 0.7, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
-                        strokeStyle: 'solid' // 선의 스타일입니다
-                    });
-                    
-                    // 지도에 선을 표시합니다 
-                    polyline.setMap(map);
-                    polylineList.push(polyline);
-            ''');
   }
 
   void stopWalk(WebViewController _mapController) {
     _walkPositionStream?.cancel(); // 위치 기록 종료
     timer?.cancel();
+    FirebaseFirestore.instance
+        .collection("userAccessCode")
+        .doc(_auth.currentUser?.uid)
+        .update({"accessCode": ""});
     FirebaseFirestore.instance
         .collection("codeToUserInfo")
         .doc(accessCode)
@@ -385,20 +306,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
       ''');
     });
-    _mapController?.runJavascript('''
-                     map.setDraggable(true);
-                     map.setZoomable(true);
-                     var bounds = new kakao.maps.LatLngBounds();    
-                      for (i = 0; i < boundList.length; i++) {                          
-                          // LatLngBounds 객체에 좌표를 추가합니다
-                          bounds.extend(boundList[i]);
-                      }
-                      if ( boundList.length > 1) {
-                        map.setBounds(bounds);                      
-                      }
-                     // bounds[, paddingTop, paddingRight, paddingBottom, paddingLeft]
-                     // map.setCenter(new kakao.maps.LatLng(latitude,longitude));
-  ''');
 
     positionList = [];
   }
@@ -430,6 +337,20 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
               // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 부분
               else {
+                _currentPositionStream = Geolocator.getPositionStream(
+                        locationSettings: locationSettings)
+                    .listen((Position? position) {
+                  if (position != null) {
+                    initLat = position!.latitude;
+                    initLon = position!.longitude;
+                  }
+                  if (_mapController != null) {
+                    _mapController?.runJavascript('''
+          markers[markers.length-1].setMap(null);
+          addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+        ''');
+                  }
+                });
                 // debugPrint(snapshot.data); Container(
                 // child: Text(snapshot.data),
 
@@ -745,7 +666,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
 
   @override
   void dispose() {
-    _walkPositionStream?.cancel();
+    _currentPositionStream?.cancel();
     _backgroundPositionStream = _geolocatorPlatform
         .getPositionStream(locationSettings: locationSettings)
         .listen((Position? position) {

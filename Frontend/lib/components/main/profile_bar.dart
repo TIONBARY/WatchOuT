@@ -15,15 +15,16 @@ class _ProfileBarState extends State<ProfileBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(4.w, 3.h, 4.w, 1.h),
+      padding: EdgeInsets.fromLTRB(4.w, 3.h, 2.5.w, 1.h),
       child: ListView(
+        physics: NeverScrollableScrollPhysics(),
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                height: 75,
-                width: 75,
+                height: 65,
+                width: 65,
                 child: CircleAvatar(
                   backgroundImage: NetworkImage(
                       Provider.of<MyUserInfo>(context, listen: false)

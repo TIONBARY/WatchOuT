@@ -59,7 +59,6 @@ class _MainButtonDownState extends State<MainButtonDown> {
           child: Column(
             children: [
               MainPageTextButton(
-                  flexs: 1,
                   margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 0.5.h),
                   boxcolors: Colors.black12,
                   onpresseds: () {
@@ -93,7 +92,6 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   textcolors: bColor,
                   fontsizes: 12.5.sp),
               MainPageTextButton(
-                  flexs: 1,
                   margins: EdgeInsets.fromLTRB(2.w, 0.5.h, 1.w, 1.h),
                   boxcolors: Colors.black12,
                   onpresseds: () async {
@@ -106,11 +104,13 @@ class _MainButtonDownState extends State<MainButtonDown> {
             ],
           ),
         ),
-        IconButton(
-          onPressed: () {},
-          icon: Image.asset("assets/icons/cctv_logo.png"),
-          iconSize: 200,
-          alignment: Alignment(0.55, 0),
+        Flexible(
+          flex: 2,
+          child: IconButton(
+            onPressed: () {},
+            icon: Image.asset("assets/icons/cctv_logo.png"),
+            iconSize: 75.w,
+          ),
         ),
       ],
     );

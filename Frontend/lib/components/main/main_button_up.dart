@@ -111,8 +111,10 @@ class _MainButtonUpState extends State<MainButtonUp> {
       _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
-        VolumeControl.setVolume(1);
-        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"));
+        VolumeControl.setVolume(0.1);
+        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
+            audioFocusStrategy:
+                AudioFocusStrategy.request(resumeAfterInterruption: true));
       }
     });
     showDialog(
@@ -205,38 +207,51 @@ class _MainButtonUpState extends State<MainButtonUp> {
     }
   }
 
+  void _widgetClicked(Uri? uri) {
+    if (uri?.host == 'sos') {
+      sendEmergencyMessage();
+      emergencyFromWidget = true;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     _getKakaoKey();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _checkForWidgetLaunch();
+    HomeWidget.widgetClicked.listen(_widgetClicked);
   }
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        IconButton(
-          onPressed: () {
-            return sendEmergencyMessage();
-          },
-          icon: Image.asset("assets/icons/siren_logo.png"),
-          iconSize: 200,
-          alignment: Alignment(-0.55, 0),
+        Flexible(
+          flex: 2,
+          child: IconButton(
+            onPressed: () {
+              return sendEmergencyMessage();
+            },
+            icon: Image.asset("assets/icons/siren_logo.png"),
+            iconSize: 75.w,
+          ),
         ),
         Flexible(
-            child: Column(
-          children: [
-            MainPageTextButton(
-                flexs: 1,
-                margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
-                boxcolors: Colors.black12,
-                onpresseds: _showReportDialog,
-                texts: '신고',
-                textcolors: bColor,
-                fontsizes: 12.5.sp),
-            MainPageTextButton(
-                flexs: 1,
+          child: Column(
+            children: [
+              MainPageTextButton(
+                  margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
+                  boxcolors: Colors.black12,
+                  onpresseds: _showReportDialog,
+                  texts: '신고',
+                  textcolors: bColor,
+                  fontsizes: 12.5.sp),
+              MainPageTextButton(
                 margins: EdgeInsets.fromLTRB(1.w, 0.5.h, 2.w, 1.h),
                 boxcolors: Colors.black12,
                 onpresseds: () {
@@ -265,9 +280,11 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 },
                 texts: '위기상황 \n대처메뉴얼',
                 textcolors: bColor,
-                fontsizes: 12.5.sp)
-          ],
-        ))
+                fontsizes: 12.5.sp,
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
