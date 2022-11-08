@@ -99,7 +99,7 @@ class _TabNavBarState extends State<TabNavBar> {
                 ),
                 const Expanded(
                   child: TabBarView(
-                    physics: RangeMaintainingScrollPhysics(),
+                    physics: NeverScrollableScrollPhysics(),
                     children: [
                       MainPage(),
                       SafeAreaCCTVMapPage(),
