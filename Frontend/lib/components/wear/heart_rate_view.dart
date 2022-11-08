@@ -4,11 +4,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
-
-import '../../providers/heart_rate_provider.dart';
 
 class HeartRateView extends StatefulWidget {
   const HeartRateView({
@@ -74,14 +73,19 @@ class _HeartRateViewState extends State<HeartRateView> {
             ),
             // ${widget.provider.heartRate}
             SfRangeSlider(
-              min: 40,
-              max: 200,
+              min: 40.0,
+              max: 200.0,
               values: _values,
               activeColor: yColor,
               inactiveColor: y50Color,
               shouldAlwaysShowTooltip: true,
               showLabels: true,
               enableTooltip: true,
+              tooltipTextFormatterCallback:
+                  (dynamic actualValue, String formattedText) {
+                return actualValue.toStringAsFixed(0);
+              },
+              minorTicksPerInterval: 1,
               onChanged: (SfRangeValues values) {
                 setState(() {
                   _values = values;
