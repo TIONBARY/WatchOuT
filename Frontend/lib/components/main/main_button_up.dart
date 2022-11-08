@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +20,7 @@ import 'package:homealone/providers/switch_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:volume_control/volume_control.dart';
 
 ApiKakao apiKakao = ApiKakao();
 ApiMessage apiMessage = ApiMessage();
@@ -31,8 +31,6 @@ double initLat = 37.5;
 double initLon = 127.5;
 
 bool emergencyFromWidget = false;
-
-final player = AudioPlayer();
 
 class MainButtonUp extends StatefulWidget {
   const MainButtonUp({Key? key}) : super(key: key);
@@ -110,21 +108,13 @@ class _MainButtonUpState extends State<MainButtonUp> {
     prepareMessage();
     timer = Timer(Duration(seconds: 5), () async {
       Navigator.pop(dialogContext);
-      // _sendSMS(message, recipients);
+      _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
-        await player.setVolume(0.1);
-        AudioContextConfig config = AudioContextConfig(
-            forceSpeaker: true,
-            respectSilence: true,
-            stayAwake: true,
-            duckAudio: true);
-        player.setAudioContext(AudioContext(
-            android: config.buildAndroid(), iOS: config.buildIOS()));
-        await player.play(AssetSource('sounds/siren.mp3'));
-        // assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
-        //     audioFocusStrategy:
-        //         AudioFocusStrategy.request(resumeAfterInterruption: true));
+        VolumeControl.setVolume(0.1);
+        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
+            audioFocusStrategy:
+                AudioFocusStrategy.request(resumeAfterInterruption: true));
       }
     });
     showDialog(
