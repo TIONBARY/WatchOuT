@@ -106,7 +106,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
 
   void sendEmergencyMessage() async {
     prepareMessage();
-    timer = Timer(Duration(seconds: 5), () async {
+    timer = Timer(Duration(seconds: 5), () {
       Navigator.pop(dialogContext);
       _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
