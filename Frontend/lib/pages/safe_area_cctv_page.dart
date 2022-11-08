@@ -15,7 +15,6 @@ class _SafeAreaCCTVMapPageState extends State<SafeAreaCCTVMapPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-        appBar: AppBar(title: Text('안전 귀갓길')), body: SafeAreaCCTVMap());
+    return Scaffold(body: SafeAreaCCTVMap());
   }
 }

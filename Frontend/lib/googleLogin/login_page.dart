@@ -20,12 +20,12 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Center(
         child: Container(
-          color: nColor,
+          color: bColor,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Text(
-                'Watch OuT',
+                'WatchOuT',
                 style: TextStyle(
                     fontSize: 50.0, fontWeight: FontWeight.bold, color: yColor),
               ),

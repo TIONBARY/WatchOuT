@@ -1,9 +1,11 @@
+import 'package:button_animations/button_animations.dart';
+import 'package:button_animations/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:sizer/sizer.dart';
 
 class MainPageTextButton extends StatelessWidget {
   const MainPageTextButton({
     Key? key,
-    required this.flexs,
     required this.margins,
     required this.boxcolors,
     required this.onpresseds,
@@ -11,7 +13,6 @@ class MainPageTextButton extends StatelessWidget {
     required this.textcolors,
     required this.fontsizes,
   }) : super(key: key);
-  final flexs;
   final margins;
   final boxcolors;
   final onpresseds;
@@ -22,23 +23,16 @@ class MainPageTextButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Flexible(
-      flex: flexs,
+      flex: 1,
       child: Container(
         margin: margins,
-        height: double.infinity,
         width: double.infinity,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(25)),
-            color: boxcolors),
-        child: TextButton(
-          style: ButtonStyle(
-            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-          ),
-          onPressed: onpresseds,
+        child: AnimatedButton(
+          width: 27.5.w,
+          type: PredefinedThemes.light,
+          borderRadius: 25,
+          isOutline: true,
+          onTap: onpresseds,
           child: Text(
             texts,
             textAlign: TextAlign.center,
@@ -48,6 +42,24 @@ class MainPageTextButton extends StatelessWidget {
             ),
           ),
         ),
+        // child: TextButton(
+        //   style: ButtonStyle(
+        //     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+        //       RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.circular(25),
+        //       ),
+        //     ),
+        //   ),
+        //   onPressed: onpresseds,
+        //   child: Text(
+        //     texts,
+        //     textAlign: TextAlign.center,
+        //     style: TextStyle(
+        //       color: textcolors,
+        //       fontSize: fontsizes,
+        //     ),
+        //   ),
+        // ),
       ),
     );
   }

@@ -4,9 +4,10 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class CallDialog extends StatelessWidget {
-  String titles = '';
+  String? titles = '';
   String names = '';
   String phones = '';
+  String? texts = '';
   Widget Function(BuildContext)? pageBuilder;
 
   Map<String, String> emoji = {
@@ -18,26 +19,31 @@ class CallDialog extends StatelessWidget {
     "비상벨": "🔔"
   };
 
-  CallDialog(this.titles, this.names, this.phones, this.pageBuilder);
+  CallDialog(
+      this.titles, this.names, this.phones, this.texts, this.pageBuilder);
 
   @override
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
-        padding: EdgeInsets.fromLTRB(1.w, 2.h, 1.w, 2.h),
-        height: 20.h,
+        padding: EdgeInsets.fromLTRB(5.w, 2.h, 5.w, 1.5.h),
+        height: (this.texts == null) ? 15.h : 22.5.h,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
-              color: nColor,
-              child: Text(emoji[titles]! + " " + names,
-                  style: TextStyle(fontSize: 12.5.sp)),
+              color: bColor,
+              child: (this.titles == null)
+                  ? Text(names, style: TextStyle(fontSize: 12.5.sp))
+                  : Text(emoji[titles]! + " " + names,
+                      style: TextStyle(fontSize: 12.5.sp)),
             ),
             Text(phones.isEmpty ? "등록된 번호가 없습니다." : phones),
+            (this.texts == null)
+                ? Padding(padding: EdgeInsets.zero)
+                : Text(texts!, textAlign: TextAlign.center),
             Container(
-              padding: EdgeInsets.fromLTRB(0, 2.5.h, 0, 0),
               width: 35.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -54,7 +60,7 @@ class CallDialog extends StatelessWidget {
                           onPressed: null,
                           child: Text(
                             "통화",
-                            style: TextStyle(color: nColor),
+                            style: TextStyle(color: bColor),
                           ))
                       : ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -69,12 +75,12 @@ class CallDialog extends StatelessWidget {
                           },
                           child: Text(
                             "통화",
-                            style: TextStyle(color: nColor),
+                            style: TextStyle(color: bColor),
                           ),
                         ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: n25Color,
+                      backgroundColor: b25Color,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(7),
@@ -90,7 +96,7 @@ class CallDialog extends StatelessWidget {
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: nColor),
+                      style: TextStyle(color: bColor),
                     ),
                   ),
                 ],
