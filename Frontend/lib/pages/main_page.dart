@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/main/main_button_down.dart';
 import 'package:homealone/components/main/main_button_up.dart';
-import 'package:homealone/components/main/profile_bar.dart';
 
 import '../components/main/carousel.dart';
 
@@ -23,9 +22,13 @@ class _MainPageState extends State<MainPage> {
       body: Container(
         child: Column(
           children: [
+            // Flexible(
+            //   child: ProfileBar(),
+            //   flex: 2,
+            // ),
             Flexible(
-              child: ProfileBar(),
-              flex: 2,
+              child: Carousel(),
+              flex: 4,
             ),
             Flexible(
               child: MainButtonUp(),
@@ -35,10 +38,10 @@ class _MainPageState extends State<MainPage> {
               child: MainButtonDown(),
               flex: 3,
             ),
-            Flexible(
-              child: Carousel(),
-              flex: 4,
-            ),
+            // Flexible(
+            //   child: Carousel(),
+            //   flex: 4,
+            // ),
           ],
         ),
       ),

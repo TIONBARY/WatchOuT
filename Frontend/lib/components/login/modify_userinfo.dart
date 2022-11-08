@@ -54,7 +54,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
         print("sign_up.dart에서 user 정보를 잘 받아왔습니다.");
         String address = Provider.of<MyUserInfo>(context, listen: false).region;
         this.postCode = address.substring(1, 6);
-        this.region = address.substring(7);
+        this.region = address.substring(8);
         print('지역: $this.region');
         this.latitude =
             Provider.of<MyUserInfo>(context, listen: false).latitude;
@@ -78,7 +78,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
     _SignupKey.currentState!.save();
     db.collection("user").doc("${loggedUser!.uid}").update({
       "phone": _phone,
-      "region": '(${this.postCode})${this.region}',
+      "region": '(${this.postCode}) ${this.region}',
       "latitude": '${this.latitude}',
       "longitude": '${this.longitude}',
       "profileImage": '${_profileImageURL}',
@@ -351,7 +351,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                             overflow: TextOverflow.ellipsis,
                           )
                         : Text(
-                            '(${this.postCode})${this.region}',
+                            '(${this.postCode}) ${this.region}',
                             overflow: TextOverflow.ellipsis,
                           ),
                   ),
