@@ -249,7 +249,7 @@ class _RecordPageState extends State<RecordPage> {
                       return _isValidCode(val ?? '') ? null : "올바른 코드를 입력해주세요.";
                     },
                     paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
-                    keyboardtypes: TextInputType.text,
+                    keyboardtypes: TextInputType.number,
                     hinttexts: '코드',
                     helpertexts: '공유 받은 코드를 입력해주세요.',
                     onchangeds: (code) {
