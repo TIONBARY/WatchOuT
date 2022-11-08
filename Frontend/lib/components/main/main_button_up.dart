@@ -4,6 +4,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_audio_manager_plus/flutter_audio_manager_plus.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geolocator/geolocator.dart';
@@ -20,7 +21,6 @@ import 'package:homealone/providers/switch_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:volume_control/volume_control.dart';
 
 ApiKakao apiKakao = ApiKakao();
 ApiMessage apiMessage = ApiMessage();
@@ -106,13 +106,18 @@ class _MainButtonUpState extends State<MainButtonUp> {
 
   void sendEmergencyMessage() async {
     prepareMessage();
-    timer = Timer(Duration(seconds: 5), () {
+    timer = Timer(Duration(seconds: 5), () async {
       Navigator.pop(dialogContext);
-      _sendSMS(message, recipients);
+      // _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
-        VolumeControl.setVolume(1);
-        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"));
+        AudioInput _availableInputs =
+            await FlutterAudioManagerPlus.getCurrentOutput();
+        print(_availableInputs);
+        bool res = await FlutterAudioManagerPlus.changeToReceiver();
+        print(res);
+        // VolumeControl.setVolume(1);
+        // assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"));
       }
     });
     showDialog(
