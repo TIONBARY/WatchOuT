@@ -64,7 +64,7 @@ class _SignupState extends State<SignUp> {
       "gender": _gender,
       "birth": _birth,
       "phone": _phone,
-      "region": '(${this.postCode})${this.region}',
+      "region": '(${this.postCode}) ${this.region}',
       "latitude": '${this.latitude}',
       "longitude": '${this.longitude}',
       "activated": true,
@@ -231,7 +231,7 @@ class _SignupState extends State<SignUp> {
                             style: TextStyle(color: b75Color),
                           )
                         : Text(
-                            '(${this.postCode})${this.region}',
+                            '(${this.postCode}) ${this.region}',
                             overflow: TextOverflow.ellipsis,
                           ),
                   ),
