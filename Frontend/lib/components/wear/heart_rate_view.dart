@@ -78,7 +78,8 @@ class _HeartRateViewState extends State<HeartRateView> {
               values: _values,
               activeColor: yColor,
               inactiveColor: y50Color,
-              shouldAlwaysShowTooltip: true,
+              // shouldAlwaysShowTooltip: true,
+
               showLabels: true,
               enableTooltip: true,
               tooltipTextFormatterCallback:
