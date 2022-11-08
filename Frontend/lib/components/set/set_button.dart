@@ -80,6 +80,8 @@ class _SetButtonState extends State<SetButton> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<SwitchBools>(context, listen: false).onCreate();
+    Provider.of<HeartRateProvider>(context, listen: false).onCreate();
     return Column(
       children: [
         SetPageRadioButton(

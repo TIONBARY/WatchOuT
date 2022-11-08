@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
-import 'dart:io';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -20,10 +18,10 @@ import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:homealone/providers/user_provider.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:usage_stats/usage_stats.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
@@ -70,9 +68,18 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     heartRateProvider = Provider.of<HeartRateProvider>(context, listen: false);
-    loadHeartRate();
+    heartRateProvider.onCreate();
+    // loadHeartRate();
     initializeService();
     initUsage();
+    // debugPrint("메인꺼");
+    // SharedPreferences.getInstance().then(
+    //   (value) => {
+    //     debugPrint(value.hashCode.toString()),
+    //     debugPrint(value.getBool("useWearOS").toString())
+    //   },
+    // );
+
     // initQuickActions();
   }
 
@@ -146,7 +153,7 @@ class _HomePageState extends State<HomePage> {
           }
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
-            print("handleAuthstate로 넘어감");
+            debugPrint("handleAuthstate로 넘어감");
             return AuthService().handleAuthState();
           }
           // Otherwise, show something whilst waiting for initialization to complete
@@ -185,26 +192,6 @@ double heartRate = heartRateProvider.heartRate;
 double minValue = 0.0;
 double maxValue = 300.0;
 
-void loadHeartRate() {
-  getApplicationDocumentsDirectory().then((dir) =>
-      File('${dir.path}/heartRate.txt')
-          .readAsString()
-          .then((value) => {docodeHeartRate(value)}));
-}
-
-void docodeHeartRate(String saved) {
-  final data = jsonDecode(saved);
-  heartRateProvider.heartRate = data['heartRate'];
-  heartRateProvider.minValue = data['minValue'];
-  heartRateProvider.maxValue = data['maxValue'];
-  heartRate = data['heartRate'];
-  // debugPrint(data['heartRate'].toString());
-  minValue = data['minValue'];
-  // debugPrint(data['minValue'].toString());
-  maxValue = data['maxValue'];
-  // debugPrint(data['maxValue'].toString());
-}
-
 // this will be used as notification channel id
 const notificationChannelId = 'emergency_notification';
 
@@ -227,6 +214,15 @@ Future<void> initializeService() async {
       .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin>()
       ?.createNotificationChannel(channel);
+  InitializationSettings initializationSettings = InitializationSettings(
+      android: AndroidInitializationSettings("@mipmap/ic_launcher"));
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveBackgroundNotificationResponse: onReceiveNotificationResponse,
+    onDidReceiveNotificationResponse: onReceiveNotificationResponse,
+  );
+  // 백그라운드에서 알림 수신시 대응할 함수
+  // 포그라운드에서 알림 수신시 대응할 함수
 
   await service.configure(
     androidConfiguration: AndroidConfiguration(
@@ -247,15 +243,41 @@ Future<void> initializeService() async {
   );
 }
 
+void onReceiveNotificationResponse(NotificationResponse response) {
+  // print(response.actionId);
+  String value = response.actionId!;
+  debugPrint("호출 $value");
+  if (value == "expand") {
+    updateHeartRate();
+  }
+}
+
+void updateHeartRate() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  heartRate = pref.getDouble("heartRate")!;
+  maxValue = pref.getDouble("maxValue")!;
+  minValue = pref.getDouble("minValue")!;
+  if (heartRate > maxValue) {
+    maxValue += 5.0;
+  } else if (heartRate < minValue) {
+    minValue -= 5.0;
+  }
+  pref.setDouble("heartRate", heartRate);
+  pref.setDouble("maxValue", maxValue);
+  pref.setDouble("minValue", minValue);
+  debugPrint("업데이트 결과 $maxValue, $minValue");
+}
+
 Future<void> onStart(ServiceInstance service) async {
   // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
+  final SharedPreferences pref = await SharedPreferences.getInstance();
 
   if (service is AndroidServiceInstance) {
-    onStartWatch(service, flutterLocalNotificationsPlugin);
+    onStartWatch(service, flutterLocalNotificationsPlugin, pref);
   }
 
   Timer.periodic(
@@ -264,13 +286,12 @@ Future<void> onStart(ServiceInstance service) async {
       Future<int> count = initUsage();
       count.then((value) {
         print('24시간 이내에 사용한 앱 갯수 : $value');
-        if (value != 0) {
+        if (value == 0)
           print('비상!!!! 초비상!!!!');
-          navigatorKey.currentState?.pushNamed('/emergency');
-        } else
+        else
           print('24시간 이내 사용 감지');
       }).catchError((error) {
-        print(error);
+        debugPrint(error);
       });
     },
   );
@@ -311,67 +332,76 @@ Future<int> initUsage() async {
   return count;
 }
 
-void onStartWatch(ServiceInstance service,
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) {
+void onStartWatch(
+    ServiceInstance service,
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+    SharedPreferences pref) {
   final watch = WatchConnectivity();
   // var newGap = "0.0";
-  double heartRateBPM = 0.0;
+  bool useWearOS = pref.getBool("useWearOS")!;
   Map<String, String> msg = HashMap<String, String>();
   watch.receivedApplicationContexts
-      .then((value) => heartRateBPM = double.parse(value.last.values.last));
+      .then((value) => heartRate = double.parse(value.last.values.last));
   watch.contextStream.listen(
     (e) async => {
-      loadHeartRate(),
-      heartRateBPM = double.parse(e.values.last),
       // Provider.of<HeartRateProvider>(context, listen: false)
       //     .heartRate = heartRateBPM,
-      heartRate = heartRateBPM,
-      debugPrint("BPM 심박수 $heartRateBPM"),
+      heartRate = double.parse(e.values.last),
+      debugPrint("BPM 심박수 $heartRate"),
       msg.clear(),
-      msg.addEntries({"HEART_RATE": heartRateBPM.toString()}.entries),
+      msg.addEntries({"HEART_RATE": heartRate.toString()}.entries),
       watch.sendMessage(msg),
       // 임시 이상상황 감지 로직
-      if (heartRateBPM > maxValue || minValue > heartRateBPM)
+      if (useWearOS)
         {
-          debugPrint("최대 최소 실시간: $maxValue, $minValue"),
-          flutterLocalNotificationsPlugin.show(
-            notificationId,
-            '워치아웃',
-            '위기 상황 발생!!! $heartRateBPM ${DateTime.now()}',
-            // payload: newGap,
-            const NotificationDetails(
-              android:
-                  AndroidNotificationDetails(notificationChannelId, '포그라운드 서비스',
+          await heartRateProvider.onCreate(),
+          maxValue = heartRateProvider.maxValue,
+          minValue = heartRateProvider.minValue,
+          if (heartRate > maxValue || minValue > heartRate)
+            {
+              debugPrint("최대 최소 실시간: $maxValue, $minValue"),
+              flutterLocalNotificationsPlugin.show(
+                notificationId,
+                '워치아웃',
+                '위기 상황 발생!!! 심박수: ${heartRate.toInt()}',
+                // payload: newGap,
+                const NotificationDetails(
+                  android: AndroidNotificationDetails(
+                      notificationChannelId, '포그라운드 서비스',
                       icon: 'launch_background',
                       ongoing: false,
                       enableVibration: true,
-                      fullScreenIntent: true,
+                      fullScreenIntent: false,
                       importance: Importance.max,
                       channelShowBadge: true,
                       channelDescription: "워치아웃 심박수 알림 채널",
                       autoCancel: true, // 알림 터치시 해제
                       timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
                       actions: [
-                    AndroidNotificationAction("ignore", "무시",
-                        cancelNotification: true),
-                    AndroidNotificationAction("expand", "범위 확장",
-                        cancelNotification: true,
-                        contextual: false,
-                        showsUserInterface: true,
-                        inputs: [
-                          AndroidNotificationActionInput(
-                            choices: ["-5", "+5"],
-                            label: "추가",
-                          )
-                        ]),
-                    AndroidNotificationAction("open", "바로가기",
-                        showsUserInterface: true, cancelNotification: true),
-                  ]
+                        AndroidNotificationAction("ignore", "무시",
+                            cancelNotification: true),
+                        AndroidNotificationAction(
+                          "expand",
+                          "심박수 범위 확장",
+                          showsUserInterface: false,
+                          cancelNotification: true,
+                          contextual: false,
+                          // inputs: [
+                          //   AndroidNotificationActionInput(
+                          //     choices: ["-5","+5"],
+                          //     allowFreeFormInput: false,
+                          //   )
+                          // ],
+                        ),
+                        AndroidNotificationAction("open", "바로가기",
+                            showsUserInterface: true, cancelNotification: true),
+                      ]
                       // playSound: ,
                       // sound:
                       ),
-            ),
-          ),
+                ),
+              ),
+            },
         },
     },
   );

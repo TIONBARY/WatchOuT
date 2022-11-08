@@ -80,6 +80,7 @@ dependencies:
   multi_dropdown: ^1.0.2
   http_parser: ^4.0.2
   syncfusion_flutter_sliders: ^20.3.52
+  shared_preferences: ^2.0.15
   button_animations: ^1.0.1+2
 
 dev_dependencies:
