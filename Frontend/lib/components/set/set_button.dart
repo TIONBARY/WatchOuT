@@ -28,14 +28,12 @@ class SetButton extends StatefulWidget {
 class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
-  final List<String> _valueList = ['문자', '전화', '사용안함'];
-  String _selectedAlert = '문자';
+
   List<String> _contactList = [];
   List<String> _nameList = [];
   String _selectedContact = '';
   String _addContact = '';
   String _addName = '';
-  bool flag = true;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> emergencyCallList = [];
@@ -61,23 +59,24 @@ class _SetButtonState extends State<SetButton> {
   @override
   void initState() {
     super.initState();
-    setFirstResponderProvider();
-    getEmergencyCallList();
+    // setFirstResponderProvider();
+    // getEmergencyCallList();
   }
 
   void setFirstResponderProvider() {
     Map<String, String> firstResponder =
         Provider.of<ContactInfo>(context, listen: false).getResponder();
-    if (!firstResponder.isEmpty && flag) {
+    if (!firstResponder.isEmpty) {
       _nameList = firstResponder.keys.toList();
       _contactList = firstResponder.values.toList();
-      flag = false; //최초 한번만 실행되도록 설정
     }
     if (!_nameList.isEmpty) _selectedContact = _nameList[0];
   }
 
   @override
   Widget build(BuildContext context) {
+    setFirstResponderProvider();
+    getEmergencyCallList();
     return Column(
       children: [
         SetPageRadioButton(
@@ -227,7 +226,7 @@ class _SetButtonState extends State<SetButton> {
   }
 
   Future<void> UserDeleteDialog(BuildContext context) async {
-    final _SignupKey = GlobalKey<FormState>();
+    // final _SignupKey = GlobalKey<FormState>();
     return showDialog(
       context: context,
       builder: (context) {
