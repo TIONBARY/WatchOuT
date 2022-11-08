@@ -1,11 +1,6 @@
-import 'dart:collection';
-import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:sizer/sizer.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
@@ -26,33 +21,13 @@ class _HeartRateViewState extends State<HeartRateView> {
   @override
   void initState() {
     super.initState();
-    // loadHeartRate();
-  }
-
-  void loadHeartRate() {
-    getApplicationDocumentsDirectory().then((dir) =>
-        File('${dir.path}/heartRate.txt')
-            .readAsString()
-            .then((value) => {docodeHeartRate(value)}));
-  }
-
-  void docodeHeartRate(String saved) {
-    final data = jsonDecode(saved);
-    widget.provider.heartRate = data['heartRate'];
-    widget.provider.minValue = data['minValue'];
-    widget.provider.maxValue = data['maxValue'];
-  }
-
-  void save() {
-    Map<String, double> map = HashMap.fromEntries([
-      MapEntry("heartRate", widget.provider.heartRate),
-      MapEntry("minValue", widget.provider.minValue),
-      MapEntry("maxValue", widget.provider.maxValue)
-    ]);
-    String saved = jsonEncode(map);
-    print(saved);
-    getApplicationDocumentsDirectory().then(
-        (dir) => File('${dir.path}/heartRate.txt').writeAsStringSync(saved));
+    // debugPrint("심박수꺼");
+    // SharedPreferences.getInstance().then(
+    //   (value) => {
+    //     debugPrint(value.hashCode.toString()),
+    //     debugPrint(value.getBool("useWearOS").toString())
+    //   },
+    // );
   }
 
   @override
@@ -78,7 +53,7 @@ class _HeartRateViewState extends State<HeartRateView> {
               values: _values,
               activeColor: yColor,
               inactiveColor: y50Color,
-              shouldAlwaysShowTooltip: true,
+              // shouldAlwaysShowTooltip: true,
               showLabels: true,
               enableTooltip: true,
               tooltipTextFormatterCallback:
@@ -91,7 +66,7 @@ class _HeartRateViewState extends State<HeartRateView> {
                   _values = values;
                   widget.provider.changeMinValue(values.start);
                   widget.provider.changeMaxValue(values.end);
-                  save();
+                  // save();
                 });
               },
             ),
