@@ -24,6 +24,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:quick_actions/quick_actions.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:usage_stats/usage_stats.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
@@ -31,6 +32,7 @@ import 'package:watch_connectivity/watch_connectivity.dart';
 HeartRateProvider heartRateProvider = HeartRateProvider();
 final isCheck = IsCheck.instance;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+Timer? tempTimer;
 
 void main() {
   runApp(
@@ -250,6 +252,7 @@ Future<void> initializeService() async {
 Future<void> onStart(ServiceInstance service) async {
   // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -257,8 +260,7 @@ Future<void> onStart(ServiceInstance service) async {
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin);
   }
-
-  Timer.periodic(
+  tempTimer = Timer.periodic(
     Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
     (timer) {
       Future<int> count = initUsage();
@@ -266,7 +268,10 @@ Future<void> onStart(ServiceInstance service) async {
         print('24시간 이내에 사용한 앱 갯수 : $value');
         if (value != 0) {
           print('비상!!!! 초비상!!!!');
-          navigatorKey.currentState?.pushNamed('/emergency');
+          print('==================${prefs.getString('username')}');
+          print('==================${prefs.getString('userphone')}');
+          print(
+              '==================${prefs.getStringList('contactlist')?.elementAt(0)}');
         } else
           print('24시간 이내 사용 감지');
       }).catchError((error) {
