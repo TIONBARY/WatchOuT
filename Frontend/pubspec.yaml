@@ -81,6 +81,7 @@ dependencies:
   http_parser: ^4.0.2
   syncfusion_flutter_sliders: ^20.3.52
   shared_preferences: ^2.0.15
+  button_animations: ^1.0.1+2
 
 dev_dependencies:
   flutter_test:
@@ -122,7 +123,18 @@ flutter:
     - family: HanSan
       fonts:
         - asset: fonts/BlackHanSans-Regular.ttf
-
+    - family: WandoCB
+      fonts:
+        - asset: fonts/WandocleanseaB.ttf
+    - family: WandoCR
+      fonts:
+        - asset: fonts/WandocleanseaR.ttf
+    - family: WandoHB
+      fonts:
+        - asset: fonts/WandohopeB.ttf
+    - family: WandoHR
+      fonts:
+        - asset: fonts/WandohopeR.ttf
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 
