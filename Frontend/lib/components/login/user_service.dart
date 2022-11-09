@@ -73,12 +73,16 @@ class UserService {
   }
 
   void deleteFirstResponderList(List<Map<String, dynamic>> data) {
+    List<String> temp = [];
+    SharedPreferences.getInstance().then((prefs) async => {
+          temp = prefs.getStringList('contactlist')!,
+          data.forEach((number) {
+            temp.remove(number['number']);
+          }),
+          prefs.setStringList('contactlist', temp),
+          print(prefs.getStringList('contactlist')),
+        });
     for (int i = 0; i < data.length; i++) {
-      SharedPreferences.getInstance().then((prefs) async => {
-            await prefs.remove(data[i]['number']),
-          });
-      print(',.,,.,.,.,,.,.,.,.${data[i]['number']}');
-
       db
           .collection("user")
           .doc("${user?.uid}")
