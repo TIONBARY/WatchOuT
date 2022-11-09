@@ -4,6 +4,7 @@ import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/utils/double_click_pop.dart';
 import 'package:homealone/googleLogin/sign_up_page.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import '../components/login/auth_service.dart';
@@ -69,6 +70,11 @@ class _TabNavBarState extends State<TabNavBar> {
                       MaterialPageRoute(
                           builder: (BuildContext context) => HomePage()),
                       (route) => false);
+                  SharedPreferences.getInstance().then((prefs) async => {
+                        await prefs.remove('username'),
+                        await prefs.remove('userphone'),
+                        await prefs.remove('contactlist'),
+                      });
                 },
               )
             ],

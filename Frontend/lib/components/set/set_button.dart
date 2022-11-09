@@ -570,14 +570,6 @@ class _SetButtonState extends State<SetButton> {
                               }
                               UserService().deleteFirstResponderList(
                                   _selectedEmergencyCallList);
-                              // _selectedEmergencyCallList.forEach((element) {
-                              //   element.values.forEach((element) {
-                              //     SharedPreferences.getInstance()
-                              //         .then((prefs) async => {
-                              //               await prefs.remove(element),
-                              //             });
-                              //   });
-                              // });
                               Navigator.of(context).pop();
                             },
                           );

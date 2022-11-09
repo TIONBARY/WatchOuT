@@ -340,6 +340,8 @@ Future<void> onStart(ServiceInstance service) async {
             _getKakaoKey().then((response) => sendEmergencyMessage());
         } else {
           print('24시간 이내 사용 감지');
+          print(
+              '==================${pref.getStringList('contactlist')?.length}');
           messageIsSent = false;
         }
       }).catchError((error) {
