@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:homealone/providers/contact_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../googleLogin/login_page.dart';
 import '../../googleLogin/sign_up_page.dart';
@@ -34,6 +35,16 @@ class AuthService {
             Provider.of<ContactInfo>(context, listen: false)
                 .addResponder(phoneDocs[i].id, phoneDocs[i]["number"]);
           }
+          List<String> temp = [];
+          Provider.of<ContactInfo>(context, listen: false)
+              .responderMap
+              .values
+              .forEach((number) {
+            temp.add(number);
+          });
+          SharedPreferences.getInstance().then((prefs) async => {
+                await prefs.setStringList('contactlist', temp),
+              });
         }
         return TabNavBar();
       },
@@ -75,6 +86,12 @@ class AuthService {
           UserService().registerBasicUserInfo();
         } else if (userDocs!["activated"]) {
           Provider.of<MyUserInfo>(context, listen: false).setUser(userDocs);
+          SharedPreferences.getInstance().then((prefs) async => {
+                await prefs.setString('username',
+                    Provider.of<MyUserInfo>(context, listen: false).name),
+                await prefs.setString('userphone',
+                    Provider.of<MyUserInfo>(context, listen: false).phone),
+              });
           return getFirstResponder();
         } else {
           UserService().registerBasicUserInfo();

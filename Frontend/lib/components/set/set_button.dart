@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/constants.dart';
@@ -17,6 +18,7 @@ import '../login/user_service.dart';
 import '../wear/heart_rate_view.dart';
 
 final isCheck = IsCheck.instance;
+AuthService authService = AuthService();
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -431,6 +433,7 @@ class _SetButtonState extends State<SetButton> {
                               Navigator.pop(context);
                             },
                           );
+                          authService.getFirstResponder();
                         },
                         child: Text(
                           '등록',
@@ -567,6 +570,14 @@ class _SetButtonState extends State<SetButton> {
                               }
                               UserService().deleteFirstResponderList(
                                   _selectedEmergencyCallList);
+                              // _selectedEmergencyCallList.forEach((element) {
+                              //   element.values.forEach((element) {
+                              //     SharedPreferences.getInstance()
+                              //         .then((prefs) async => {
+                              //               await prefs.remove(element),
+                              //             });
+                              //   });
+                              // });
                               Navigator.of(context).pop();
                             },
                           );

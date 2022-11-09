@@ -1,11 +1,17 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/main/main_button_up.dart';
@@ -27,6 +33,22 @@ import 'package:usage_stats/usage_stats.dart';
 
 final isCheck = IsCheck.instance;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
+ApiKakao apiKakao = ApiKakao();
+ApiMessage apiMessage = ApiMessage();
+
+String kakaoMapKey = "";
+
+double initLat = 37.5013;
+double initLon = 127.0396;
+
+String message = "";
+List<String> recipients = [];
+String address = "";
+bool messageIsSent = false;
+
+final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
+StreamSubscription<Position>? _positionStreamSubscription;
 
 void main() {
   runApp(
@@ -190,26 +212,65 @@ Future<void> onStart(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final SharedPreferences pref = await SharedPreferences.getInstance();
+  LocationSettings locationSettings;
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    locationSettings = AndroidSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 1,
+        intervalDuration: const Duration(milliseconds: 500),
+        foregroundNotificationConfig: const ForegroundNotificationConfig(
+          notificationText: "백그라운드에서 위치정보를 받아오고 있습니다.",
+          notificationTitle: "WatchOut이 백그라운드에서 실행중입니다.",
+        ));
+  } else if (defaultTargetPlatform == TargetPlatform.iOS ||
+      defaultTargetPlatform == TargetPlatform.macOS) {
+    locationSettings = AppleSettings(
+      accuracy: LocationAccuracy.high,
+      activityType: ActivityType.fitness,
+      distanceFilter: 10,
+      pauseLocationUpdatesAutomatically: true,
+      showBackgroundLocationIndicator: false,
+    );
+  } else {
+    locationSettings = LocationSettings(
+      accuracy: LocationAccuracy.high,
+      distanceFilter: 10,
+    );
+  }
+  _positionStreamSubscription = _geolocatorPlatform
+      .getPositionStream(locationSettings: locationSettings)
+      .listen((Position? position) {
+    initLat = position!.latitude;
+    initLon = position!.longitude;
+  });
+  Timer.periodic(
+    Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
+    (timer) {
+      pref.reload();
+      Future<int> count = initUsage();
+      count.then((value) {
+        print('24시간 이내에 사용한 앱 갯수 : $value');
+        if (value == 0) {
+          print('비상!!!! 초비상!!!!');
+          print('==================${pref.getString('username')}');
+          print('==================${pref.getString('userphone')}');
+          print(
+              '==================${pref.getStringList('contactlist')?.length}');
+          if (!messageIsSent)
+            _getKakaoKey().then((response) => sendEmergencyMessage());
+        } else {
+          print('24시간 이내 사용 감지');
+          messageIsSent = false;
+        }
+      }).catchError((error) {
+        print(error);
+      });
+    },
+  );
 
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin, pref);
   }
-
-  Timer.periodic(
-    Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
-    (timer) {
-      Future<int> count = initUsage();
-      count.then((value) {
-        print('24시간 이내에 사용한 앱 갯수 : $value');
-        if (value == 0)
-          print('비상!!!! 초비상!!!!');
-        else
-          print('24시간 이내 사용 감지');
-      }).catchError((error) {
-        debugPrint(error);
-      });
-    },
-  );
 }
 
 Future<int> initUsage() async {
@@ -245,4 +306,41 @@ Future<int> initUsage() async {
   // }
 
   return count;
+}
+
+Future _getKakaoKey() async {
+  await dotenv.load();
+  kakaoMapKey = dotenv.get('kakaoMapAPIKey');
+  return kakaoMapKey;
+}
+
+void _sendSMS(String message, List<String> recipients) async {
+  Map<String, dynamic> _result =
+      await apiMessage.sendMessage(recipients, message);
+}
+
+Future<void> sendEmergencyMessage() async {
+  await prepareMessage();
+  if (recipients.isNotEmpty) {
+    print(message);
+    print(recipients);
+    messageIsSent = true;
+    // _sendSMS(message, recipients); 테스트할때는 문자전송 막아놈
+  }
+}
+
+Future<void> getCurrentLocation() async {
+  address =
+      await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
+}
+
+Future<void> prepareMessage() async {
+  await getCurrentLocation();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  message =
+      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다. \n${preferences.getString('username')} 님의 번호 : ${preferences.getString('userphone')}\n현재 예상 위치 : ${address}\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+  List<String>? list = await preferences.getStringList('contactlist');
+  if (list != null) {
+    recipients = list!;
+  }
 }
