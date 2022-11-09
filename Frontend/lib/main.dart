@@ -243,22 +243,16 @@ Future<void> onStart(ServiceInstance service) async {
     initLon = position!.longitude;
   });
   Timer.periodic(
-    Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
+    Duration(hours: 1),
     (timer) {
       pref.reload();
       Future<int> count = initUsage();
       count.then((value) {
         print('24시간 이내에 사용한 앱 갯수 : $value');
         if (value == 0) {
-          print('비상!!!! 초비상!!!!');
-          print('==================${pref.getString('username')}');
-          print('==================${pref.getString('userphone')}');
-          print(
-              '==================${pref.getStringList('contactlist')?.length}');
           if (!messageIsSent)
             _getKakaoKey().then((response) => sendEmergencyMessage());
         } else {
-          print('24시간 이내 사용 감지');
           messageIsSent = false;
         }
       }).catchError((error) {
@@ -280,13 +274,6 @@ Future<int> initUsage() async {
   DateTime endDate = DateTime.now();
   DateTime startDate = endDate.subtract(Duration(days: 1));
 
-  // List<UsageInfo> t = await UsageStats.queryUsageStats(startDate, endDate);
-  // for (var i in t) {
-  //   DateTime lastUsed =
-  //       DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastTimeUsed!)).toUtc();
-  //   if (lastUsed.isAfter(startDate)) count++;
-  // }
-
   List<ConfigurationInfo> t2 =
       await UsageStats.queryConfiguration(startDate, endDate);
   for (var i in t2) {
@@ -295,14 +282,6 @@ Future<int> initUsage() async {
             .toUtc();
     if (lastUsed.isAfter(startDate)) count++;
   }
-
-  // List<EventInfo> t3 = await UsageStats.queryEventStats(startDate, endDate);
-  // for (var i in t3) {
-  //   DateTime lastUsed =
-  //       DateTime.fromMillisecondsSinceEpoch(int.parse(i.lastEventTime!))
-  //           .toUtc();
-  //   if (lastUsed.isAfter(startDate)) count++;
-  // }
 
   return count;
 }
@@ -314,8 +293,7 @@ Future _getKakaoKey() async {
 }
 
 void _sendSMS(String message, List<String> recipients) async {
-  Map<String, dynamic> _result =
-      await apiMessage.sendMessage(recipients, message);
+  await apiMessage.sendMessage(recipients, message);
 }
 
 Future<void> sendEmergencyMessage() async {
@@ -324,7 +302,7 @@ Future<void> sendEmergencyMessage() async {
     print(message);
     print(recipients);
     messageIsSent = true;
-    // _sendSMS(message, recipients); 테스트할때는 문자전송 막아놈
+    _sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
   }
 }
 
