@@ -35,6 +35,16 @@ class AuthService {
             Provider.of<ContactInfo>(context, listen: false)
                 .addResponder(phoneDocs[i].id, phoneDocs[i]["number"]);
           }
+          List<String> temp = [];
+          Provider.of<ContactInfo>(context, listen: false)
+              .responderMap
+              .values
+              .forEach((number) {
+            temp.add(number);
+          });
+          SharedPreferences.getInstance().then((prefs) async => {
+                await prefs.setStringList('contactlist', temp),
+              });
         }
         return TabNavBar();
       },
@@ -76,22 +86,11 @@ class AuthService {
           UserService().registerBasicUserInfo();
         } else if (userDocs!["activated"]) {
           Provider.of<MyUserInfo>(context, listen: false).setUser(userDocs);
-
-          List<String> temp = [];
-
-          Provider.of<ContactInfo>(context, listen: false)
-              .responderMap
-              .values
-              .forEach((number) {
-            temp.add(number);
-          });
-
           SharedPreferences.getInstance().then((prefs) async => {
                 await prefs.setString('username',
                     Provider.of<MyUserInfo>(context, listen: false).name),
                 await prefs.setString('userphone',
                     Provider.of<MyUserInfo>(context, listen: false).phone),
-                await prefs.setStringList('contactlist', temp),
               });
           return getFirstResponder();
         } else {
