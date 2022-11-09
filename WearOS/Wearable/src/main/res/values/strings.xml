@@ -32,4 +32,6 @@
     <string name="data_item_changed">데이터 아이템 변경</string>
     <string name="data_item_deleted">데이터 아이템 삭제</string>
     <string name="data_item_unknown">알 수 없는 데이터 아이템</string>
+    <string name="channel_name">watch_alarm_channel</string>
+    <string name="channel_description">워치아웃 스마트 워치 알람</string>
 </resources>
