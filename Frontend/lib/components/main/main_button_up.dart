@@ -108,6 +108,15 @@ class _MainButtonUpState extends State<MainButtonUp> {
     prepareMessage();
     timer = Timer(Duration(seconds: 5), () {
       Navigator.pop(dialogContext);
+      if (recipients.isEmpty) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                  12.5.h, '비상연락처를 등록해주세요.', null);
+            });
+        return;
+      }
       _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
