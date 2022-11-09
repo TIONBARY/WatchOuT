@@ -36,7 +36,7 @@ android {
 
     defaultConfig {
         applicationId "com.ssafy.homealone"
-        versionCode 11
+        versionCode 14
         versionName "1.0"
 
         minSdk 30
@@ -53,9 +53,9 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
-          multiDexEnabled true
+            multiDexEnabled true
         }
       debug {
         multiDexEnabled true
