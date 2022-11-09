@@ -338,9 +338,10 @@ Future<void> onStart(ServiceInstance service) async {
               '==================${pref.getStringList('contactlist')?.length}');
           if (!messageIsSent)
             _getKakaoKey().then((response) => sendEmergencyMessage());
-        } else
+        } else {
           print('24시간 이내 사용 감지');
-        messageIsSent = false;
+          messageIsSent = false;
+        }
       }).catchError((error) {
         print(error);
       });
@@ -477,7 +478,7 @@ Future<void> sendEmergencyMessage() async {
     print(message);
     print(recipients);
     messageIsSent = true;
-    // _sendSMS(message, recipients);
+    // _sendSMS(message, recipients); 테스트할때는 문자전송 막아놈
   }
 }
 
