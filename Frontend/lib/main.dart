@@ -283,7 +283,7 @@ Future<void> onStart(ServiceInstance service) async {
           print('==================${pref.getString('username')}');
           print('==================${pref.getString('userphone')}');
           print(
-              '==================${pref.getStringList('contactlist')?.elementAt(0)}');
+              '==================${pref.getStringList('contactlist')?.length}');
         } else
           print('24시간 이내 사용 감지');
       }).catchError((error) {
