@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/constants.dart';
@@ -17,6 +18,7 @@ import '../login/user_service.dart';
 import '../wear/heart_rate_view.dart';
 
 final isCheck = IsCheck.instance;
+AuthService authService = AuthService();
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -29,12 +31,12 @@ class _SetButtonState extends State<SetButton> {
   final TextEditingController _nameFieldController = TextEditingController();
   final TextEditingController _contactFieldController = TextEditingController();
 
-  List<String> _contactList = [];
-  List<String> _nameList = [];
-  String _selectedContact = '';
+  List<Map<String, dynamic>> localEmergencyCallList = [];
+  // List<String> _contactList = [];
+  // List<String> _nameList = [];
+
   String _addContact = '';
   String _addName = '';
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> emergencyCallList = [];
   List<Map<String, dynamic>> _selectedEmergencyCallList = [];
@@ -59,24 +61,29 @@ class _SetButtonState extends State<SetButton> {
   @override
   void initState() {
     super.initState();
-    // setFirstResponderProvider();
-    // getEmergencyCallList();
+    setFirstResponderProvider();
+    getEmergencyCallList();
   }
 
   void setFirstResponderProvider() {
     Map<String, String> firstResponder =
         Provider.of<ContactInfo>(context, listen: false).getResponder();
+    List<String> _nameList;
+    List<String> _contactList;
     if (!firstResponder.isEmpty) {
       _nameList = firstResponder.keys.toList();
       _contactList = firstResponder.values.toList();
+      for (int i = 0; i < _nameList.length; i++) {
+        localEmergencyCallList
+            .add({"name": _nameList[i], "number": _contactList[i]});
+      }
     }
-    if (!_nameList.isEmpty) _selectedContact = _nameList[0];
   }
 
   @override
   Widget build(BuildContext context) {
-    setFirstResponderProvider();
-    getEmergencyCallList();
+    Provider.of<SwitchBools>(context, listen: false).onCreate();
+    Provider.of<HeartRateProvider>(context, listen: false).onCreate();
     return Column(
       children: [
         SetPageRadioButton(
@@ -154,7 +161,7 @@ class _SetButtonState extends State<SetButton> {
             margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
             decoration: BoxDecoration(
                 color: b25Color, borderRadius: BorderRadius.circular(25)),
-            child: _nameList.isEmpty
+            child: localEmergencyCallList.isEmpty
                 ? Row(
                     children: [
                       Text('비상연락망을 등록해주세요.'),
@@ -416,15 +423,17 @@ class _SetButtonState extends State<SetButton> {
                         onPressed: () {
                           setState(
                             () {
-                              _contactList.add(_addContact);
-                              _nameList.add(_addName);
+                              localEmergencyCallList.add(
+                                  {"name": _addName, "number": _addContact});
                               UserService().registerFirstResponder(
                                   _addName, _addContact);
+                              getEmergencyCallList();
                               _nameFieldController.clear();
                               _contactFieldController.clear();
                               Navigator.pop(context);
                             },
                           );
+                          authService.getFirstResponder();
                         },
                         child: Text(
                           '등록',
@@ -492,7 +501,7 @@ class _SetButtonState extends State<SetButton> {
                       border: Border.all(color: b25Color),
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    items: emergencyCallList
+                    items: localEmergencyCallList
                         .map((e) => MultiSelectItem(e, e["name"]))
                         .toList(),
                     chipDisplay: MultiSelectChipDisplay(
@@ -553,8 +562,22 @@ class _SetButtonState extends State<SetButton> {
                         onPressed: () {
                           setState(
                             () {
+                              for (int i = 0;
+                                  i < _selectedEmergencyCallList.length;
+                                  i++) {
+                                localEmergencyCallList
+                                    .remove(_selectedEmergencyCallList[i]);
+                              }
                               UserService().deleteFirstResponderList(
                                   _selectedEmergencyCallList);
+                              // _selectedEmergencyCallList.forEach((element) {
+                              //   element.values.forEach((element) {
+                              //     SharedPreferences.getInstance()
+                              //         .then((prefs) async => {
+                              //               await prefs.remove(element),
+                              //             });
+                              //   });
+                              // });
                               Navigator.of(context).pop();
                             },
                           );
