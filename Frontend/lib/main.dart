@@ -330,7 +330,7 @@ Future<void> onStart(ServiceInstance service) async {
       Future<int> count = initUsage();
       count.then((value) {
         print('24시간 이내에 사용한 앱 갯수 : $value');
-        if (value != 0) {
+        if (value == 0) {
           print('비상!!!! 초비상!!!!');
           print('==================${pref.getString('username')}');
           print('==================${pref.getString('userphone')}');
