@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserService {
   FirebaseAuth authentication = FirebaseAuth.instance;
@@ -73,15 +72,6 @@ class UserService {
   }
 
   void deleteFirstResponderList(List<Map<String, dynamic>> data) {
-    List<String> temp = [];
-    SharedPreferences.getInstance().then((prefs) async => {
-          temp = prefs.getStringList('contactlist')!,
-          data.forEach((number) {
-            temp.remove(number['number']);
-          }),
-          prefs.setStringList('contactlist', temp),
-          print(prefs.getStringList('contactlist')),
-        });
     for (int i = 0; i < data.length; i++) {
       db
           .collection("user")

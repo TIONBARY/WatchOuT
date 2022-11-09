@@ -567,12 +567,17 @@ class _SetButtonState extends State<SetButton> {
                                   i++) {
                                 localEmergencyCallList
                                     .remove(_selectedEmergencyCallList[i]);
+                                Provider.of<ContactInfo>(context, listen: false)
+                                    .getResponder()
+                                    .remove(
+                                        _selectedEmergencyCallList[i]['name']);
                               }
                               UserService().deleteFirstResponderList(
                                   _selectedEmergencyCallList);
                               Navigator.of(context).pop();
                             },
                           );
+                          authService.getFirstResponder();
                         },
                         child: Text(
                           '삭제',
