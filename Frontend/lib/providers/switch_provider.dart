@@ -7,7 +7,14 @@ class SwitchBools with ChangeNotifier {
   bool useGPS = true;
   bool useSiren = true;
   bool useDzone = true;
-  var pref;
+  late SharedPreferences pref;
+  Set<String> keys = {
+    "useWearOS",
+    "useScreen",
+    "useGPS",
+    "useSiren",
+    "useDzone",
+  };
 
   onCreate() async {
     pref = await SharedPreferences.getInstance();
@@ -15,9 +22,6 @@ class SwitchBools with ChangeNotifier {
   }
 
   save() {
-    if (pref == null) {
-      return;
-    }
     pref.setBool("useWearOS", useWearOS);
     pref.setBool("useScreen", useScreen);
     pref.setBool("useGPS", useGPS);
@@ -26,11 +30,13 @@ class SwitchBools with ChangeNotifier {
   }
 
   void load() {
-    if (pref == null) {
-      return;
-    }
     if (pref.getKeys().isEmpty) {
       return;
+    }
+    for (var key in keys) {
+      if (pref.getBool(key) == null) {
+        return;
+      }
     }
     useWearOS = pref.getBool("useWearOS")!;
     useScreen = pref.getBool("useScreen")!;

@@ -6,8 +6,13 @@ class HeartRateProvider with ChangeNotifier {
   double minValue = 60.0;
   double maxValue = 120.0;
   double gapValue = 0.0;
-  bool isEmergency = false;
-  var pref;
+  late SharedPreferences pref;
+  Set<String> keys = {
+    "heartRate",
+    "minValue",
+    "maxValue",
+    "gapValue",
+  };
 
   onCreate() async {
     pref = await SharedPreferences.getInstance();
@@ -15,11 +20,13 @@ class HeartRateProvider with ChangeNotifier {
   }
 
   void load() {
-    if (pref == null) {
-      return;
-    }
     if (pref.getKeys().isEmpty) {
       return;
+    }
+    for (var key in keys) {
+      if (pref.getDouble(key) == null) {
+        return;
+      }
     }
     heartRate = pref.getDouble("heartRate")!;
     minValue = pref.getDouble("minValue")!;
@@ -28,9 +35,6 @@ class HeartRateProvider with ChangeNotifier {
   }
 
   save() {
-    if (pref == null) {
-      return;
-    }
     pref.setDouble("heartRate", heartRate);
     pref.setDouble("minValue", minValue);
     pref.setDouble("maxValue", maxValue);
@@ -39,14 +43,6 @@ class HeartRateProvider with ChangeNotifier {
 
   void changeHeartRate(value) {
     heartRate = value;
-    if (heartRate < (minValue - gapValue) ||
-        heartRate >= (maxValue + gapValue)) {
-      debugPrint("이상 상황 $heartRate");
-      isEmergency = true;
-    } else {
-      debugPrint("정상범위 심박수 $heartRate");
-      isEmergency = false;
-    }
     save();
   }
 
@@ -62,11 +58,6 @@ class HeartRateProvider with ChangeNotifier {
 
   void changeGapValue(value) {
     gapValue = value;
-    save();
-  }
-
-  void changeIsEmergency(value) {
-    isEmergency = value;
     save();
   }
 }
