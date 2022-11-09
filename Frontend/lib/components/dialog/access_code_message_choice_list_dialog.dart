@@ -85,6 +85,15 @@ class _AccessCodeMessageChoiceListDialogState
     for (int i = 0; i < _selectedEmergencyCallList.length; i++) {
       recipients.add(_selectedEmergencyCallList[i]["number"]);
     }
+    if (recipients.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '귀갓길 공유 대상을 선택해주세요.', null);
+          });
+      return;
+    }
     _sendSMS(message, recipients);
   }
 
