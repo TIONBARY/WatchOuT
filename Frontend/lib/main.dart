@@ -274,11 +274,11 @@ Future<void> onStart(ServiceInstance service) async {
   Timer.periodic(
     Duration(seconds: 10), //디버그용으로 10초로 해논건데 실배포할때는 24시간으로 바꿔야함
     (timer) {
+      pref.reload();
       Future<int> count = initUsage();
       count.then((value) {
         print('24시간 이내에 사용한 앱 갯수 : $value');
         if (value != 0) {
-          pref.reload();
           print('비상!!!! 초비상!!!!');
           print('==================${pref.getString('username')}');
           print('==================${pref.getString('userphone')}');
