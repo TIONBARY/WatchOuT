@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/constants.dart';
@@ -17,7 +16,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignupState extends State<SignUp> {
-  final TextEditingController _textController = new TextEditingController();
+  final TextEditingController _textController = TextEditingController();
   Widget _changedTextWidget = Container();
 
   final _SignupKey = GlobalKey<FormState>();
@@ -83,7 +82,7 @@ class _SignupState extends State<SignUp> {
   bool _isValidname(String val) {
     if (val.length > 10 && val.length < 2) // 길이 검사
       return false;
-    if (val.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) //특수 기호 있으면 false
+    if (val.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) //특수 기호 있으면 false
       return false;
     return true;
   }
@@ -289,7 +288,6 @@ class _SignupState extends State<SignUp> {
                   if (_SignupKey.currentState!.validate()) {
                     _register();
                   }
-                  ;
                 },
                 child: Text(
                   '회원가입',
