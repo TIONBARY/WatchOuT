@@ -29,7 +29,7 @@ import 'package:quick_actions/quick_actions.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:usage_stats/usage_stats.dart';
-import 'package:workmanager/workmanager.dart';
+import 'package:workmanager/workmanager.dart' as wm;
 
 final isCheck = IsCheck.instance;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -91,12 +91,16 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initializeService();
     initUsage();
-    Workmanager().initialize(
+    wm.Workmanager().initialize(
       callbackDispatcher,
       isInDebugMode: false,
     );
-    Workmanager().registerPeriodicTask("1", fetchBackground,
-        frequency: Duration(minutes: 15), initialDelay: Duration(seconds: 60));
+    wm.Workmanager().registerPeriodicTask("1", fetchBackground,
+        frequency: Duration(minutes: 15),
+        initialDelay: Duration(seconds: 60),
+        constraints: wm.Constraints(
+            networkType: wm.NetworkType.not_required,
+            requiresDeviceIdle: true));
     // debugPrint("메인꺼");
     // SharedPreferences.getInstance().then(
     //   (value) => {
@@ -271,7 +275,7 @@ Future<int> initUsage() async {
 }
 
 void callbackDispatcher() {
-  Workmanager().executeTask((task, inputData) async {
+  wm.Workmanager().executeTask((task, inputData) async {
     switch (task) {
       case fetchBackground:
         print("background task executed");
