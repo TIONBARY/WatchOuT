@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
-import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
@@ -17,7 +16,6 @@ import '../../providers/contact_provider.dart';
 import '../login/user_service.dart';
 import '../wear/heart_rate_view.dart';
 
-final isCheck = IsCheck.instance;
 AuthService authService = AuthService();
 
 class SetButton extends StatefulWidget {
@@ -125,8 +123,6 @@ class _SetButtonState extends State<SetButton> {
             setState(
               () {
                 Provider.of<SwitchBools>(context, listen: false).changeGPS();
-                print('셋버튼다트${isCheck.check}');
-                print('셋버튼다트${isCheck.hashCode}');
               },
             );
           },
