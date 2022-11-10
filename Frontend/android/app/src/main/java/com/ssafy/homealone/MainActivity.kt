@@ -7,9 +7,22 @@ import android.media.AudioManager
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 import android.content.Context
+import android.content.ComponentName
+import android.content.Intent
+import android.content.IntentSender
+import android.telephony.emergency.EmergencyNumber
+import android.provider.Settings
+import android.provider.Settings.Secure
+import android.provider.Settings.System
+import android.app.PendingIntent
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.FragmentActivity
+
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.ssafy.homealone/sound"
+    private val EMERGENCY_CHANNEL = "com.ssafy.homealone/emergency"
     lateinit var mAudioManager: AudioManager
     lateinit var s: String
 
@@ -22,9 +35,29 @@ class MainActivity : FlutterActivity() {
                 s = sosSoundSetting()
                 result.success(s)
             } else {
+                    result.notImplemented()
+                }
+        }
+        MethodChannel(flutterEngine?.getDartExecutor()?.getBinaryMessenger()!!, EMERGENCY_CHANNEL).setMethodCallHandler { call, result ->
+            if (call.method == "openEmergencySetting") {
+                openEmergencySetting()
+//                WithPrivate::class.declaredMemberFunctions.find { it.name == "privFun" }?.let {
+//                    it.isAccessible = true
+//                    println(it.call(WithPrivate()))
+//                }
+                result.success("opened")
+            } else {
                 result.notImplemented()
             }
         }
+    }
+
+    private fun openEmergencySetting() {
+//        val activity = startActivity(Intent(Settings.ACTION_SETTINGS))
+        val intent = Intent()
+        intent.component = ComponentName("com.sec.android.app.safetyassurance", "com.sec.android.app.safetyassurance.settings.SafetyAssuranceSetting")
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        val activity = startActivity(intent)
     }
 
     private fun sosSoundSetting(): String {
