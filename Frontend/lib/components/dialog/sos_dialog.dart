@@ -27,7 +27,7 @@ class SOSDialog extends StatelessWidget {
                 ],
               ),
             ),
-            Image.asset("assets/siren.png", height: 6.h),
+            Image.asset("assets/icons/shadowsiren.png", height: 6.h),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: b25Color,

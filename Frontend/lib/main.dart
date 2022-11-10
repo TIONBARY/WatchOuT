@@ -301,7 +301,7 @@ void _permission(BuildContext context) async {
   }
   permissionOnce = true;
   await askPermission(context, Permission.locationAlways,
-      "WatchOuT에서 \n백그라운드에서도 '안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
+      "WatchOuT에서 \n백그라운드에서도 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
   await askPermission(context, Permission.location,
       "WatchOuT에서 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
   // if (await Permission.location.isDenied) {

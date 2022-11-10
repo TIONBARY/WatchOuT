@@ -26,11 +26,11 @@ class MainPageTextButton extends StatelessWidget {
       flex: 1,
       child: Container(
         margin: margins,
-        width: double.infinity,
         child: AnimatedButton(
           width: 27.5.w,
-          type: PredefinedThemes.light,
-          borderRadius: 25,
+          type: PredefinedThemes.warning,
+          blurRadius: 7,
+          borderRadius: 12.5,
           isOutline: true,
           onTap: onpresseds,
           child: Text(
