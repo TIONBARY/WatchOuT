@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/main/main_button_down.dart';
+import 'package:homealone/components/main/main_button_up.dart';
 
 import '../components/main/carousel.dart';
 
@@ -26,16 +28,16 @@ class _MainPageState extends State<MainPage> {
             // ),
             Flexible(
               child: Carousel(),
-              flex: 1,
+              flex: 3,
             ),
-            // Flexible(
-            //   child: MainButtonUp(),
-            //   flex: 1,
-            // ),
-            // Flexible(
-            //   child: MainButtonDown(),
-            //   flex: 1,
-            // ),
+            Flexible(
+              child: MainButtonDown(),
+              flex: 2,
+            ),
+            Flexible(
+              child: MainButtonUp(),
+              flex: 2,
+            ),
           ],
         ),
       ),

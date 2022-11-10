@@ -241,16 +241,6 @@ class _MainButtonUpState extends State<MainButtonUp> {
     return Row(
       children: [
         Flexible(
-          flex: 2,
-          child: IconButton(
-            onPressed: () {
-              return sendEmergencyMessage();
-            },
-            icon: Image.asset("assets/icons/siren_logo.png"),
-            iconSize: 75.w,
-          ),
-        ),
-        Flexible(
           child: Column(
             children: [
               MainPageTextButton(
@@ -292,6 +282,16 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 fontsizes: 12.5.sp,
               ),
             ],
+          ),
+        ),
+        Flexible(
+          flex: 2,
+          child: IconButton(
+            onPressed: () {
+              return sendEmergencyMessage();
+            },
+            icon: Image.asset("assets/icons/siren_logo.png"),
+            iconSize: 75.w,
           ),
         ),
       ],

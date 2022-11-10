@@ -29,7 +29,8 @@ class MainPageTextButton extends StatelessWidget {
         width: double.infinity,
         child: AnimatedButton(
           width: 27.5.w,
-          type: PredefinedThemes.light,
+          type: PredefinedThemes.warning,
+          blurRadius: 10,
           borderRadius: 25,
           isOutline: true,
           onTap: onpresseds,

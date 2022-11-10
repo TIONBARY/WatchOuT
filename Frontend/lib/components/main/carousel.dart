@@ -80,7 +80,7 @@ class _CarouselState extends State<Carousel> {
           return Column(
             children: [
               Container(
-                margin: EdgeInsets.symmetric(vertical: 8),
+                margin: EdgeInsets.symmetric(vertical: 16),
                 child: CarouselSlider(
                   items: imageSliders,
                   carouselController: _controller,

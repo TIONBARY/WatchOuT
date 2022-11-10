@@ -56,6 +56,14 @@ class _MainButtonDownState extends State<MainButtonDown> {
     return Row(
       children: [
         Flexible(
+          flex: 2,
+          child: IconButton(
+            onPressed: () {},
+            icon: Image.asset("assets/icons/cctv_logo.png"),
+            iconSize: 75.w,
+          ),
+        ),
+        Flexible(
           child: Column(
             children: [
               MainPageTextButton(
@@ -102,14 +110,6 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   textcolors: bColor,
                   fontsizes: 12.5.sp),
             ],
-          ),
-        ),
-        Flexible(
-          flex: 2,
-          child: IconButton(
-            onPressed: () {},
-            icon: Image.asset("assets/icons/cctv_logo.png"),
-            iconSize: 75.w,
           ),
         ),
       ],
