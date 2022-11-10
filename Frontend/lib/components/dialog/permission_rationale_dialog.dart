@@ -44,8 +44,7 @@ class PermissionRationaleDialog extends StatelessWidget {
               },
               child: Text(
                 '확인',
-                style:
-                    TextStyle(color: bColor),
+                style: TextStyle(color: bColor),
               ),
             ),
           ],
