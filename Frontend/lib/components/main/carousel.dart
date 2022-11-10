@@ -16,7 +16,6 @@ class Carousel extends StatefulWidget {
 
 class _CarouselState extends State<Carousel> {
   late Channel _channel;
-  bool _isLoading = false;
   late List<Widget> imageSliders;
   late final Future? myFuture = _initChannel();
 
@@ -36,25 +35,23 @@ class _CarouselState extends State<Carousel> {
     });
     imageSliders = _channel.videos
         .map(
-          (video) => Container(
-            child: ClipRRect(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
+          (video) => ClipRRect(
+            borderRadius: BorderRadius.all(
+              Radius.circular(5),
+            ),
+            child: Stack(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () async {
+                    await launch('http://www.youtube.com/watch?v=${video.id}');
+                  },
+                  child: Image(
+                      image: NetworkImage(video.thumbnailUrl),
+                      fit: BoxFit.cover,
+                      width: 1000),
                 ),
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () async {
-                        await launch(
-                            'http://www.youtube.com/watch?v=${video.id}');
-                      },
-                      child: Image(
-                          image: NetworkImage(video.thumbnailUrl),
-                          fit: BoxFit.cover,
-                          width: 1000),
-                    ),
-                  ],
-                )),
+              ],
+            ),
           ),
         )
         .toList();
@@ -110,13 +107,13 @@ class _CarouselState extends State<Carousel> {
                         margin:
                             EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                         decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                                (Theme.of(context).brightness == Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(
-                                        _current == entry.key ? 0.8 : 0.4)),
+                          shape: BoxShape.circle,
+                          color: (Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black)
+                              .withOpacity(_current == entry.key ? 0.8 : 0.4),
+                        ),
                       ),
                     );
                   },
