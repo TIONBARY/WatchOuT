@@ -1,5 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -35,23 +36,35 @@ class _CarouselState extends State<Carousel> {
     });
     imageSliders = _channel.videos
         .map(
-          (video) => ClipRRect(
-            borderRadius: BorderRadius.all(
-              Radius.circular(5),
-            ),
-            child: Stack(
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () async {
-                    await launch('http://www.youtube.com/watch?v=${video.id}');
-                  },
-                  child: Image(
-                      image: NetworkImage(video.thumbnailUrl),
-                      fit: BoxFit.cover,
-                      width: 1000),
+          (video) => Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              boxShadow: [
+                BoxShadow(
+                  color: b25Color,
+                  offset: Offset(3, -3),
+                  blurRadius: 7.5,
                 ),
               ],
             ),
+            child: ClipRRect(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+                child: Stack(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () async {
+                        await launch(
+                            'http://www.youtube.com/watch?v=${video.id}');
+                      },
+                      child: Image(
+                          image: NetworkImage(video.thumbnailUrl),
+                          fit: BoxFit.cover,
+                          width: 1000),
+                    ),
+                  ],
+                )),
           ),
         )
         .toList();
@@ -64,9 +77,11 @@ class _CarouselState extends State<Carousel> {
       future: myFuture,
       builder: (BuildContext context, AsyncSnapshot snapshot) {
         if (snapshot.hasData == false) {
-          return Container(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator(),
+          return Expanded(
+            child: Container(
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(),
+            ),
           );
         } else if (snapshot.hasError) {
           return Text(

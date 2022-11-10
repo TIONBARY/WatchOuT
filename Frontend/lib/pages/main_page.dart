@@ -23,25 +23,15 @@ class _MainPageState extends State<MainPage> {
       body: Container(
         child: Column(
           children: [
-            // Flexible(
-            //   child: ProfileBar(),
-            //   flex: 2,
-            // ),
-            Flexible(
-              child: GuideBar(),
+            GuideBar(),
+            Carousel(),
+            Expanded(
               flex: 1,
-            ),
-            Flexible(
-              child: Carousel(),
-              flex: 3,
-            ),
-            Flexible(
               child: MainButtonDown(),
-              flex: 2,
             ),
-            Flexible(
+            Expanded(
+              flex: 1,
               child: MainButtonUp(),
-              flex: 2,
             ),
           ],
         ),

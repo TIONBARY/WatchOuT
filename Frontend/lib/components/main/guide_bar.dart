@@ -30,7 +30,7 @@ class _GuideBarState extends State<GuideBar> {
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
                 minimumSize: Size.zero,
-                padding: EdgeInsets.all(2.5),
+                padding: EdgeInsets.all(2),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 backgroundColor: bColor,
               ),
