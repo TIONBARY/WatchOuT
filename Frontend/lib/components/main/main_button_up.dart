@@ -4,6 +4,7 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:geolocator/geolocator.dart';
@@ -50,6 +51,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
   final assetsAudioPlayer = AssetsAudioPlayer();
   bool useSiren = false;
   String address = "";
+  static const platform = const MethodChannel('com.ssafy.homealone/sound');
 
   Future _getKakaoKey() async {
     await dotenv.load();
@@ -106,7 +108,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
 
   void sendEmergencyMessage() async {
     prepareMessage();
-    timer = Timer(Duration(seconds: 5), () {
+    timer = Timer(Duration(seconds: 5), () async {
       Navigator.pop(dialogContext);
       if (recipients.isEmpty) {
         showDialog(
@@ -117,9 +119,10 @@ class _MainButtonUpState extends State<MainButtonUp> {
             });
         return;
       }
-      _sendSMS(message, recipients);
+      // _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
+        await _sosSoundSetting();
         VolumeControl.setVolume(0.1);
         assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
             audioFocusStrategy:
@@ -134,6 +137,16 @@ class _MainButtonUpState extends State<MainButtonUp> {
         }).then((value) {
       timer?.cancel();
     });
+  }
+
+  Future<void> _sosSoundSetting() async {
+    try {
+      final String result = await platform.invokeMethod('sosSoundSetting');
+      print("result");
+      print(result);
+    } on PlatformException catch (e) {
+      "Failed to get battery level: '${e.message}'.";
+    }
   }
 
   Future<void> getCurrentLocation() async {
