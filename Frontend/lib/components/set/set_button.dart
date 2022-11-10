@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/components/singleton/is_check.dart';
@@ -19,6 +20,7 @@ import '../wear/heart_rate_view.dart';
 
 final isCheck = IsCheck.instance;
 AuthService authService = AuthService();
+const methodChannel = MethodChannel("com.ssafy.homealone/emergency");
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -201,6 +203,30 @@ class _SetButtonState extends State<SetButton> {
           child: Container(
             child: Row(
               children: [],
+            ),
+          ),
+        ),
+        Flexible(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+            height: 5.5.h,
+            width: double.maxFinite,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: bColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              onPressed: () {
+                openEmergencySetting();
+              },
+              child: Text(
+                '응급 설정',
+                style: TextStyle(
+                  color: yColor,
+                ),
+              ),
             ),
           ),
         ),
@@ -609,5 +635,9 @@ class _SetButtonState extends State<SetButton> {
         );
       },
     );
+  }
+
+  void openEmergencySetting() {
+    methodChannel.invokeMethod("openEmergencySetting");
   }
 }
