@@ -194,10 +194,8 @@ class _SetButtonState extends State<SetButton> {
           ),
         ),
         Flexible(
-          child: Container(
-            child: Row(
-              children: [],
-            ),
+          child: Row(
+            children: [],
           ),
         ),
         Flexible(
@@ -491,56 +489,54 @@ class _SetButtonState extends State<SetButton> {
                     ),
                   ),
                 ),
-                Container(
-                  child: MultiSelectDialogField(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: b25Color),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    items: localEmergencyCallList
+                MultiSelectDialogField(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: b25Color),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  items: localEmergencyCallList
+                      .map((e) => MultiSelectItem(e, e["name"]))
+                      .toList(),
+                  chipDisplay: MultiSelectChipDisplay(
+                    items: _selectedEmergencyCallList
                         .map((e) => MultiSelectItem(e, e["name"]))
                         .toList(),
-                    chipDisplay: MultiSelectChipDisplay(
-                      items: _selectedEmergencyCallList
-                          .map((e) => MultiSelectItem(e, e["name"]))
-                          .toList(),
-                      onTap: (value) {
-                        setState(() {
-                          _selectedEmergencyCallList.remove(value);
-                        });
-                      },
-                      chipColor: yColor,
-                      textStyle: TextStyle(color: bColor),
-                    ),
-                    listType: MultiSelectListType.LIST,
-                    onConfirm: (values) {
-                      _selectedEmergencyCallList = values;
+                    onTap: (value) {
+                      setState(() {
+                        _selectedEmergencyCallList.remove(value);
+                      });
                     },
-                    buttonIcon: Icon(
-                      Icons.arrow_drop_down,
+                    chipColor: yColor,
+                    textStyle: TextStyle(color: bColor),
+                  ),
+                  listType: MultiSelectListType.LIST,
+                  onConfirm: (values) {
+                    _selectedEmergencyCallList = values;
+                  },
+                  buttonIcon: Icon(
+                    Icons.arrow_drop_down,
+                    color: bColor,
+                  ),
+                  buttonText: Text(
+                    "비상연락망",
+                    style: TextStyle(color: bColor),
+                  ),
+                  dialogHeight: 25.h,
+                  title: Text(
+                    "삭제할 비상연락망을 선택해주세요.",
+                    style: TextStyle(
                       color: bColor,
+                      fontSize: 12.5.sp,
                     ),
-                    buttonText: Text(
-                      "비상연락망",
-                      style: TextStyle(color: bColor),
-                    ),
-                    dialogHeight: 25.h,
-                    title: Text(
-                      "삭제할 비상연락망을 선택해주세요.",
-                      style: TextStyle(
-                        color: bColor,
-                        fontSize: 12.5.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    confirmText: Text(
-                      "확인",
-                      style: TextStyle(color: bColor),
-                    ),
-                    cancelText: Text(
-                      "취소",
-                      style: TextStyle(color: bColor),
-                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  confirmText: Text(
+                    "확인",
+                    style: TextStyle(color: bColor),
+                  ),
+                  cancelText: Text(
+                    "취소",
+                    style: TextStyle(color: bColor),
                   ),
                 ),
                 Container(
