@@ -239,7 +239,6 @@ class _MainButtonUpState extends State<MainButtonUp> {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Flexible(
           child: Column(
@@ -291,8 +290,8 @@ class _MainButtonUpState extends State<MainButtonUp> {
             onPressed: () {
               return sendEmergencyMessage();
             },
-            icon: Image.asset("assets/icons/shadowsiren.png"),
-            iconSize: 45.w,
+            icon: Image.asset("assets/icons/siren_logo.png"),
+            iconSize: 75.w,
           ),
         ),
       ],

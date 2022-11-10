@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/main/guide_bar.dart';
 import 'package:homealone/components/main/main_button_down.dart';
 import 'package:homealone/components/main/main_button_up.dart';
 
@@ -26,6 +27,10 @@ class _MainPageState extends State<MainPage> {
             //   child: ProfileBar(),
             //   flex: 2,
             // ),
+            Flexible(
+              child: GuideBar(),
+              flex: 1,
+            ),
             Flexible(
               child: Carousel(),
               flex: 3,
