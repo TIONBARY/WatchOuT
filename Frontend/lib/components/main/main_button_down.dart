@@ -54,62 +54,65 @@ class _MainButtonDownState extends State<MainButtonDown> {
     String? phones = guCall[guName];
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Flexible(
-          child: Column(
-            children: [
-              MainPageTextButton(
-                  margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 0.5.h),
-                  boxcolors: Colors.black12,
-                  onpresseds: () {
-                    (sidoName == '서울')
-                        ? showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              // Future.delayed(Duration(seconds: 3), () {
-                              //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
-                              // });
-                              return CallDialog(
-                                  null,
-                                  guName + '청 스카우트 상황실',
-                                  phones!,
-                                  '※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
-                                  null);
-                            },
-                          )
-                        : showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return BasicDialog(
-                                  EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                                  12.5.h,
-                                  '안심귀가 서비스는 \'서울\' 에서만 제공됩니다.',
-                                  null);
-                            },
-                          );
-                  },
-                  texts: '안심귀가\n서비스',
-                  textcolors: bColor,
-                  fontsizes: 12.5.sp),
-              MainPageTextButton(
-                  margins: EdgeInsets.fromLTRB(2.w, 0.5.h, 1.w, 1.h),
-                  boxcolors: Colors.black12,
-                  onpresseds: () async {
-                    await launch('https://m.sexoffender.go.kr/main.nsc',
-                        forceWebView: false, forceSafariVC: false);
-                  },
-                  texts: '성범죄자\n알림e',
-                  textcolors: bColor,
-                  fontsizes: 12.5.sp),
-            ],
-          ),
-        ),
         Flexible(
           flex: 2,
           child: IconButton(
             onPressed: () {},
-            icon: Image.asset("assets/icons/cctv_logo.png"),
-            iconSize: 75.w,
+            icon: Image.asset("assets/icons/shadowcctv2.png"),
+            iconSize: 45.w,
+          ),
+        ),
+        Flexible(
+          child: Column(
+            children: [
+              MainPageTextButton(
+                margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 0.5.h),
+                boxcolors: Colors.black12,
+                onpresseds: () {
+                  (sidoName == '서울')
+                      ? showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // Future.delayed(Duration(seconds: 3), () {
+                            //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
+                            // });
+                            return CallDialog(
+                                null,
+                                guName + '청 스카우트 상황실',
+                                phones!,
+                                '※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
+                                null);
+                          },
+                        )
+                      : showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return BasicDialog(
+                                EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                                12.5.h,
+                                '안심귀가 서비스는 \'서울\' 에서만 제공됩니다.',
+                                null);
+                          },
+                        );
+                },
+                texts: '안심귀가\n서비스',
+                textcolors: bColor,
+                fontsizes: 12.5.sp,
+              ),
+              MainPageTextButton(
+                margins: EdgeInsets.fromLTRB(2.w, 0.5.h, 1.w, 1.h),
+                boxcolors: Colors.black12,
+                onpresseds: () async {
+                  await launch('https://m.sexoffender.go.kr/main.nsc',
+                      forceWebView: false, forceSafariVC: false);
+                },
+                texts: '성범죄자\n알림e',
+                textcolors: bColor,
+                fontsizes: 12.5.sp,
+              ),
+            ],
           ),
         ),
       ],
