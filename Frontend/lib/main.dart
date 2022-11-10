@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 
+import 'package:background_fetch/background_fetch.dart' as fetch;
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
@@ -50,6 +50,27 @@ bool messageIsSent = false;
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 StreamSubscription<Position>? _positionStreamSubscription;
 
+// [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
+// Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
+@pragma('vm:entry-point')
+void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
+  String taskId = task.taskId;
+  bool isTimeout = task.timeout;
+  if (isTimeout) {
+    // This task has exceeded its allowed running-time.
+    // You must stop what you're doing and immediately .finish(taskId)
+    debugPrint("[백그라운드 헤드리스] Headless task timed-out: $taskId");
+    fetch.BackgroundFetch.finish(taskId);
+    return;
+  }
+  debugPrint('[백그라운드 헤드리스] Headless event received.');
+  // Do your work here...
+  initializeService();
+  refreshUsage();
+
+  fetch.BackgroundFetch.finish(taskId);
+}
+
 const fetchBackground = "fetchBackground";
 
 void main() {
@@ -65,6 +86,10 @@ void main() {
       child: MyApp(),
     ),
   );
+
+  // Register to receive BackgroundFetch events after app is terminated.
+  // Requires {stopOnTerminate: false, enableHeadless: true}
+  fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
 // void initQuickActions() {
@@ -86,6 +111,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool _enabled = true;
+  int _status = 0;
+  List<DateTime> _events = [];
+
   @override
   void initState() {
     super.initState();
@@ -108,8 +137,68 @@ class _MyAppState extends State<MyApp> {
     //     debugPrint(value.getBool("useWearOS").toString())
     //   },
     // );
+    initPlatformState();
+  }
 
-    // initQuickActions();
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> initPlatformState() async {
+    // Configure BackgroundFetch.
+    int status = await fetch.BackgroundFetch.configure(
+        fetch.BackgroundFetchConfig(
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            startOnBoot: true,
+            enableHeadless: true,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresStorageNotLow: false,
+            requiresDeviceIdle: false,
+            requiredNetworkType: fetch.NetworkType.NONE),
+        (String taskId) async {
+      // <-- Event handler
+      // This is the fetch-event callback.
+      debugPrint("[백그라운드] Event received $taskId");
+      setState(() {
+        _events.insert(0, new DateTime.now());
+      });
+      initializeService();
+      initUsage();
+      wm.Workmanager().initialize(
+        callbackDispatcher,
+        isInDebugMode: false,
+      );
+      wm.Workmanager().registerPeriodicTask("1", fetchBackground,
+          frequency: Duration(minutes: 15),
+          initialDelay: Duration(seconds: 60));
+      // debugPrint("메인꺼");
+      // SharedPreferences.getInstance().then(
+      //   (value) => {
+      //     debugPrint(value.hashCode.toString()),
+      //     debugPrint(value.getBool("useWearOS").toString())
+      //   },
+      // );
+
+      // IMPORTANT:  You must signal completion of your task or the OS can punish your app
+      // for taking too long in the background.
+      fetch.BackgroundFetch.finish(taskId);
+    }, (String taskId) async {
+      // <-- Task timeout handler.
+      // This task has exceeded its allowed running-time.  You must stop what you're doing and immediately .finish(taskId)
+      debugPrint("[백그라운드] 시간초과 taskId: $taskId");
+      fetch.BackgroundFetch.finish(taskId);
+    });
+    debugPrint('[백그라운드] configure success: $status');
+    setState(() {
+      _status = status;
+    });
+    // setState(() {
+    //   status = status;
+    // });
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
   }
 
   @override
@@ -233,25 +322,30 @@ Future<void> onStart(ServiceInstance service) async {
   Timer.periodic(
     Duration(hours: 1),
     (timer) {
-      pref.reload();
-      Future<int> count = initUsage();
-      count.then((value) {
-        print('24시간 이내에 사용한 앱 갯수 : $value');
-        if (value == 0) {
-          if (!messageIsSent)
-            _getKakaoKey().then((response) => sendEmergencyMessage());
-        } else {
-          messageIsSent = false;
-        }
-      }).catchError((error) {
-        print(error);
-      });
+      refreshUsage();
     },
   );
 
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin, pref);
   }
+}
+
+void refreshUsage() async {
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  pref.reload();
+  Future<int> count = initUsage();
+  count.then((value) {
+    print('24시간 이내에 사용한 앱 갯수 : $value');
+    if (value == 0) {
+      if (!messageIsSent)
+        _getKakaoKey().then((response) => sendEmergencyMessage());
+    } else {
+      messageIsSent = false;
+    }
+  }).catchError((error) {
+    print(error);
+  });
 }
 
 Future<int> initUsage() async {
