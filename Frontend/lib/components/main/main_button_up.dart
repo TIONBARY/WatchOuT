@@ -291,7 +291,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
             onPressed: () {
               return sendEmergencyMessage();
             },
-            icon: Image.asset("assets/icons/shadowsiren.png"),
+            icon: Image.asset("assets/icons/shadowsiren2.png"),
             iconSize: 45.w,
           ),
         ),
