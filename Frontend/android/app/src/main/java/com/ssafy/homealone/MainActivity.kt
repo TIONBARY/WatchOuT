@@ -11,6 +11,7 @@ import android.content.Context
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.ssafy.homealone/sound"
     lateinit var mAudioManager: AudioManager
+    lateinit var s: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -18,8 +19,8 @@ class MainActivity : FlutterActivity() {
         GeneratedPluginRegistrant.registerWith(FlutterEngine(this))
         MethodChannel(flutterEngine?.getDartExecutor()?.getBinaryMessenger()!!, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sosSoundSetting") {
-                sosSoundSetting()
-                result.success("success")
+                s = sosSoundSetting()
+                result.success(s)
             } else {
                 result.notImplemented()
             }
@@ -28,10 +29,19 @@ class MainActivity : FlutterActivity() {
 
     private fun sosSoundSetting(): String {
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager;
-        mAudioManager.setMode(AudioManager.MODE_NORMAL);
-        mAudioManager.stopBluetoothSco();
-        mAudioManager.setBluetoothScoOn(false);
-        mAudioManager.setSpeakerphoneOn(true);
+        if (mAudioManager.isBluetoothA2dpOn()) {
+            mAudioManager.setMode(AudioManager.MODE_NORMAL);
+            mAudioManager.stopBluetoothSco();
+            mAudioManager.setBluetoothScoOn(false);
+            mAudioManager.setSpeakerphoneOn(true);
+            return "bluetooth"
+        }
+        if(mAudioManager.isWiredHeadsetOn()){
+            mAudioManager.setWiredHeadsetOn(false);
+            mAudioManager.setSpeakerphoneOn(true);
+            mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+            return "wired headset on"
+        }
         return "success"
     }
 }
