@@ -17,14 +17,23 @@
 package com.ssafy.homealone
 
 import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.CalendarContract.EXTRA_EVENT_ID
 import android.util.Log
-import android.view.View
+import androidx.activity.compose.setContent
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.Composable
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.*
@@ -58,15 +67,17 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-//        데이터 전송 관련
-//        setContent {
-//            MainApp(
-//                events = clientDataViewModel.events,
-//                image = clientDataViewModel.image,
-//                onQueryOtherDevicesClicked = ::onQueryOtherDevicesClicked,
-//                onQueryMobileCameraClicked = ::onQueryMobileClicked
-//            )
-//        }
+        // Create the NotificationChannel
+        val name = getString(R.string.channel_name)
+        val descriptionText = getString(R.string.channel_description)
+        val importance = NotificationManager.IMPORTANCE_HIGH
+        val channelId = "alarm_1"
+        val mChannel = NotificationChannel(channelId, name, importance)
+        mChannel.description = descriptionText
+        // Register the channel with the system; you can't change the importance
+        // or other notification behaviors after this
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.createNotificationChannel(mChannel)
 
 //       심박수 정보 관련
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -130,6 +141,7 @@ class MainActivity : AppCompatActivity() {
             binding.heart.isVisible = it
         }
     }
+
 
 //    private fun onQueryOtherDevicesClicked() {
 //        lifecycleScope.launch {

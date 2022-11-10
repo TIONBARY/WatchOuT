@@ -22,6 +22,7 @@
     <!-- For receiving heart rate data. -->
     <uses-permission android:name="android.permission.BODY_SENSORS" />
     <!-- Needed in order to re-register for data on device startup. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <!-- When an app targets Android 11 (API level 30) or higher and queries for information about

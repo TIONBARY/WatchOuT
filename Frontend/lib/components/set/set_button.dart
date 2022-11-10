@@ -567,20 +567,17 @@ class _SetButtonState extends State<SetButton> {
                                   i++) {
                                 localEmergencyCallList
                                     .remove(_selectedEmergencyCallList[i]);
+                                Provider.of<ContactInfo>(context, listen: false)
+                                    .getResponder()
+                                    .remove(
+                                        _selectedEmergencyCallList[i]['name']);
                               }
                               UserService().deleteFirstResponderList(
                                   _selectedEmergencyCallList);
-                              // _selectedEmergencyCallList.forEach((element) {
-                              //   element.values.forEach((element) {
-                              //     SharedPreferences.getInstance()
-                              //         .then((prefs) async => {
-                              //               await prefs.remove(element),
-                              //             });
-                              //   });
-                              // });
                               Navigator.of(context).pop();
                             },
                           );
+                          authService.getFirstResponder();
                         },
                         child: Text(
                           '삭제',

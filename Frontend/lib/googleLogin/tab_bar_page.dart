@@ -7,6 +7,7 @@ import 'package:homealone/googleLogin/sign_up_page.dart';
 import 'package:homealone/pages/safe_area_cctv_page.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 import '../constants.dart';
@@ -107,6 +108,11 @@ class _TabNavBarState extends State<TabNavBar> {
               //             builder: (BuildContext context) => HomePage()),
               //         (route) => false);
               //   },
+        // SharedPreferences.getInstance().then((prefs) async => {
+        //   await prefs.remove('username'),
+        //   await prefs.remove('userphone'),
+        //   await prefs.remove('contactlist'),
+        // });
               // ),
             ],
           ),
