@@ -798,13 +798,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
-  radial_menu:
-    dependency: "direct main"
-    description:
-      name: radial_menu
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.1"
   rxdart:
     dependency: transitive
     description:
@@ -1125,6 +1118,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  workmanager:
+    dependency: "direct main"
+    description:
+      name: workmanager
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.5.1"
   xdg_directories:
     dependency: transitive
     description:
