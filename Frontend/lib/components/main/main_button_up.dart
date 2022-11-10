@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:button_animations/button_animations.dart';
+import 'package:button_animations/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,6 @@ import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
-import 'package:homealone/components/main/main_page_text_button.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:homealone/providers/switch_provider.dart';
@@ -238,64 +239,105 @@ class _MainButtonUpState extends State<MainButtonUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Flexible(
-          child: Column(
-            children: [
-              MainPageTextButton(
-                  margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
-                  boxcolors: Colors.black12,
-                  onpresseds: _showReportDialog,
-                  texts: '신고',
-                  textcolors: bColor,
-                  fontsizes: 12.5.sp),
-              MainPageTextButton(
-                margins: EdgeInsets.fromLTRB(1.w, 0.5.h, 2.w, 1.h),
-                boxcolors: Colors.black12,
-                onpresseds: () {
-                  showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
+                  child: AnimatedButton(
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: PredefinedThemes.warning,
+                    onTap: _showReportDialog,
+                    child: Text(
+                      '신고',
+                      style: TextStyle(color: bColor),
                     ),
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) {
-                      return FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: Container(
-                          height: 450.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(25),
-                              topRight: Radius.circular(25),
-                            ),
-                          ),
-                          child: EmergencyManual(), // 모달 내부
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.fromLTRB(0, 4, 0, 0),
+                  child: AnimatedButton(
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: PredefinedThemes.warning,
+                    onTap: () {
+                      showModalBottomSheet(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(25),
                         ),
+                        isScrollControlled: true,
+                        context: context,
+                        builder: (context) {
+                          return FractionallySizedBox(
+                            heightFactor: 0.8,
+                            child: Container(
+                              height: 450.h,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(25),
+                                  topRight: Radius.circular(25),
+                                ),
+                              ),
+                              child: EmergencyManual(), // 모달 내부
+                            ),
+                          );
+                        },
                       );
                     },
-                  );
+                    child: Text(
+                      '위기상황 \n대처메뉴얼',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: bColor),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            flex: 3,
+            child: Container(
+              child: AnimatedButton(
+                height: 17.5.h,
+                blurRadius: 7.5,
+                isOutline: true,
+                type: PredefinedThemes.danger,
+                onTap: () {
+                  return sendEmergencyMessage();
                 },
-                texts: '위기상황 \n대처메뉴얼',
-                textcolors: bColor,
-                fontsizes: 12.5.sp,
+                child: Row(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 7.5.w),
+                      child: Text(
+                        'S\nO\nS',
+                        style: TextStyle(fontSize: 17.5.sp),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    ClipRRect(
+                      child: Image.asset(
+                        "assets/icons/shadowsiren1.png",
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ],
+            ),
           ),
-        ),
-        Flexible(
-          flex: 2,
-          child: IconButton(
-            onPressed: () {
-              return sendEmergencyMessage();
-            },
-            icon: Image.asset("assets/icons/shadowsiren2.png"),
-            iconSize: 45.w,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
