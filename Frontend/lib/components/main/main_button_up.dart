@@ -119,7 +119,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
             });
         return;
       }
-      // _sendSMS(message, recipients);
+      _sendSMS(message, recipients);
       useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
       if (useSiren) {
         await _sosSoundSetting();

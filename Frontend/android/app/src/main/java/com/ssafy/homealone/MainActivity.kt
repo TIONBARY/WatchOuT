@@ -30,10 +30,10 @@ class MainActivity : FlutterActivity() {
     private fun sosSoundSetting(): String {
         mAudioManager = getSystemService(Context.AUDIO_SERVICE) as AudioManager;
         if (mAudioManager.isBluetoothA2dpOn()) {
-            mAudioManager.setMode(AudioManager.MODE_NORMAL);
             mAudioManager.stopBluetoothSco();
             mAudioManager.setBluetoothScoOn(false);
             mAudioManager.setSpeakerphoneOn(true);
+            mAudioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
             return "bluetooth"
         }
         if(mAudioManager.isWiredHeadsetOn()){
