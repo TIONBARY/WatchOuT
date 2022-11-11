@@ -31,106 +31,103 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Cam',
-      home: Scaffold(
-          // appBar: AppBar(),
-          body: FutureBuilder(
-        future: _future(),
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData == false) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
-                style: TextStyle(fontSize: 15),
+    return Scaffold(
+        // appBar: AppBar(),
+        body: FutureBuilder(
+      future: _future(),
+      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+        if (snapshot.hasData == false) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
+              style: TextStyle(fontSize: 15),
+            ),
+          );
+        }
+        // else if (snapshot.data["registered"] == null) {
+        //   UserService().homeCamRegister('');
+        //   return Container(
+        //     alignment: Alignment.center,
+        //     child: Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         Text("연결된 카메라가 없습니다."),
+        //         ElevatedButton(
+        //             onPressed: () {
+        //               setState(() {
+        //                 _CodeDialog(context);
+        //               });
+        //             },
+        //             child: Text("입력")),
+        //       ],
+        //     ),
+        //   );
+        // } else if (!(snapshot.data == null) && !snapshot.data["registered"]) {
+        //   //등록되어 있지 않다면
+        //   return Container(
+        //     alignment: Alignment.center,
+        //     child: Column(
+        //       mainAxisAlignment: MainAxisAlignment.center,
+        //       children: [
+        //         Text("연결된 카메라가 없습니다."),
+        //         ElevatedButton(
+        //             onPressed: () {
+        //               setState(() {
+        //                 _CodeDialog(context);
+        //               });
+        //             },
+        //             child: Text("입력")),
+        //       ],
+        //     ),
+        //   );
+        // }
+        else {
+          url = snapshot.data["url"];
+          playerController = VlcPlayerController.network("${url}",
+              // "rtsp://watchout:ssafy123@70.12.227.183/stream1",
+              autoPlay: true);
+          return Column(
+            children: [
+              VlcPlayer(
+                controller: playerController,
+                aspectRatio: 16 / 9,
+                placeholder: const Center(
+                  child: CircularProgressIndicator(),
+                ),
               ),
-            );
-          }
-          // else if (snapshot.data["registered"] == null) {
-          //   UserService().homeCamRegister('');
-          //   return Container(
-          //     alignment: Alignment.center,
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text("연결된 카메라가 없습니다."),
-          //         ElevatedButton(
-          //             onPressed: () {
-          //               setState(() {
-          //                 _CodeDialog(context);
-          //               });
-          //             },
-          //             child: Text("입력")),
-          //       ],
-          //     ),
-          //   );
-          // } else if (!(snapshot.data == null) && !snapshot.data["registered"]) {
-          //   //등록되어 있지 않다면
-          //   return Container(
-          //     alignment: Alignment.center,
-          //     child: Column(
-          //       mainAxisAlignment: MainAxisAlignment.center,
-          //       children: [
-          //         Text("연결된 카메라가 없습니다."),
-          //         ElevatedButton(
-          //             onPressed: () {
-          //               setState(() {
-          //                 _CodeDialog(context);
-          //               });
-          //             },
-          //             child: Text("입력")),
-          //       ],
-          //     ),
-          //   );
-          // }
-          else {
-            url = snapshot.data["url"];
-            playerController = VlcPlayerController.network("${url}",
-                // "rtsp://watchout:ssafy123@70.12.227.183/stream1",
-                autoPlay: true);
-            return Column(
-              children: [
-                VlcPlayer(
-                  controller: playerController,
-                  aspectRatio: 16 / 9,
-                  placeholder: const Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    playerController.play();
-                  },
-                  child: const Text("Play"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    playerController.pause();
-                  },
-                  child: const Text("Pause"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    _CodeDialog(context);
-                  },
-                  child: const Text("수정"),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    UserService().deleteHomecam();
-                    Navigator.pop(context);
-                  },
-                  child: const Text("삭제"),
-                ),
-              ],
-            );
-          }
-        },
-      )),
-    );
+              ElevatedButton(
+                onPressed: () {
+                  playerController.play();
+                },
+                child: const Text("Play"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  playerController.pause();
+                },
+                child: const Text("Pause"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  _CodeDialog(context);
+                },
+                child: const Text("수정"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  UserService().deleteHomecam();
+                  Navigator.pop(context);
+                },
+                child: const Text("삭제"),
+              ),
+            ],
+          );
+        }
+      },
+    ));
   }
 
   Future<void> _CodeDialog(BuildContext context) async {
