@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
+import 'package:homealone/components/homecam/cam_select_page.dart';
 import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +69,9 @@ class _MainButtonDownState extends State<MainButtonDown> {
                 blurRadius: 7.5,
                 isOutline: true,
                 type: PredefinedThemes.light,
-                onTap: () {},
+                onTap: () {
+                  openDialog(context);
+                },
                 child: Row(
                   children: [
                     Expanded(
@@ -146,5 +149,10 @@ class _MainButtonDownState extends State<MainButtonDown> {
         ],
       ),
     );
+  }
+
+  void openDialog(BuildContext context) async {
+    Future.microtask(() => Navigator.push(
+        context, MaterialPageRoute(builder: (context) => selectPage())));
   }
 }
