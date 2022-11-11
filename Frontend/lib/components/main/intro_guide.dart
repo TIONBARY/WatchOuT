@@ -163,7 +163,29 @@ class _MainGuideState extends State<MainGuide> {
                   ),
                 ],
               ),
-            )
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text('가이드 보러가기'),
+                ElevatedButton(
+                  onPressed: () {},
+                  child: Icon(Icons.question_mark, color: yColor),
+                  style: IconButton.styleFrom(
+                    shape: CircleBorder(),
+                    minimumSize: Size.zero,
+                    padding: EdgeInsets.all(2),
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    backgroundColor: bColor,
+                  ),
+                )
+              ],
+            ),
+            Container(
+              child: Image.asset('assets/guidesample.png'),
+            ),
+            Row(),
+            Row(),
           ],
         ),
       ),
