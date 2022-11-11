@@ -46,6 +46,9 @@ bool messageIsSent = false;
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 StreamSubscription<Position>? _positionStreamSubscription;
 
+const locationCheck = "locationCheck";
+const fetchBackground = "fetchBackground";
+
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
 @pragma('vm:entry-point')
@@ -66,8 +69,6 @@ void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
 
   fetch.BackgroundFetch.finish(taskId);
 }
-
-const fetchBackground = "fetchBackground";
 
 void main() {
   runApp(
@@ -120,7 +121,7 @@ class _MyAppState extends State<MyApp> {
       callbackDispatcher,
       isInDebugMode: false,
     );
-    wm.Workmanager().registerPeriodicTask("1", fetchBackground,
+    wm.Workmanager().registerPeriodicTask(locationCheck, fetchBackground,
         frequency: Duration(minutes: 15),
         initialDelay: Duration(seconds: 60),
         constraints: wm.Constraints(
@@ -159,13 +160,6 @@ class _MyAppState extends State<MyApp> {
       });
       initializeService();
       initUsage();
-      wm.Workmanager().initialize(
-        callbackDispatcher,
-        isInDebugMode: false,
-      );
-      wm.Workmanager().registerPeriodicTask("1", fetchBackground,
-          frequency: Duration(minutes: 15),
-          initialDelay: Duration(seconds: 60));
       // debugPrint("메인꺼");
       // SharedPreferences.getInstance().then(
       //   (value) => {
@@ -296,9 +290,9 @@ void _permission(BuildContext context) async {
   }
   permissionOnce = true;
   await askPermission(context, Permission.locationAlways,
-      "WatchOuT에서 \n백그라운드에서도 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
+      "WatchOuT에서 \n백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
   await askPermission(context, Permission.location,
-      "WatchOuT에서 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
+      "WatchOuT에서 \n'안전 지도' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
   // if (await Permission.location.isDenied) {
   //   debugPrint("위치권한 거부");
   //   return;
@@ -314,19 +308,13 @@ Future<void> onStart(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final SharedPreferences pref = await SharedPreferences.getInstance();
-  Timer.periodic(
-    Duration(hours: 1),
-    (timer) {
-      refreshUsage();
-    },
-  );
 
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin, pref);
   }
 }
 
-void refreshUsage() async {
+Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
@@ -367,14 +355,11 @@ void callbackDispatcher() {
   wm.Workmanager().executeTask((task, inputData) async {
     switch (task) {
       case fetchBackground:
-        print("background task executed");
         Position position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
         initLat = position.latitude;
         initLon = position.longitude;
-        print("background location");
-        print(initLat);
-        print(initLon);
+        await refreshUsage();
         break;
     }
     return Future.value(true);
