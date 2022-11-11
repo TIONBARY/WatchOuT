@@ -42,7 +42,7 @@ class _CarouselState extends State<Carousel> {
               boxShadow: [
                 BoxShadow(
                   color: b25Color,
-                  offset: Offset(3, -3),
+                  offset: Offset(0, 3),
                   blurRadius: 7.5,
                 ),
               ],
