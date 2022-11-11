@@ -1,21 +1,21 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
+import 'package:homealone/components/wear/heart_rate_view.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-
-import '../../providers/contact_provider.dart';
-import '../login/user_service.dart';
-import '../wear/heart_rate_view.dart';
 
 AuthService authService = AuthService();
 const methodChannel = MethodChannel("com.ssafy.homealone/emergency");
@@ -630,6 +630,14 @@ class _SetButtonState extends State<SetButton> {
   }
 
   void openEmergencySetting() {
-    methodChannel.invokeMethod("openEmergencySetting");
+    methodChannel
+        .invokeMethod("openEmergencySetting")
+        .catchError(onPlatformError);
+  }
+
+  FutureOr<dynamic> onPlatformError(object) {
+    debugPrint("응급 오류");
+    // Timer(Duration(seconds: 1), () { showDialog()});
+    showDialog(context: context, builder: (context) => PackageNotFoundDialog());
   }
 }

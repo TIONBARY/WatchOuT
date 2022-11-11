@@ -10,6 +10,7 @@ import android.content.Context
 import android.content.ComponentName
 import android.content.Intent
 import android.content.IntentSender
+import android.content.ActivityNotFoundException
 import android.telephony.emergency.EmergencyNumber
 import android.provider.Settings
 import android.provider.Settings.Secure
@@ -18,6 +19,7 @@ import android.app.PendingIntent
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.FragmentActivity
+import android.util.Log
 
 
 class MainActivity : FlutterActivity() {
@@ -40,12 +42,17 @@ class MainActivity : FlutterActivity() {
         }
         MethodChannel(flutterEngine?.getDartExecutor()?.getBinaryMessenger()!!, EMERGENCY_CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "openEmergencySetting") {
-                openEmergencySetting()
+                try {
+                    openEmergencySetting()
+                    result.success("opened")
+                } catch (e: ActivityNotFoundException) {
+                    Log.e(EMERGENCY_CHANNEL, e.message ?:"EmptyMsg")
+                    result.error("UNAVAILABLE", "SOS 설정을 열 수 없습니다.", null)
+                }
 //                WithPrivate::class.declaredMemberFunctions.find { it.name == "privFun" }?.let {
 //                    it.isAccessible = true
 //                    println(it.call(WithPrivate()))
 //                }
-                result.success("opened")
             } else {
                 result.notImplemented()
             }
