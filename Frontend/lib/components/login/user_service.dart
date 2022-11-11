@@ -123,4 +123,91 @@ class UserService {
       });
     }
   }
+
+  //홈 캠 관련 함수
+  void homeCamRegister(String url) {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo")
+        .set({
+      "registered": true,
+      "url": url,
+    });
+  }
+
+  void deleteHomecam() {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo")
+        .delete();
+  }
+
+  void updateHomecamUrl(String url) {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo")
+        .update({
+      "registered": true,
+      "url": url,
+    });
+  }
+
+  Future<Map<String, dynamic>?> getHomecamInfo() async {
+    DocumentReference<Map<String, dynamic>> documentReference = db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo");
+
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    return documentData;
+  }
+
+  Future<String> getHomecamUrl() async {
+    DocumentReference<Map<String, dynamic>> documentReference = db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo");
+
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+
+    if (documentData == null) {
+      print("캠 관련 url을 불러오지 못했습니다.");
+      return "error";
+    }
+    return documentData["url"];
+  }
+
+  Future<bool> isHomecamRegistered() async {
+    DocumentReference<Map<String, dynamic>> documentReference = db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo");
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    if (documentData == null) {
+      print("등록된 홈캠 정보가 없습니다.");
+      return false;
+    }
+    return documentData?["registered"];
+  }
 }
