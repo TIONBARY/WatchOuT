@@ -44,26 +44,26 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
               right: 1.25.w,
               bottom: 1.25.h,
               child: FloatingActionButton(
-                child: Icon(
-                  Icons.edit,
-                  size: 20.sp,
-                ),
                 backgroundColor: bColor,
                 onPressed: () {
                   _CodeDialog(context);
                 },
+                child: Icon(
+                  Icons.edit,
+                  size: 20.sp,
+                ),
               ),
             ),
             Positioned(
               left: 1.25.w,
               bottom: 1.25.h,
               child: FloatingActionButton(
-                child: Icon(Icons.refresh),
                 elevation: 5,
                 hoverElevation: 10,
                 tooltip: "귀가 공유 리스트 갱신",
                 backgroundColor: bColor,
                 onPressed: () {},
+                child: Icon(Icons.refresh),
               ),
             ),
           ],
@@ -92,8 +92,8 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
                     validations: null,
                     paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
                     keyboardtypes: TextInputType.number,
-                    hinttexts: '코드',
-                    helpertexts: '공유 받은 코드를 입력해주세요.',
+                    hinttexts: '웹캠주소',
+                    helpertexts: '공유 받은 웹캠 주소를 입력해주세요.',
                     onchangeds: (code) {
                       _code = code;
                     },
@@ -102,7 +102,7 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
                 Container(
                   width: 37.5.w,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
