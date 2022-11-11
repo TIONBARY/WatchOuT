@@ -20,12 +20,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.FragmentActivity
 import android.util.Log
+import android.telephony.SmsManager
 
 
 class MainActivity : FlutterActivity() {
-    private val CHANNEL = "com.ssafy.homealone/sound"
-    private val EMERGENCY_CHANNEL = "com.ssafy.homealone/emergency"
+    private val CHANNEL = "com.ssafy.homealone/channel"
     lateinit var mAudioManager: AudioManager
+    lateinit var smsManager: SmsManager
     lateinit var s: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,23 +37,28 @@ class MainActivity : FlutterActivity() {
             if (call.method == "sosSoundSetting") {
                 s = sosSoundSetting()
                 result.success(s)
-            } else {
-                    result.notImplemented()
-                }
-        }
-        MethodChannel(flutterEngine?.getDartExecutor()?.getBinaryMessenger()!!, EMERGENCY_CHANNEL).setMethodCallHandler { call, result ->
-            if (call.method == "openEmergencySetting") {
+            } else if (call.method == "openEmergencySetting") {
                 try {
                     openEmergencySetting()
                     result.success("opened")
                 } catch (e: ActivityNotFoundException) {
-                    Log.e(EMERGENCY_CHANNEL, e.message ?:"EmptyMsg")
+                    Log.e(CHANNEL, e.message ?:"EmptyMsg")
                     result.error("UNAVAILABLE", "SOS 설정을 열 수 없습니다.", null)
                 }
-//                WithPrivate::class.declaredMemberFunctions.find { it.name == "privFun" }?.let {
-//                    it.isAccessible = true
-//                    println(it.call(WithPrivate()))
-//                }
+            } else if (call.method == "sendTextMessage") {
+                val recipients : List<String>? = call.argument("recipients")
+                val message : String? = call.argument("message")
+                try {
+                    smsManager = this.getSystemService(SmsManager::class.java)
+                    val parts : ArrayList<String>? = smsManager.divideMessage(message);
+                    for (recipient in recipients!!) {
+                        smsManager.sendMultipartTextMessage(recipient, null, parts!!, null, null)
+                    }
+                    result.success("sent")
+                } catch (e: Exception) {
+                    Log.e(CHANNEL, e.message ?:"EmptyMsg")
+                    result.error("UNAVAILABLE", "문자 전송에 실패했습니다.", null)
+                }
             } else {
                 result.notImplemented()
             }
