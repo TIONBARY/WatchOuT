@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/homecam/otherCamInfoField.dart';
 
+import '../login/user_service.dart';
+import 'cam_info.dart';
 import 'camera_player_widget.dart';
 
 class selectPage extends StatelessWidget {
@@ -14,18 +16,18 @@ class selectPage extends StatelessWidget {
       children: [
         ElevatedButton(
             onPressed: () async {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => CameraPlayerWidget()));
-              // bool flag = await UserService().isHomecamRegistered();
-              // flag
-              //     ? Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //             builder: (context) => CameraPlayerWidget()))
-              //     : Navigator.push(context,
-              //         MaterialPageRoute(builder: (context) => camInfoField()));
+              // Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //         builder: (context) => CameraPlayerWidget()));
+              bool flag = await UserService().isHomecamRegistered();
+              flag
+                  ? Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CameraPlayerWidget()))
+                  : Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => camInfoField()));
             },
             child: Text("내 캠 보기")),
         ElevatedButton(
