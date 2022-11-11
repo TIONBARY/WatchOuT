@@ -1,24 +1,24 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
-import 'package:homealone/components/singleton/is_check.dart';
+import 'package:homealone/components/wear/heart_rate_view.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
-import 'package:multi_select_flutter/chip_display/multi_select_chip_display.dart';
-import 'package:multi_select_flutter/dialog/multi_select_dialog_field.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
-import '../../providers/contact_provider.dart';
-import '../login/user_service.dart';
-import '../wear/heart_rate_view.dart';
-
-final isCheck = IsCheck.instance;
 AuthService authService = AuthService();
+const methodChannel = MethodChannel("com.ssafy.homealone/emergency");
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);
@@ -125,8 +125,6 @@ class _SetButtonState extends State<SetButton> {
             setState(
               () {
                 Provider.of<SwitchBools>(context, listen: false).changeGPS();
-                print('셋버튼다트${isCheck.check}');
-                print('셋버튼다트${isCheck.hashCode}');
               },
             );
           },
@@ -198,9 +196,31 @@ class _SetButtonState extends State<SetButton> {
           ),
         ),
         Flexible(
+          child: Row(
+            children: [],
+          ),
+        ),
+        Flexible(
           child: Container(
-            child: Row(
-              children: [],
+            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+            height: 5.5.h,
+            width: double.maxFinite,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: bColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              onPressed: () {
+                openEmergencySetting();
+              },
+              child: Text(
+                '응급 설정',
+                style: TextStyle(
+                  color: yColor,
+                ),
+              ),
             ),
           ),
         ),
@@ -495,56 +515,54 @@ class _SetButtonState extends State<SetButton> {
                     ),
                   ),
                 ),
-                Container(
-                  child: MultiSelectDialogField(
-                    decoration: BoxDecoration(
-                      border: Border.all(color: b25Color),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    items: localEmergencyCallList
+                MultiSelectDialogField(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: b25Color),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  items: localEmergencyCallList
+                      .map((e) => MultiSelectItem(e, e["name"]))
+                      .toList(),
+                  chipDisplay: MultiSelectChipDisplay(
+                    items: _selectedEmergencyCallList
                         .map((e) => MultiSelectItem(e, e["name"]))
                         .toList(),
-                    chipDisplay: MultiSelectChipDisplay(
-                      items: _selectedEmergencyCallList
-                          .map((e) => MultiSelectItem(e, e["name"]))
-                          .toList(),
-                      onTap: (value) {
-                        setState(() {
-                          _selectedEmergencyCallList.remove(value);
-                        });
-                      },
-                      chipColor: yColor,
-                      textStyle: TextStyle(color: bColor),
-                    ),
-                    listType: MultiSelectListType.LIST,
-                    onConfirm: (values) {
-                      _selectedEmergencyCallList = values;
+                    onTap: (value) {
+                      setState(() {
+                        _selectedEmergencyCallList.remove(value);
+                      });
                     },
-                    buttonIcon: Icon(
-                      Icons.arrow_drop_down,
+                    chipColor: yColor,
+                    textStyle: TextStyle(color: bColor),
+                  ),
+                  listType: MultiSelectListType.LIST,
+                  onConfirm: (values) {
+                    _selectedEmergencyCallList = values;
+                  },
+                  buttonIcon: Icon(
+                    Icons.arrow_drop_down,
+                    color: bColor,
+                  ),
+                  buttonText: Text(
+                    "비상연락망",
+                    style: TextStyle(color: bColor),
+                  ),
+                  dialogHeight: 25.h,
+                  title: Text(
+                    "삭제할 비상연락망을 선택해주세요.",
+                    style: TextStyle(
                       color: bColor,
+                      fontSize: 12.5.sp,
                     ),
-                    buttonText: Text(
-                      "비상연락망",
-                      style: TextStyle(color: bColor),
-                    ),
-                    dialogHeight: 25.h,
-                    title: Text(
-                      "삭제할 비상연락망을 선택해주세요.",
-                      style: TextStyle(
-                        color: bColor,
-                        fontSize: 12.5.sp,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                    confirmText: Text(
-                      "확인",
-                      style: TextStyle(color: bColor),
-                    ),
-                    cancelText: Text(
-                      "취소",
-                      style: TextStyle(color: bColor),
-                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  confirmText: Text(
+                    "확인",
+                    style: TextStyle(color: bColor),
+                  ),
+                  cancelText: Text(
+                    "취소",
+                    style: TextStyle(color: bColor),
                   ),
                 ),
                 Container(
@@ -609,5 +627,17 @@ class _SetButtonState extends State<SetButton> {
         );
       },
     );
+  }
+
+  void openEmergencySetting() {
+    methodChannel
+        .invokeMethod("openEmergencySetting")
+        .catchError(onPlatformError);
+  }
+
+  FutureOr<dynamic> onPlatformError(object) {
+    debugPrint("응급 오류");
+    // Timer(Duration(seconds: 1), () { showDialog()});
+    showDialog(context: context, builder: (context) => PackageNotFoundDialog());
   }
 }
