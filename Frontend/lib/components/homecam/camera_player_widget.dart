@@ -38,17 +38,7 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
           body: FutureBuilder(
         future: _future(),
         builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.hasData == false) {
-            return CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
-                style: TextStyle(fontSize: 15),
-              ),
-            );
-          } else if (snapshot.data["registered"] == null) {
+          if (snapshot.data["registered"] == null) {
             return Container(
               alignment: Alignment.center,
               child: Column(
@@ -65,6 +55,16 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
                 ],
               ),
             );
+          } else if (snapshot.hasError) {
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
+                style: TextStyle(fontSize: 15),
+              ),
+            );
+          } else if (snapshot.hasData == false) {
+            return CircularProgressIndicator();
           } else if (!(snapshot.data == null) && !snapshot.data["registered"]) {
             //등록되어 있지 않다면
             return Container(
