@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/access_code_message_choice_list_dialog.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
@@ -72,6 +73,7 @@ List<String> guName = [
 ];
 
 ApiKakao apiKakao = ApiKakao();
+ApiMessage apiMessage = ApiMessage();
 
 List<Map<String, dynamic>> cctvList = [];
 List<Map<String, dynamic>> sortedcctvList = [];
@@ -105,6 +107,9 @@ Future? myFuture;
 Map<String, dynamic> newValue = {};
 
 String accessCode = "";
+
+String downloadLink =
+    "https://play.google.com/store/apps/details?id=com.ssafy.homealone";
 
 class SafeAreaCCTVMap extends StatefulWidget {
   const SafeAreaCCTVMap({Key? key}) : super(key: key);
@@ -279,7 +284,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AccessCodeMessageChoiceListDialog(accessCode);
+          return AccessCodeMessageChoiceListDialog(
+              sendMessageToEmergencyCallList);
         });
     FirebaseFirestore.instance
         .collection("userAccessCode")
@@ -344,6 +350,51 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     });
 
     positionList = [];
+  }
+
+  void _sendSMS(String message, List<String> recipients) async {
+    Map<String, dynamic> _result =
+        await apiMessage.sendMessage(recipients, message);
+    if (_result["statusCode"] == 200) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                15.h, '귀갓길 공유 메세지를 전송했습니다.\n지속적인 공유를 위해 앱을 끄지 말아주세요.', null);
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, _result["message"], null);
+          });
+    }
+  }
+
+  void sendMessageToEmergencyCallList(
+      List<Map<String, dynamic>> _selectedEmergencyCallList) async {
+    final response = await FirebaseFirestore.instance
+        .collection("user")
+        .doc(_auth.currentUser?.uid)
+        .get();
+    final user = response.data() as Map<String, dynamic>;
+    String message =
+        "${user["name"]} 님이 귀가를 시작했습니다. 귀가 경로를 확인하시려면 WatchOut 앱에서 다음 입장 코드를 입력하세요.\n입장 코드 : ${accessCode}\n앱 다운로드 링크 : ${downloadLink}";
+    List<String> recipients = [];
+    for (int i = 0; i < _selectedEmergencyCallList.length; i++) {
+      recipients.add(_selectedEmergencyCallList[i]["number"]);
+    }
+    if (recipients.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '귀갓길 공유 대상을 선택해주세요.', null);
+          });
+      return;
+    }
+    _sendSMS(message, recipients);
   }
 
   @override
