@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_intro/flutter_intro.dart';
+import 'package:homealone/components/main/intro_guide.dart';
 import 'package:homealone/constants.dart';
 
 class GuideBar extends StatefulWidget {
@@ -34,7 +36,19 @@ class _GuideBarState extends State<GuideBar> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 backgroundColor: bColor,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Intro(
+                      padding: EdgeInsets.zero,
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
+                      maskColor: const Color.fromRGBO(0, 0, 0, .6),
+                      child: const MainGuide(),
+                    ),
+                  ),
+                );
+              },
               child: Icon(
                 Icons.question_mark,
                 color: yColor,
