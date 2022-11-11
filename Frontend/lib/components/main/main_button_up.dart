@@ -17,7 +17,6 @@ import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/components/main/main_page_animated_button.dart';
-import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -306,6 +305,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
             child: Container(
               child: AnimatedButton(
                 height: 17.5.h,
+                width: 50.w,
                 blurRadius: 7.5,
                 isOutline: true,
                 type: PredefinedThemes.danger,

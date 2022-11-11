@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:background_fetch/background_fetch.dart' as fetch;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -198,6 +199,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(

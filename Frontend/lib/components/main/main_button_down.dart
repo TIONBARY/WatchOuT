@@ -64,6 +64,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
             child: Container(
               child: AnimatedButton(
                 height: 17.5.h,
+                width: 50.w,
                 blurRadius: 7.5,
                 isOutline: true,
                 type: PredefinedThemes.light,
