@@ -49,6 +49,8 @@ StreamSubscription<Position>? _positionStreamSubscription;
 const locationCheck = "locationCheck";
 const fetchBackground = "fetchBackground";
 
+const platform = MethodChannel('com.ssafy.homealone/channel');
+
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
 @pragma('vm:entry-point')
@@ -297,8 +299,8 @@ void _permission(BuildContext context) async {
   //   debugPrint("위치권한 거부");
   //   return;
   // }
-  // askPermission(
-  //     context, Permission.sms, "워치아웃에서 SOS 기능을 사용할 수 있도록 SMS 권한을 허용해 주세요.");
+  askPermission(context, Permission.sms,
+      "WatchOuT에서 \n문자 전송 기능을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.");
 }
 
 Future<void> onStart(ServiceInstance service) async {
@@ -373,7 +375,8 @@ Future _getKakaoKey() async {
 }
 
 void _sendSMS(String message, List<String> recipients) async {
-  await apiMessage.sendMessage(recipients, message);
+  await platform.invokeMethod(
+      'sendTextMessage', {'message': message, 'recipients': recipients});
 }
 
 Future<void> sendEmergencyMessage() async {
@@ -395,7 +398,7 @@ Future<void> prepareMessage() async {
   await getCurrentLocation();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   message =
-      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다. \n${preferences.getString('username')} 님의 번호 : ${preferences.getString('userphone')}\n현재 예상 위치 : ${address}\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다.\n현재 예상 위치 : ${address}\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
   List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
     recipients = list!;

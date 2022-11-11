@@ -18,7 +18,7 @@ import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 AuthService authService = AuthService();
-const methodChannel = MethodChannel("com.ssafy.homealone/emergency");
+const methodChannel = MethodChannel("com.ssafy.homealone/channel");
 
 class SetButton extends StatefulWidget {
   const SetButton({Key? key}) : super(key: key);

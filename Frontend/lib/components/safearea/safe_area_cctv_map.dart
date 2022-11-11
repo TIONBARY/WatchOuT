@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
@@ -109,6 +110,8 @@ String accessCode = "";
 
 String downloadLink =
     "https://play.google.com/store/apps/details?id=com.ssafy.homealone";
+
+const platform = MethodChannel('com.ssafy.homealone/channel');
 
 class SafeAreaCCTVMap extends StatefulWidget {
   const SafeAreaCCTVMap({Key? key}) : super(key: key);
@@ -352,9 +355,9 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   }
 
   void _sendSMS(String message, List<String> recipients) async {
-    Map<String, dynamic> _result =
-        await apiMessage.sendMessage(recipients, message);
-    if (_result["statusCode"] == 200) {
+    String _result = await platform.invokeMethod(
+        'sendTextMessage', {'message': message, 'recipients': recipients});
+    if (_result == "sent") {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -366,7 +369,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           context: context,
           builder: (BuildContext context) {
             return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, _result["message"], null);
+                12.5.h, "메세지 전송에 실패했습니다.", null);
           });
     }
   }
