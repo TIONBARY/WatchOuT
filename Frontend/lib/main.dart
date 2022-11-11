@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:background_fetch/background_fetch.dart' as fetch;
+import 'package:encrypt/encrypt.dart' as en;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/wear/local_notification.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
@@ -89,6 +91,7 @@ void main() {
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
   fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  handlePlatformChannelMethods();
 }
 
 // void initQuickActions() {
@@ -117,7 +120,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    handlePlatformChannelMethods();
     initializeService();
     initUsage();
     wm.Workmanager().initialize(
@@ -410,14 +412,36 @@ Future<dynamic> handlePlatformChannelMethods() async {
   var result = await platform.invokeMethod("getFriendLink");
   if (result.runtimeType == String) {
     //Parameters received from Native…!!!!
+    debugPrint(result);
+    await dotenv.load();
+    String inviteRandomKey = dotenv.get('inviteRandomKey');
 
-    List<String> message = result.split(","); //
+    //키값
+    final key = en.Key.fromUtf8(inviteRandomKey);
+    final iv = en.IV.fromLength(16);
+    //위에 키값으로 지갑 생성
+    final encrypter = en.Encrypter(en.AES(key));
+
+    //생성된 지갑으로 복호화
+    final decoded = encrypter.decrypt64(result, iv: iv);
+    debugPrint('-------복호화값: $decoded');
+
+    List<String> message = decoded.split(","); //
 
     String expireTimeStr = message[0];
 
     String inviteCodeStr = message[1];
 
     debugPrint("초대코드 플러터에서 받음 ㅋㅋ: $inviteCodeStr \n만료일자: $expireTimeStr");
+
+    DateTime expireTime = DateTime.parse(expireTimeStr);
+    // 만료되기 전
+    if (expireTime.isAfter(DateTime.now())) {
+      UserService().registerFirstResponderFromInvite(inviteCodeStr);
+    } else {
+      debugPrint("만료된 초대코드입니다.");
+    }
+    //  에러
   } else {
     debugPrint(result.toString());
   }

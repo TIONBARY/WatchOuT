@@ -251,6 +251,37 @@ class UserService {
     return documentData?["SOS"];
   }
 
+  // 친구 추천 코드로 추가
+  void registerFirstResponderFromInvite(String inviteCode) async {
+    // 친구정보 가져오기
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc(inviteCode);
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+
+    if (documentData == null) {
+      debugPrint("초대한 친구가 존재하지 않습니다.");
+      return;
+    }
+    String name = documentData["name"];
+    String number = documentData["phone"];
+    // 내 정보에 저장
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("firstResponder")
+        .doc(name)
+        .set({
+      "number": number,
+      "uid": inviteCode,
+      // "message": false,
+      // "activated": false
+    });
+  }
+
   // 내 연락처 중에 웹캠이 있는 사람의 목록(작업중)
   void getFirstResponderWithCamList(List<Map<String, dynamic>> data) {
     for (int i = 0; i < data.length; i++) {

@@ -30,7 +30,6 @@ class MainActivity : FlutterActivity() {
     lateinit var mAudioManager: AudioManager
     lateinit var smsManager: SmsManager
     lateinit var s: String
-    lateinit var expireTime: String
     lateinit var inviteCode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,13 +66,13 @@ class MainActivity : FlutterActivity() {
                     Log.e(CHANNEL, e.message ?:"EmptyMsg")
                     result.error("UNAVAILABLE", "문자 전송에 실패했습니다.", null)
                 }
-            } else if (call.method == "getFriendLink") {
-                Log.d("URI_PARSING", "expire: $expireTime 초대코드:$inviteCode")
-                if (inviteCode != "") {
-                    result.success("$expireTime,$inviteCode")
-                } else {
-                    result.error("UNAVAILABLE", "친구초대 링크를 읽어오지 못했습니다.", null)
-                }
+            } else if (call.method == "getFriendLink" && inviteCode != null) {
+                    Log.d("URI_PARSING", "초대코드:$inviteCode")
+                    if (inviteCode != "") {
+                        result.success(inviteCode)
+                    } else {
+                        result.error("UNAVAILABLE", "친구초대 링크를 읽어오지 못했습니다.", null)
+                    }
             } else {
                 result.notImplemented()
             }
@@ -110,9 +109,10 @@ class MainActivity : FlutterActivity() {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             val uri: Uri? = intent.getData()
             if (uri != null) {
-                expireTime = uri.getQueryParameter("expire") ?: ""
-                inviteCode = uri.getQueryParameter("invite") ?: ""
-                Log.d("URI_PARSING", "expire: $expireTime 초대코드:$inviteCode")
+                inviteCode = uri.getQueryParameters("inviteKey")[0] ?: ""
+                Log.d("URI_PARSING", "초대코드:$inviteCode")
+            } else {
+                inviteCode = ""
             }
         }
     }

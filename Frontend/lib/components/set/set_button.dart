@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:encrypt/encrypt.dart' as en;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/login/user_service.dart';
@@ -644,10 +646,28 @@ class _SetButtonState extends State<SetButton> {
 
   void invite() async {
     User? user = FirebaseAuth.instance.currentUser;
-    // 하루 뒤에 만료하느 코드
+    // 하루 뒤에 만료하는 코드
+    DateTime expDate = DateTime.now().add(Duration(days: 1));
+    String infoCode = "${expDate.toIso8601String()},${user?.uid}";
+    // debugPrint(expDate.toIso8601String());
+
+    //암호화 하기
+
+    await dotenv.load();
+    String inviteRandomKey = dotenv.get('inviteRandomKey');
+    final key = en.Key.fromUtf8(inviteRandomKey);
+    final iv = en.IV.fromLength(16);
+    final encrypter = en.Encrypter(en.AES(key));
+    String encryptedCode = encrypter.encrypt(infoCode, iv: iv).base64;
+    debugPrint('암호화 된값: $encryptedCode');
+    debugPrint(infoCode);
+    debugPrint(encryptedCode);
+
+    // String inviteUrl =
+    //     "https://www.homelaone.kr/action?inviteKey=$encryptedCode";
     String inviteUrl =
-        "http://www.homelaone.kr/action?expire=${DateTime.now().add(Duration(days: 1)).toIso8601String()}&invite=${user?.uid}";
-    debugPrint(inviteUrl);
+        "https://homelaone.page.link/?link=https://www.homelaone.kr/action?inviteKey=$encryptedCode&apn=com.ssafy.homealone&afl=https://play.google.com/store/apps/details?id=com.ssafy.homealone";
+
     Share.share('지금 당장 [워치아웃] 앱을 설치하세요!\n$inviteUrl');
   }
 }
