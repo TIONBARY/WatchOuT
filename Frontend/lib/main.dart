@@ -45,6 +45,9 @@ bool messageIsSent = false;
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 StreamSubscription<Position>? _positionStreamSubscription;
 
+const locationCheck = "locationCheck";
+const fetchBackground = "fetchBackground";
+
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
 @pragma('vm:entry-point')
@@ -65,9 +68,6 @@ void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
 
   fetch.BackgroundFetch.finish(taskId);
 }
-
-const locationCheck = "locationCheck";
-const fetchBackground = "fetchBackground";
 
 void main() {
   runApp(
@@ -306,19 +306,13 @@ Future<void> onStart(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final SharedPreferences pref = await SharedPreferences.getInstance();
-  Timer.periodic(
-    Duration(hours: 1),
-    (timer) {
-      refreshUsage();
-    },
-  );
 
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin, pref);
   }
 }
 
-void refreshUsage() async {
+Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
@@ -363,6 +357,7 @@ void callbackDispatcher() {
             desiredAccuracy: LocationAccuracy.high);
         initLat = position.latitude;
         initLon = position.longitude;
+        await refreshUsage();
         break;
     }
     return Future.value(true);
