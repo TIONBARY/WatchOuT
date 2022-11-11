@@ -407,6 +407,12 @@ class _MainGuideState extends State<MainGuide> {
                 ],
               ),
             ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('돌아가기'),
+            )
           ],
         ),
       ),
