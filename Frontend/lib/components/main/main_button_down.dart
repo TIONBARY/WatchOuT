@@ -142,9 +142,30 @@ class _MainButtonDownState extends State<MainButtonDown> {
                 ),
               ],
             ),
+                  textcolors: bColor,
+                  fontsizes: 12.5.sp),
+            ],
+          ),
+        ),
+        Flexible(
+          flex: 2,
+          child: IconButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) => selectPage(),
+              );
+            },
+            icon: Image.asset("assets/icons/cctv_logo.png"),
+            iconSize: 75.w,
           ),
         ],
       ),
     );
   }
+}
+
+void openDialog(BuildContext context) async {
+  Future.microtask(() => Navigator.push(
+      context, MaterialPageRoute(builder: (context) => selectPage())));
 }

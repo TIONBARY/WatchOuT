@@ -84,6 +84,11 @@ dependencies:
   button_animations: ^1.0.1+2
   workmanager: ^0.5.1
   background_fetch: ^1.1.2
+  flutter_animated_button: ^2.0.2
+  easy_onvif: ^2.0.13+1
+  video_player: ^2.4.7
+  flutter_vlc_player: ^7.1.5
+  input_form_field: ^0.0.5
 
 dev_dependencies:
   flutter_test:
