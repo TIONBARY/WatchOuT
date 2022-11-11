@@ -119,36 +119,12 @@ class _SetButtonState extends State<SetButton> {
         ),
         SetPageRadioButton(
           margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-          texts: '위치 정보 전송',
-          values: Provider.of<SwitchBools>(context, listen: false).useGPS,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeGPS();
-              },
-            );
-          },
-        ),
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
           texts: '경보음 사용',
           values: Provider.of<SwitchBools>(context, listen: false).useSiren,
           onchangeds: (value) {
             setState(
               () {
                 Provider.of<SwitchBools>(context, listen: false).changeSiren();
-              },
-            );
-          },
-        ),
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-          texts: '위험 지대 알림',
-          values: Provider.of<SwitchBools>(context, listen: false).useDzone,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeDzone();
               },
             );
           },
