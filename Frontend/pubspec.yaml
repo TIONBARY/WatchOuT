@@ -90,6 +90,7 @@ dependencies:
   video_player: ^2.4.7
   flutter_vlc_player: ^7.1.5
   input_form_field: ^0.0.5
+  share_plus: ^6.2.0
 
 dev_dependencies:
   flutter_test:

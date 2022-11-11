@@ -117,6 +117,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    handlePlatformChannelMethods();
     initializeService();
     initUsage();
     wm.Workmanager().initialize(
@@ -402,5 +403,22 @@ Future<void> prepareMessage() async {
   List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
     recipients = list!;
+  }
+}
+
+Future<dynamic> handlePlatformChannelMethods() async {
+  var result = await platform.invokeMethod("getFriendLink");
+  if (result.runtimeType == String) {
+    //Parameters received from Native…!!!!
+
+    List<String> message = result.split(","); //
+
+    String expireTimeStr = message[0];
+
+    String inviteCodeStr = message[1];
+
+    debugPrint("초대코드 플러터에서 받음 ㅋㅋ: $inviteCodeStr \n만료일자: $expireTimeStr");
+  } else {
+    debugPrint(result.toString());
   }
 }

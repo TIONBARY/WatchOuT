@@ -15,6 +15,7 @@ import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 
 AuthService authService = AuthService();
@@ -174,6 +175,30 @@ class _SetButtonState extends State<SetButton> {
         Flexible(
           child: Row(
             children: [],
+          ),
+        ),
+        Flexible(
+          child: Container(
+            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+            height: 5.5.h,
+            width: double.maxFinite,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: bColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25),
+                ),
+              ),
+              onPressed: () {
+                invite();
+              },
+              child: Text(
+                '친구 초대',
+                style: TextStyle(
+                  color: yColor,
+                ),
+              ),
+            ),
           ),
         ),
         Flexible(
@@ -615,5 +640,14 @@ class _SetButtonState extends State<SetButton> {
     debugPrint("응급 오류");
     // Timer(Duration(seconds: 1), () { showDialog()});
     showDialog(context: context, builder: (context) => PackageNotFoundDialog());
+  }
+
+  void invite() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    // 하루 뒤에 만료하느 코드
+    String inviteUrl =
+        "http://www.homelaone.kr/action?expire=${DateTime.now().add(Duration(days: 1)).toIso8601String()}&invite=${user?.uid}";
+    debugPrint(inviteUrl);
+    Share.share('지금 당장 [워치아웃] 앱을 설치하세요!\n$inviteUrl');
   }
 }
