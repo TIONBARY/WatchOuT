@@ -51,7 +51,7 @@ class _GuideBarState extends State<GuideBar> {
                       borderRadius: const BorderRadius.all(Radius.circular(4)),
                       maskColor: const Color.fromRGBO(0, 0, 0, .6),
                       child: const MainGuide(),
-                      maskClosable: true,
+                      buttonTextBuilder: (order) => order == 13 ? '돌아가기' : '다음',
                     ),
                   ),
                 );
