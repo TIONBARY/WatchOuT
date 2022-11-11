@@ -125,7 +125,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
           pref.getBool('useSiren') == null ? false : pref.getBool('useSiren')!;
       if (useSiren) {
         await _sosSoundSetting();
-        VolumeControl.setVolume(0.1);
+        VolumeControl.setVolume(1);
         assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
             audioFocusStrategy:
                 AudioFocusStrategy.request(resumeAfterInterruption: true));
@@ -144,10 +144,8 @@ class _MainButtonUpState extends State<MainButtonUp> {
   Future<void> _sosSoundSetting() async {
     try {
       final String result = await platform.invokeMethod('sosSoundSetting');
-      print("result");
-      print(result);
     } on PlatformException catch (e) {
-      "Failed to get battery level: '${e.message}'.";
+      print('sound setting failed');
     }
   }
 
