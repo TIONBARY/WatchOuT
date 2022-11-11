@@ -31,6 +31,19 @@ class UserService {
     return documentData;
   }
 
+  Future<bool> isDupNum(String number) async {
+    bool flag = true;
+    await db
+        .collection("user")
+        .where("phone", isEqualTo: number)
+        .get()
+        .then((value) => {
+              print("\nlength ; ${value.docs.length}\n"),
+              if (value.docs.length == 0) {flag = false},
+            });
+    return flag;
+  }
+
   void registerBasicUserInfo() {
     db.collection("user").doc("${user?.uid}").set({
       "googleUID": "${user?.uid}",

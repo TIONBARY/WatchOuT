@@ -18,9 +18,8 @@ import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
-import 'package:homealone/providers/switch_provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:volume_control/volume_control.dart';
 
@@ -52,7 +51,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
   final assetsAudioPlayer = AssetsAudioPlayer();
   bool useSiren = false;
   String address = "";
-  static const platform = const MethodChannel('com.ssafy.homealone/sound');
+  static const platform = const MethodChannel('com.ssafy.homealone/channel');
 
   Future _getKakaoKey() async {
     await dotenv.load();
@@ -68,9 +67,9 @@ class _MainButtonUpState extends State<MainButtonUp> {
   }
 
   void _sendSMS(String message, List<String> recipients) async {
-    Map<String, dynamic> _result =
-        await apiMessage.sendMessage(recipients, message);
-    if (_result["statusCode"] == 200) {
+    String _result = await platform.invokeMethod(
+        'sendTextMessage', {'message': message, 'recipients': recipients});
+    if (_result == "sent") {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -82,7 +81,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
           context: context,
           builder: (BuildContext context) {
             return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, _result["message"], null);
+                12.5.h, "메세지 전송에 실패했습니다.", null);
           });
     }
   }
@@ -121,10 +120,12 @@ class _MainButtonUpState extends State<MainButtonUp> {
         return;
       }
       _sendSMS(message, recipients);
-      useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      useSiren =
+          pref.getBool('useSiren') == null ? false : pref.getBool('useSiren')!;
       if (useSiren) {
         await _sosSoundSetting();
-        VolumeControl.setVolume(0.1);
+        VolumeControl.setVolume(1);
         assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
             audioFocusStrategy:
                 AudioFocusStrategy.request(resumeAfterInterruption: true));
@@ -143,10 +144,8 @@ class _MainButtonUpState extends State<MainButtonUp> {
   Future<void> _sosSoundSetting() async {
     try {
       final String result = await platform.invokeMethod('sosSoundSetting');
-      print("result");
-      print(result);
     } on PlatformException catch (e) {
-      "Failed to get battery level: '${e.message}'.";
+      print('sound setting failed');
     }
   }
 
