@@ -1,9 +1,10 @@
+import 'package:button_animations/button_animations.dart';
+import 'package:button_animations/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
-import 'package:homealone/components/main/main_page_text_button.dart';
-import 'package:homealone/constants.dart';
+import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -53,15 +54,55 @@ class _MainButtonDownState extends State<MainButtonDown> {
     String guName = splitedAddress[2];
     String? phones = guCall[guName];
 
-    return Row(
-      children: [
-        Flexible(
-          child: Column(
-            children: [
-              MainPageTextButton(
-                  margins: EdgeInsets.fromLTRB(2.w, 1.h, 1.w, 0.5.h),
-                  boxcolors: Colors.black12,
-                  onpresseds: () {
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Flexible(
+            flex: 3,
+            child: Container(
+              child: AnimatedButton(
+                height: 17.5.h,
+                width: 50.w,
+                blurRadius: 7.5,
+                isOutline: true,
+                type: PredefinedThemes.light,
+                onTap: () {},
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(
+                          'C\nA\nM',
+                          style: TextStyle(fontSize: 17.5.sp),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                        child: Image.asset(
+                          "assets/icons/shadowcctvreverse.png",
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Flexible(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(bottom: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: () {
                     (sidoName == '서울')
                         ? showDialog(
                             context: context,
@@ -89,30 +130,21 @@ class _MainButtonDownState extends State<MainButtonDown> {
                           );
                   },
                   texts: '안심귀가\n서비스',
-                  textcolors: bColor,
-                  fontsizes: 12.5.sp),
-              MainPageTextButton(
-                  margins: EdgeInsets.fromLTRB(2.w, 0.5.h, 1.w, 1.h),
-                  boxcolors: Colors.black12,
-                  onpresseds: () async {
+                ),
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(top: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: () async {
                     await launch('https://m.sexoffender.go.kr/main.nsc',
                         forceWebView: false, forceSafariVC: false);
                   },
                   texts: '성범죄자\n알림e',
-                  textcolors: bColor,
-                  fontsizes: 12.5.sp),
-            ],
+                ),
+              ],
+            ),
           ),
-        ),
-        Flexible(
-          flex: 2,
-          child: IconButton(
-            onPressed: () {},
-            icon: Image.asset("assets/icons/cctv_logo.png"),
-            iconSize: 75.w,
-          ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

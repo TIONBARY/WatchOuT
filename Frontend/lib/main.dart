@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:background_fetch/background_fetch.dart' as fetch;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,8 +14,6 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
-import 'package:homealone/components/main/main_button_up.dart';
-import 'package:homealone/components/singleton/is_check.dart';
 import 'package:homealone/components/wear/local_notification.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
@@ -30,9 +29,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:usage_stats/usage_stats.dart';
 import 'package:workmanager/workmanager.dart' as wm;
-
-final isCheck = IsCheck.instance;
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 ApiKakao apiKakao = ApiKakao();
 ApiMessage apiMessage = ApiMessage();
@@ -203,6 +199,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(
@@ -214,8 +211,6 @@ class _MyAppState extends State<MyApp> {
             primaryColor: Colors.white,
             accentColor: Colors.black,
           ),
-          navigatorKey: navigatorKey,
-          routes: {'/emergency': (context) => MainButtonUp()},
           home: const HomePage(),
         );
       },
@@ -301,7 +296,7 @@ void _permission(BuildContext context) async {
   }
   permissionOnce = true;
   await askPermission(context, Permission.locationAlways,
-      "WatchOuT에서 \n백그라운드에서도 '안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
+      "WatchOuT에서 \n백그라운드에서도 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
   await askPermission(context, Permission.location,
       "WatchOuT에서 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
   // if (await Permission.location.isDenied) {

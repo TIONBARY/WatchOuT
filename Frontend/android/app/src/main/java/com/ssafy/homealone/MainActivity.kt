@@ -62,9 +62,9 @@ class MainActivity : FlutterActivity() {
     private fun openEmergencySetting() {
 //        val activity = startActivity(Intent(Settings.ACTION_SETTINGS))
         val intent = Intent()
-        intent.component = ComponentName("com.sec.android.app.safetyassurance1", "com.sec.android.app.safetyassurance.settings.SafetyAssuranceSetting")
+        intent.component = ComponentName("com.sec.android.app.safetyassurance", "com.sec.android.app.safetyassurance.settings.SafetyAssuranceSetting")
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-        startActivity(intent)
+        val activity = startActivity(intent)
     }
 
     private fun sosSoundSetting(): String {

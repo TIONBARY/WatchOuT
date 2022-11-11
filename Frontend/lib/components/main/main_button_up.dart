@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:button_animations/button_animations.dart';
+import 'package:button_animations/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +16,7 @@ import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
-import 'package:homealone/components/main/main_page_text_button.dart';
-import 'package:homealone/constants.dart';
+import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -251,63 +252,93 @@ class _MainButtonUpState extends State<MainButtonUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Flexible(
-          flex: 2,
-          child: IconButton(
-            onPressed: () {
-              return sendEmergencyMessage();
-            },
-            icon: Image.asset("assets/icons/siren_logo.png"),
-            iconSize: 75.w,
-          ),
-        ),
-        Flexible(
-          child: Column(
-            children: [
-              MainPageTextButton(
-                  margins: EdgeInsets.fromLTRB(1.w, 1.h, 2.w, 0.5.h),
-                  boxcolors: Colors.black12,
-                  onpresseds: _showReportDialog,
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(bottom: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: _showReportDialog,
                   texts: '신고',
-                  textcolors: bColor,
-                  fontsizes: 12.5.sp),
-              MainPageTextButton(
-                margins: EdgeInsets.fromLTRB(1.w, 0.5.h, 2.w, 1.h),
-                boxcolors: Colors.black12,
-                onpresseds: () {
-                  showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    isScrollControlled: true,
-                    context: context,
-                    builder: (context) {
-                      return FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: Container(
-                          height: 450.h,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(25),
-                              topRight: Radius.circular(25),
+                ),
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(top: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: () {
+                    showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return FractionallySizedBox(
+                          heightFactor: 0.8,
+                          child: Container(
+                            height: 450.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25),
+                              ),
                             ),
+                            child: EmergencyManual(), // 모달 내부
                           ),
-                          child: EmergencyManual(), // 모달 내부
-                        ),
-                      );
-                    },
-                  );
-                },
-                texts: '위기상황 \n대처메뉴얼',
-                textcolors: bColor,
-                fontsizes: 12.5.sp,
-              ),
-            ],
+                        );
+                      },
+                    );
+                  },
+                  texts: '위기상황 \n대처메뉴얼',
+                ),
+              ],
+            ),
           ),
-        ),
-      ],
+          Expanded(
+            flex: 3,
+            child: Container(
+              child: AnimatedButton(
+                height: 17.5.h,
+                width: 50.w,
+                blurRadius: 7.5,
+                isOutline: true,
+                type: PredefinedThemes.danger,
+                onTap: () {
+                  return sendEmergencyMessage();
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                        child: Image.asset(
+                          "assets/icons/shadowsiren1.png",
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(
+                          'S\nO\nS',
+                          style: TextStyle(fontSize: 17.5.sp),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
