@@ -719,7 +719,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                               backgroundColor: yColor,
                               padding: EdgeInsets.all(3.w),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(5),
                               ),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),

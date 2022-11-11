@@ -12,20 +12,26 @@ class _GuideBarState extends State<GuideBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(8, 16, 8, 8),
+      margin: EdgeInsets.fromLTRB(8, 12, 8, 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: b25Color,
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: b25Color,
+        //     offset: Offset(0, 3),
+        //     blurRadius: 5,
+        //   ),
+        // ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
             margin: EdgeInsets.all(8),
             child: Text('가이드 보러가기'),
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
+            margin: EdgeInsets.symmetric(horizontal: 4),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),

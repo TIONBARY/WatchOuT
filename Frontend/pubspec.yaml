@@ -130,6 +130,18 @@ flutter:
     - family: HanSan
       fonts:
         - asset: fonts/BlackHanSans-Regular.ttf
+    - family: WdcsB
+      fonts:
+        - asset: fonts/WandocleanseaB.ttf
+    - family: WdcsR
+      fonts:
+        - asset: fonts/WandocleanseaR.ttf
+    - family: WdhopeB
+      fonts:
+        - asset: fonts/WandohopeB.ttf
+    - family: WdhopeR
+      fonts:
+        - asset: fonts/WandohopeR.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
