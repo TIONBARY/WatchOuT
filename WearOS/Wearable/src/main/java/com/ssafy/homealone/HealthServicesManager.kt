@@ -16,44 +16,65 @@
 
 package com.ssafy.homealone
 
-import android.content.ComponentName
-import android.content.Context
 import android.util.Log
 import androidx.concurrent.futures.await
 import androidx.health.services.client.HealthServicesClient
+import androidx.health.services.client.MeasureCallback
+import androidx.health.services.client.data.Availability
+import androidx.health.services.client.data.DataPoint
 import androidx.health.services.client.data.DataType
-import androidx.health.services.client.data.PassiveMonitoringConfig
-import dagger.hilt.android.qualifiers.ApplicationContext
+import androidx.health.services.client.data.DataTypeAvailability
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.channels.sendBlocking
+import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
+import kotlinx.coroutines.channels.trySendBlocking
 
 /**
- * Entry point for [HealthServicesClient] APIs. This also provides suspend functions around
- * those APIs to enable use in coroutines.
+ * Entry point for [HealthServicesClient] APIs, wrapping them in coroutine-friendly APIs.
  */
 class HealthServicesManager @Inject constructor(
-    @ApplicationContext private val context: Context,
     healthServicesClient: HealthServicesClient
 ) {
-    private val passiveMonitoringClient = healthServicesClient.passiveMonitoringClient
-    private val dataTypes = setOf(DataType.HEART_RATE_BPM)
+    private val measureClient = healthServicesClient.measureClient
 
     suspend fun hasHeartRateCapability(): Boolean {
-        val capabilities = passiveMonitoringClient.capabilities.await()
-        return (DataType.HEART_RATE_BPM in capabilities.supportedDataTypesPassiveMonitoring)
+        val capabilities = measureClient.capabilities.await()
+        return (DataType.HEART_RATE_BPM in capabilities.supportedDataTypesMeasure)
     }
 
-    suspend fun registerForHeartRateData() {
-        Log.i(TAG, "Registering for background data.")
-        val componentName = ComponentName(context, PassiveDataReceiver::class.java)
-        val config = PassiveMonitoringConfig.builder()
-            .setDataTypes(dataTypes)
-            .setComponentName(componentName)
-            .build()
-        passiveMonitoringClient.registerDataCallback(config).await()
-    }
+    /**
+     * Returns a cold flow. When activated, the flow will register a callback for heart rate data
+     * and start to emit messages. When the consuming coroutine is cancelled, the measure callback
+     * is unregistered.
+     *
+     * [callbackFlow] is used to bridge between a callback-based API and Kotlin flows.
+     */
+    fun heartRateMeasureFlow() = callbackFlow<MeasureMessage> {
+        val callback = object : MeasureCallback {
+            override fun onAvailabilityChanged(dataType: DataType, availability: Availability) {
+                // Only send back DataTypeAvailability (not LocationAvailability)
+                if (availability is DataTypeAvailability) {
+                    trySendBlocking(MeasureMessage.MeasureAvailabilty(availability))
+                }
+            }
 
-    suspend fun unregisterForHeartRateData() {
-        Log.i(TAG, "Unregistering for background data.")
-        passiveMonitoringClient.unregisterDataCallback().await()
+            override fun onData(data: List<DataPoint>) {
+                trySendBlocking(MeasureMessage.MeasureData(data))
+            }
+        }
+
+        Log.d(TAG, "Registering for data")
+        measureClient.registerCallback(DataType.HEART_RATE_BPM, callback)
+
+        awaitClose {
+            Log.d(TAG, "Unregistering for data")
+            measureClient.unregisterCallback(DataType.HEART_RATE_BPM, callback)
+        }
     }
+}
+
+sealed class MeasureMessage {
+    class MeasureAvailabilty(val availability: DataTypeAvailability) : MeasureMessage()
+    class MeasureData(val data: List<DataPoint>): MeasureMessage()
 }

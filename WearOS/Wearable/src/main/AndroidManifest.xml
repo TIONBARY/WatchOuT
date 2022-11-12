@@ -83,36 +83,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-<!--        <activity-->
-<!--            android:name=".DataMainActivity"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--            <intent-filter>-->
-<!--                <action android:name="com.ssafy.homealone.EXAMPLE" />-->
-<!--                <category android:name="android.intent.category.DEFAULT" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
-        <!-- Receiver that gets notified of new data in the background. -->
-        <receiver
-            android:name=".PassiveDataReceiver"
-            android:exported="true"
-            tools:ignore="ExportedReceiver">
-            <intent-filter>
-                <action android:name="hs.passivemonitoring.DATA" />
-            </intent-filter>
-        </receiver>
-
-        <!-- Receiver that re-registers for background data after a device restart. -->
-        <receiver
-            android:name=".StartupReceiver"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-            </intent-filter>
-        </receiver>
 
         <!-- Our application implements Configuration.Provider, so we don't need this to initialize
              WorkManager.
