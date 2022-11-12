@@ -91,7 +91,6 @@ void main() {
   // Register to receive BackgroundFetch events after app is terminated.
   // Requires {stopOnTerminate: false, enableHeadless: true}
   fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
-  handlePlatformChannelMethods();
 }
 
 // void initQuickActions() {
@@ -122,6 +121,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initializeService();
     initUsage();
+    handlePlatformChannelMethods();
     wm.Workmanager().initialize(
       callbackDispatcher,
       isInDebugMode: false,
@@ -294,9 +294,9 @@ void _permission(BuildContext context) async {
     return;
   }
   permissionOnce = true;
-  await askPermission(context, Permission.locationAlways,
+  askPermission(context, Permission.locationAlways,
       "WatchOuT에서 \n백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
-  await askPermission(context, Permission.location,
+  askPermission(context, Permission.location,
       "WatchOuT에서 \n'안전 지도' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
   // if (await Permission.location.isDenied) {
   //   debugPrint("위치권한 거부");
@@ -324,15 +324,16 @@ Future<void> refreshUsage() async {
   pref.reload();
   Future<int> count = initUsage();
   count.then((value) {
-    print('24시간 이내에 사용한 앱 갯수 : $value');
+    debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
     if (value == 0) {
-      if (!messageIsSent)
+      if (!messageIsSent) {
         _getKakaoKey().then((response) => sendEmergencyMessage());
+      }
     } else {
       messageIsSent = false;
     }
   }).catchError((error) {
-    print(error);
+    debugPrint(error);
   });
 }
 
@@ -401,7 +402,7 @@ Future<void> prepareMessage() async {
   await getCurrentLocation();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   message =
-      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다.\n현재 예상 위치 : ${address}\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다.\n현재 예상 위치 : $address\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
   List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
     recipients = list!;
@@ -409,40 +410,45 @@ Future<void> prepareMessage() async {
 }
 
 Future<dynamic> handlePlatformChannelMethods() async {
-  var result = await platform.invokeMethod("getFriendLink");
+  var result = await platform
+      .invokeMethod("getFriendLink")
+      .onError((error, stackTrace) => debugPrint(error.toString()));
   if (result.runtimeType == String) {
     //Parameters received from Native…!!!!
-    debugPrint(result);
+    // debugPrint(result);
     await dotenv.load();
     String inviteRandomKey = dotenv.get('inviteRandomKey');
+    String decoded = decodeInviteKey(inviteRandomKey, result);
+    // TODO: 모달창 열고 onPressed로 이동
+    registerFriend(decoded);
+  }
+}
 
-    //키값
-    final key = en.Key.fromUtf8(inviteRandomKey);
-    final iv = en.IV.fromLength(16);
-    //위에 키값으로 지갑 생성
-    final encrypter = en.Encrypter(en.AES(key));
+String decodeInviteKey(String inviteRandomKey, String value) {
+  //키값
+  final key = en.Key.fromUtf8(inviteRandomKey);
+  final iv = en.IV.fromLength(16);
+  //위에 키값으로 지갑 생성
+  final encrypter = en.Encrypter(en.AES(key));
 
-    //생성된 지갑으로 복호화
-    final decoded = encrypter.decrypt64(result, iv: iv);
-    debugPrint('-------복호화값: $decoded');
+  //생성된 지갑으로 복호화
+  final decoded = encrypter.decrypt64(value, iv: iv);
+  // debugPrint('-------복호화값: $decoded');
+  return decoded;
+}
 
-    List<String> message = decoded.split(","); //
+void registerFriend(String decoded) {
+  List<String> message = decoded.split(",");
+  String expireTimeStr = message[0];
+  String inviteCodeStr = message[1];
 
-    String expireTimeStr = message[0];
+  debugPrint("초대코드 플러터에서 받음 ㅋㅋ: $inviteCodeStr \n만료일자: $expireTimeStr");
 
-    String inviteCodeStr = message[1];
-
-    debugPrint("초대코드 플러터에서 받음 ㅋㅋ: $inviteCodeStr \n만료일자: $expireTimeStr");
-
-    DateTime expireTime = DateTime.parse(expireTimeStr);
-    // 만료되기 전
-    if (expireTime.isAfter(DateTime.now())) {
-      UserService().registerFirstResponderFromInvite(inviteCodeStr);
-    } else {
-      debugPrint("만료된 초대코드입니다.");
-    }
-    //  에러
+  DateTime expireTime = DateTime.parse(expireTimeStr);
+  // 만료되기 전
+  if (expireTime.isAfter(DateTime.now())) {
+    UserService().registerFirstResponderFromInvite(inviteCodeStr);
   } else {
-    debugPrint(result.toString());
+    debugPrint("만료된 초대코드입니다.");
   }
 }

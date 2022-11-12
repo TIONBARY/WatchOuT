@@ -5,10 +5,10 @@ import 'package:sizer/sizer.dart';
 import '../../constants.dart';
 
 class CustomDialog extends StatelessWidget {
-  String text = "";
-  Widget Function(BuildContext)? pageBuilder;
+  final String text;
+  final Widget Function(BuildContext)? pageBuilder;
 
-  CustomDialog(this.text, this.pageBuilder);
+  CustomDialog(this.text, this.pageBuilder, {super.key});
 
   @override
   Widget build(BuildContext context) {
