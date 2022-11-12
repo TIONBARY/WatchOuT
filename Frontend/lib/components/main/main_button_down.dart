@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
+import 'package:homealone/components/homecam/cam_select_page.dart';
+import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -63,24 +65,31 @@ class _MainButtonDownState extends State<MainButtonDown> {
             child: Container(
               child: AnimatedButton(
                 height: 17.5.h,
+                width: 50.w,
                 blurRadius: 7.5,
                 isOutline: true,
                 type: PredefinedThemes.light,
-                onTap: () {},
+                onTap: () {
+                  openDialog(context);
+                },
                 child: Row(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 7.w),
-                      child: Text(
-                        'C\nA\nM',
-                        style: TextStyle(fontSize: 17.5.sp),
-                        textAlign: TextAlign.center,
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(
+                          'C\nA\nM',
+                          style: TextStyle(fontSize: 17.5.sp),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
-                    ClipRRect(
-                      child: Image.asset(
-                        "assets/icons/shadowcctvreverse.png",
-                        fit: BoxFit.cover,
+                    Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                        child: Image.asset(
+                          "assets/icons/shadowcctvreverse.png",
+                        ),
                       ),
                     ),
                   ],
@@ -93,62 +102,46 @@ class _MainButtonDownState extends State<MainButtonDown> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
-                  child: AnimatedButton(
-                    width: 30.w,
-                    blurRadius: 7.5,
-                    isOutline: true,
-                    type: PredefinedThemes.warning,
-                    onTap: () {
-                      (sidoName == '서울')
-                          ? showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                // Future.delayed(Duration(seconds: 3), () {
-                                //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
-                                // });
-                                return CallDialog(
-                                    null,
-                                    guName + '청 스카우트 상황실',
-                                    phones!,
-                                    '※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
-                                    null);
-                              },
-                            )
-                          : showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return BasicDialog(
-                                    EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                                    12.5.h,
-                                    '안심귀가 서비스는 \'서울\' 에서만 제공됩니다.',
-                                    null);
-                              },
-                            );
-                    },
-                    child: Text(
-                      '안심귀가\n서비스',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(bottom: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: () {
+                    (sidoName == '서울')
+                        ? showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              // Future.delayed(Duration(seconds: 3), () {
+                              //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
+                              // });
+                              return CallDialog(
+                                  null,
+                                  guName + '청 스카우트 상황실',
+                                  phones!,
+                                  '※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
+                                  null);
+                            },
+                          )
+                        : showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BasicDialog(
+                                  EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                                  12.5.h,
+                                  '안심귀가 서비스는 \'서울\' 에서만 제공됩니다.',
+                                  null);
+                            },
+                          );
+                  },
+                  texts: '안심귀가\n서비스',
                 ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 4, 0, 0),
-                  child: AnimatedButton(
-                    width: 30.w,
-                    blurRadius: 7.5,
-                    isOutline: true,
-                    type: PredefinedThemes.warning,
-                    onTap: () async {
-                      await launch('https://m.sexoffender.go.kr/main.nsc',
-                          forceWebView: false, forceSafariVC: false);
-                    },
-                    child: Text(
-                      '성범죄자\n알림e',
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(top: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: () async {
+                    await launch('https://m.sexoffender.go.kr/main.nsc',
+                        forceWebView: false, forceSafariVC: false);
+                  },
+                  texts: '성범죄자\n알림e',
                 ),
               ],
             ),
@@ -156,5 +149,10 @@ class _MainButtonDownState extends State<MainButtonDown> {
         ],
       ),
     );
+  }
+
+  void openDialog(BuildContext context) async {
+    Future.microtask(() => Navigator.push(
+        context, MaterialPageRoute(builder: (context) => selectPage())));
   }
 }

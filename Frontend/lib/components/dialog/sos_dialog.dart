@@ -4,7 +4,7 @@ import 'package:sizer/sizer.dart';
 import 'package:slide_countdown/slide_countdown.dart';
 
 class SOSDialog extends StatelessWidget {
-  SOSDialog();
+  SOSDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

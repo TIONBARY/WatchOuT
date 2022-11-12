@@ -4,13 +4,13 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 
 class CallDialog extends StatelessWidget {
-  String? titles = '';
-  String names = '';
-  String phones = '';
-  String? texts = '';
-  Widget Function(BuildContext)? pageBuilder;
+  final String? titles;
+  final String names;
+  final String phones;
+  final String? texts;
+  final Widget Function(BuildContext)? pageBuilder;
 
-  Map<String, String> emoji = {
+  final Map<String, String> emoji = {
     "편의점": "🏪",
     "파출소": "🚔",
     "약국": "💊",
@@ -19,8 +19,8 @@ class CallDialog extends StatelessWidget {
     "비상벨": "🔔"
   };
 
-  CallDialog(
-      this.titles, this.names, this.phones, this.texts, this.pageBuilder);
+  CallDialog(this.titles, this.names, this.phones, this.texts, this.pageBuilder,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {

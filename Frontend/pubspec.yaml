@@ -17,7 +17,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+15
+version: 1.0.0+22
 
 environment:
   sdk: '>=2.18.1 <3.0.0'
@@ -84,6 +84,14 @@ dependencies:
   button_animations: ^1.0.1+2
   workmanager: ^0.5.1
   background_fetch: ^1.1.2
+  flutter_intro: ^3.0.2
+  flutter_animated_button: ^2.0.2
+  easy_onvif: ^2.0.13+1
+  video_player: ^2.4.7
+  flutter_vlc_player: ^7.1.5
+  input_form_field: ^0.0.5
+  share_plus: ^6.2.0
+  encrypt: ^5.0.1
 
 dev_dependencies:
   flutter_test:
@@ -125,18 +133,19 @@ flutter:
     - family: HanSan
       fonts:
         - asset: fonts/BlackHanSans-Regular.ttf
-    - family: WandoCB
+    - family: WdcsB
       fonts:
         - asset: fonts/WandocleanseaB.ttf
-    - family: WandoCR
+    - family: WdcsR
       fonts:
         - asset: fonts/WandocleanseaR.ttf
-    - family: WandoHB
+    - family: WdhopeB
       fonts:
         - asset: fonts/WandohopeB.ttf
-    - family: WandoHR
+    - family: WdhopeR
       fonts:
         - asset: fonts/WandohopeR.ttf
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

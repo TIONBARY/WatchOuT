@@ -16,11 +16,10 @@ import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
-import 'package:homealone/constants.dart';
+import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
-import 'package:homealone/providers/switch_provider.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:volume_control/volume_control.dart';
 
@@ -52,7 +51,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
   final assetsAudioPlayer = AssetsAudioPlayer();
   bool useSiren = false;
   String address = "";
-  static const platform = const MethodChannel('com.ssafy.homealone/sound');
+  static const platform = const MethodChannel('com.ssafy.homealone/channel');
 
   Future _getKakaoKey() async {
     await dotenv.load();
@@ -68,9 +67,9 @@ class _MainButtonUpState extends State<MainButtonUp> {
   }
 
   void _sendSMS(String message, List<String> recipients) async {
-    Map<String, dynamic> _result =
-        await apiMessage.sendMessage(recipients, message);
-    if (_result["statusCode"] == 200) {
+    String _result = await platform.invokeMethod(
+        'sendTextMessage', {'message': message, 'recipients': recipients});
+    if (_result == "sent") {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -82,7 +81,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
           context: context,
           builder: (BuildContext context) {
             return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, _result["message"], null);
+                12.5.h, "메세지 전송에 실패했습니다.", null);
           });
     }
   }
@@ -121,10 +120,12 @@ class _MainButtonUpState extends State<MainButtonUp> {
         return;
       }
       _sendSMS(message, recipients);
-      useSiren = Provider.of<SwitchBools>(context, listen: false).useSiren;
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      useSiren =
+          pref.getBool('useSiren') == null ? false : pref.getBool('useSiren')!;
       if (useSiren) {
         await _sosSoundSetting();
-        VolumeControl.setVolume(0.1);
+        VolumeControl.setVolume(1);
         assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
             audioFocusStrategy:
                 AudioFocusStrategy.request(resumeAfterInterruption: true));
@@ -143,10 +144,8 @@ class _MainButtonUpState extends State<MainButtonUp> {
   Future<void> _sosSoundSetting() async {
     try {
       final String result = await platform.invokeMethod('sosSoundSetting');
-      print("result");
-      print(result);
     } on PlatformException catch (e) {
-      "Failed to get battery level: '${e.message}'.";
+      print('sound setting failed');
     }
   }
 
@@ -262,57 +261,40 @@ class _MainButtonUpState extends State<MainButtonUp> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 4),
-                  child: AnimatedButton(
-                    width: 30.w,
-                    blurRadius: 7.5,
-                    isOutline: true,
-                    type: PredefinedThemes.warning,
-                    onTap: _showReportDialog,
-                    child: Text(
-                      '신고',
-                      style: TextStyle(color: bColor),
-                    ),
-                  ),
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(bottom: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: _showReportDialog,
+                  texts: '신고',
                 ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 4, 0, 0),
-                  child: AnimatedButton(
-                    width: 30.w,
-                    blurRadius: 7.5,
-                    isOutline: true,
-                    type: PredefinedThemes.warning,
-                    onTap: () {
-                      showModalBottomSheet(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        isScrollControlled: true,
-                        context: context,
-                        builder: (context) {
-                          return FractionallySizedBox(
-                            heightFactor: 0.8,
-                            child: Container(
-                              height: 450.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(25),
-                                  topRight: Radius.circular(25),
-                                ),
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(top: 4),
+                  types: PredefinedThemes.warning,
+                  ontaps: () {
+                    showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      isScrollControlled: true,
+                      context: context,
+                      builder: (context) {
+                        return FractionallySizedBox(
+                          heightFactor: 0.8,
+                          child: Container(
+                            height: 450.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25),
                               ),
-                              child: EmergencyManual(), // 모달 내부
                             ),
-                          );
-                        },
-                      );
-                    },
-                    child: Text(
-                      '위기상황 \n대처메뉴얼',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(color: bColor),
-                    ),
-                  ),
+                            child: EmergencyManual(), // 모달 내부
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  texts: '위기상황 \n대처메뉴얼',
                 ),
               ],
             ),
@@ -322,6 +304,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
             child: Container(
               child: AnimatedButton(
                 height: 17.5.h,
+                width: 50.w,
                 blurRadius: 7.5,
                 isOutline: true,
                 type: PredefinedThemes.danger,
@@ -330,18 +313,22 @@ class _MainButtonUpState extends State<MainButtonUp> {
                 },
                 child: Row(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(left: 7.5.w),
-                      child: Text(
-                        'S\nO\nS',
-                        style: TextStyle(fontSize: 17.5.sp),
-                        textAlign: TextAlign.center,
+                    Expanded(
+                      flex: 2,
+                      child: ClipRRect(
+                        child: Image.asset(
+                          "assets/icons/shadowsiren1.png",
+                        ),
                       ),
                     ),
-                    ClipRRect(
-                      child: Image.asset(
-                        "assets/icons/shadowsiren1.png",
-                        fit: BoxFit.cover,
+                    Expanded(
+                      flex: 1,
+                      child: Container(
+                        child: Text(
+                          'S\nO\nS',
+                          style: TextStyle(fontSize: 17.5.sp),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     ),
                   ],

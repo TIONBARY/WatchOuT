@@ -17,7 +17,6 @@ class Carousel extends StatefulWidget {
 
 class _CarouselState extends State<Carousel> {
   late Channel _channel;
-  bool _isLoading = false;
   late List<Widget> imageSliders;
   late final Future? myFuture = _initChannel();
 
@@ -43,7 +42,7 @@ class _CarouselState extends State<Carousel> {
               boxShadow: [
                 BoxShadow(
                   color: b25Color,
-                  offset: Offset(3, -3),
+                  offset: Offset(0, 3),
                   blurRadius: 7.5,
                 ),
               ],
@@ -123,13 +122,13 @@ class _CarouselState extends State<Carousel> {
                         margin:
                             EdgeInsets.symmetric(vertical: 8, horizontal: 4),
                         decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color:
-                                (Theme.of(context).brightness == Brightness.dark
-                                        ? Colors.white
-                                        : Colors.black)
-                                    .withOpacity(
-                                        _current == entry.key ? 0.8 : 0.4)),
+                          shape: BoxShape.circle,
+                          color: (Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black)
+                              .withOpacity(_current == entry.key ? 0.8 : 0.4),
+                        ),
                       ),
                     );
                   },
