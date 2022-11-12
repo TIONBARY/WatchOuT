@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 
 class BasicDialog extends StatelessWidget {
-  final paddings;
-  final heights;
-  String titles = '';
-  Widget Function(BuildContext)? pageBuilder;
+  final EdgeInsetsGeometry paddings;
+  final double heights;
+  final String titles;
+  final Widget Function(BuildContext)? pageBuilder;
 
-  BasicDialog(this.paddings, this.heights, this.titles, this.pageBuilder);
+  BasicDialog(this.paddings, this.heights, this.titles, this.pageBuilder,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {

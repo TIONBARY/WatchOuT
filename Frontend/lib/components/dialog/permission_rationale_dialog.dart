@@ -4,10 +4,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
 class PermissionRationaleDialog extends StatelessWidget {
-  Permission permission = Permission.unknown;
-  String message = '';
+  final Permission permission;
+  final String message;
 
-  PermissionRationaleDialog(this.permission, this.message);
+  PermissionRationaleDialog(this.permission, this.message, {super.key});
 
   @override
   Widget build(BuildContext context) {

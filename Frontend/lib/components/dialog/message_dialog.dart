@@ -12,7 +12,7 @@ const platform = MethodChannel('com.ssafy.homealone/channel');
 
 class MessageDialog extends StatefulWidget {
   const MessageDialog(this.phone, {Key? key}) : super(key: key);
-  final phone;
+  final String phone;
 
   @override
   State<MessageDialog> createState() => _MessageDialogState();
@@ -49,8 +49,7 @@ class _MessageDialogState extends State<MessageDialog> {
 
   void sendMessage() async {
     String name = Provider.of<MyUserInfo>(context, listen: false).name;
-    _sendSMS(
-        "${_message}\n* ${name} 님이 WatchOut 앱에서 발송한 문자입니다.", [widget.phone]);
+    _sendSMS("$_message\n* $name 님이 WatchOut 앱에서 발송한 문자입니다.", [widget.phone]);
   }
 
   @override
@@ -76,7 +75,7 @@ class _MessageDialogState extends State<MessageDialog> {
                 controller: textController,
                 autocorrect: false,
                 validator: (String? val) {
-                  if (val == null || val.length == 0) {
+                  if (val == null || val.isEmpty) {
                     return "메세지를 입력해주세요.";
                   } else {
                     return null;

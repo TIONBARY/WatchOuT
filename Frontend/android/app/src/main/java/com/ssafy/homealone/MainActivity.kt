@@ -37,9 +37,6 @@ class MainActivity : FlutterActivity() {
 
         GeneratedPluginRegistrant.registerWith(FlutterEngine(this))
 
-        var intent: Intent = getIntent()
-        parseInvite(intent)
-
         MethodChannel(flutterEngine?.getDartExecutor()?.getBinaryMessenger()!!, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sosSoundSetting") {
                 s = sosSoundSetting()
@@ -66,13 +63,17 @@ class MainActivity : FlutterActivity() {
                     Log.e(CHANNEL, e.message ?:"EmptyMsg")
                     result.error("UNAVAILABLE", "문자 전송에 실패했습니다.", null)
                 }
-            } else if (call.method == "getFriendLink" && inviteCode != null) {
-                    Log.d("URI_PARSING", "초대코드:$inviteCode")
-                    if (inviteCode != "") {
-                        result.success(inviteCode)
-                    } else {
-                        result.error("UNAVAILABLE", "친구초대 링크를 읽어오지 못했습니다.", null)
-                    }
+            } else if (call.method == "getFriendLink") {
+
+                var intent: Intent = getIntent()
+                inviteCode = parseInvite(intent)
+
+                Log.d("URI_PARSING", "초대코드:$inviteCode")
+                if (inviteCode != "") {
+                    result.success(inviteCode)
+                } else {
+                    result.error("UNAVAILABLE", "친구초대 링크를 읽어오지 못했습니다.", null)
+                }
             } else {
                 result.notImplemented()
             }
@@ -105,15 +106,13 @@ class MainActivity : FlutterActivity() {
         return "success"
     }
 
-    private fun parseInvite(intent: Intent) {
+    private fun parseInvite(intent: Intent): String {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             val uri: Uri? = intent.getData()
             if (uri != null) {
-                inviteCode = uri.getQueryParameters("inviteKey")[0] ?: ""
-                Log.d("URI_PARSING", "초대코드:$inviteCode")
-            } else {
-                inviteCode = ""
+                return uri.getQueryParameters("inviteKey")[0] ?: ""
             }
         }
+        return ""
     }
 }
