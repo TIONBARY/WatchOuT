@@ -5,12 +5,13 @@ import 'dart:math' show Random, asin, cos, sqrt;
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
+import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/access_code_message_choice_list_dialog.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
@@ -72,6 +73,7 @@ List<String> guName = [
 ];
 
 ApiKakao apiKakao = ApiKakao();
+ApiMessage apiMessage = ApiMessage();
 
 List<Map<String, dynamic>> cctvList = [];
 List<Map<String, dynamic>> sortedcctvList = [];
@@ -105,6 +107,11 @@ Future? myFuture;
 Map<String, dynamic> newValue = {};
 
 String accessCode = "";
+
+String downloadLink =
+    "https://play.google.com/store/apps/details?id=com.ssafy.homealone";
+
+const platform = MethodChannel('com.ssafy.homealone/channel');
 
 class SafeAreaCCTVMap extends StatefulWidget {
   const SafeAreaCCTVMap({Key? key}) : super(key: key);
@@ -279,7 +286,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AccessCodeMessageChoiceListDialog(accessCode);
+          return AccessCodeMessageChoiceListDialog(
+              sendMessageToEmergencyCallList);
         });
     FirebaseFirestore.instance
         .collection("userAccessCode")
@@ -344,6 +352,51 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     });
 
     positionList = [];
+  }
+
+  void _sendSMS(String message, List<String> recipients) async {
+    String _result = await platform.invokeMethod(
+        'sendTextMessage', {'message': message, 'recipients': recipients});
+    if (_result == "sent") {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                15.h, '귀갓길 공유 메세지를 전송했습니다.\n지속적인 공유를 위해 앱을 끄지 말아주세요.', null);
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, "메세지 전송에 실패했습니다.", null);
+          });
+    }
+  }
+
+  void sendMessageToEmergencyCallList(
+      List<Map<String, dynamic>> _selectedEmergencyCallList) async {
+    final response = await FirebaseFirestore.instance
+        .collection("user")
+        .doc(_auth.currentUser?.uid)
+        .get();
+    final user = response.data() as Map<String, dynamic>;
+    String message =
+        "${user["name"]} 님이 귀가를 시작했습니다. 귀가 경로를 확인하시려면 WatchOut 앱에서 다음 입장 코드를 입력하세요.\n입장 코드 : ${accessCode}\n앱 다운로드 링크 : ${downloadLink}";
+    List<String> recipients = [];
+    for (int i = 0; i < _selectedEmergencyCallList.length; i++) {
+      recipients.add(_selectedEmergencyCallList[i]["number"]);
+    }
+    if (recipients.isEmpty) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '귀갓길 공유 대상을 선택해주세요.', null);
+          });
+      return;
+    }
+    _sendSMS(message, recipients);
   }
 
   @override
@@ -669,7 +722,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                               backgroundColor: yColor,
                               padding: EdgeInsets.all(3.w),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(5),
                               ),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),

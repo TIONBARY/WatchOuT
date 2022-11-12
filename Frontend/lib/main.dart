@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:background_fetch/background_fetch.dart' as fetch;
+import 'package:encrypt/encrypt.dart' as en;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -13,8 +15,7 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
-import 'package:homealone/components/main/main_button_up.dart';
-import 'package:homealone/components/singleton/is_check.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/wear/local_notification.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
@@ -31,9 +32,6 @@ import 'package:sizer/sizer.dart';
 import 'package:usage_stats/usage_stats.dart';
 import 'package:workmanager/workmanager.dart' as wm;
 
-final isCheck = IsCheck.instance;
-final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
 ApiKakao apiKakao = ApiKakao();
 ApiMessage apiMessage = ApiMessage();
 
@@ -49,6 +47,11 @@ bool messageIsSent = false;
 
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 StreamSubscription<Position>? _positionStreamSubscription;
+
+const locationCheck = "locationCheck";
+const fetchBackground = "fetchBackground";
+
+const platform = MethodChannel('com.ssafy.homealone/channel');
 
 // [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
 // Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
@@ -70,8 +73,6 @@ void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
 
   fetch.BackgroundFetch.finish(taskId);
 }
-
-const fetchBackground = "fetchBackground";
 
 void main() {
   runApp(
@@ -120,11 +121,12 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initializeService();
     initUsage();
+    handlePlatformChannelMethods();
     wm.Workmanager().initialize(
       callbackDispatcher,
       isInDebugMode: false,
     );
-    wm.Workmanager().registerPeriodicTask("1", fetchBackground,
+    wm.Workmanager().registerPeriodicTask(locationCheck, fetchBackground,
         frequency: Duration(minutes: 15),
         initialDelay: Duration(seconds: 60),
         constraints: wm.Constraints(
@@ -163,13 +165,6 @@ class _MyAppState extends State<MyApp> {
       });
       initializeService();
       initUsage();
-      wm.Workmanager().initialize(
-        callbackDispatcher,
-        isInDebugMode: false,
-      );
-      wm.Workmanager().registerPeriodicTask("1", fetchBackground,
-          frequency: Duration(minutes: 15),
-          initialDelay: Duration(seconds: 60));
       // debugPrint("메인꺼");
       // SharedPreferences.getInstance().then(
       //   (value) => {
@@ -203,6 +198,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
     return Sizer(
       builder: (context, orientation, deviceType) {
         return MaterialApp(
@@ -214,8 +210,6 @@ class _MyAppState extends State<MyApp> {
             primaryColor: Colors.white,
             accentColor: Colors.black,
           ),
-          navigatorKey: navigatorKey,
-          routes: {'/emergency': (context) => MainButtonUp()},
           home: const HomePage(),
         );
       },
@@ -300,16 +294,16 @@ void _permission(BuildContext context) async {
     return;
   }
   permissionOnce = true;
-  await askPermission(context, Permission.locationAlways,
-      "WatchOuT에서 \n백그라운드에서도 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
-  await askPermission(context, Permission.location,
-      "WatchOuT에서 \n'안전 지도' 및 '보호자 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
+  askPermission(context, Permission.locationAlways,
+      "WatchOuT에서 \n백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
+  askPermission(context, Permission.location,
+      "WatchOuT에서 \n'안전 지도' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
   // if (await Permission.location.isDenied) {
   //   debugPrint("위치권한 거부");
   //   return;
   // }
-  // askPermission(
-  //     context, Permission.sms, "워치아웃에서 SOS 기능을 사용할 수 있도록 SMS 권한을 허용해 주세요.");
+  askPermission(context, Permission.sms,
+      "WatchOuT에서 \n문자 전송 기능을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.");
 }
 
 Future<void> onStart(ServiceInstance service) async {
@@ -319,32 +313,27 @@ Future<void> onStart(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
   final SharedPreferences pref = await SharedPreferences.getInstance();
-  Timer.periodic(
-    Duration(hours: 1),
-    (timer) {
-      refreshUsage();
-    },
-  );
 
   if (service is AndroidServiceInstance) {
     onStartWatch(service, flutterLocalNotificationsPlugin, pref);
   }
 }
 
-void refreshUsage() async {
+Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
   count.then((value) {
-    print('24시간 이내에 사용한 앱 갯수 : $value');
+    debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
     if (value == 0) {
-      if (!messageIsSent)
+      if (!messageIsSent) {
         _getKakaoKey().then((response) => sendEmergencyMessage());
+      }
     } else {
       messageIsSent = false;
     }
   }).catchError((error) {
-    print(error);
+    debugPrint(error);
   });
 }
 
@@ -372,14 +361,11 @@ void callbackDispatcher() {
   wm.Workmanager().executeTask((task, inputData) async {
     switch (task) {
       case fetchBackground:
-        print("background task executed");
         Position position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
         initLat = position.latitude;
         initLon = position.longitude;
-        print("background location");
-        print(initLat);
-        print(initLon);
+        await refreshUsage();
         break;
     }
     return Future.value(true);
@@ -393,7 +379,8 @@ Future _getKakaoKey() async {
 }
 
 void _sendSMS(String message, List<String> recipients) async {
-  await apiMessage.sendMessage(recipients, message);
+  await platform.invokeMethod(
+      'sendTextMessage', {'message': message, 'recipients': recipients});
 }
 
 Future<void> sendEmergencyMessage() async {
@@ -415,9 +402,53 @@ Future<void> prepareMessage() async {
   await getCurrentLocation();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   message =
-      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다. \n${preferences.getString('username')} 님의 번호 : ${preferences.getString('userphone')}\n현재 예상 위치 : ${address}\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다.\n현재 예상 위치 : $address\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
   List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
     recipients = list!;
+  }
+}
+
+Future<dynamic> handlePlatformChannelMethods() async {
+  var result = await platform
+      .invokeMethod("getFriendLink")
+      .onError((error, stackTrace) => debugPrint(error.toString()));
+  if (result.runtimeType == String) {
+    //Parameters received from Native…!!!!
+    // debugPrint(result);
+    await dotenv.load();
+    String inviteRandomKey = dotenv.get('inviteRandomKey');
+    String decoded = decodeInviteKey(inviteRandomKey, result);
+    // TODO: 모달창 열고 onPressed로 이동
+    registerFriend(decoded);
+  }
+}
+
+String decodeInviteKey(String inviteRandomKey, String value) {
+  //키값
+  final key = en.Key.fromUtf8(inviteRandomKey);
+  final iv = en.IV.fromLength(16);
+  //위에 키값으로 지갑 생성
+  final encrypter = en.Encrypter(en.AES(key));
+
+  //생성된 지갑으로 복호화
+  final decoded = encrypter.decrypt64(value, iv: iv);
+  // debugPrint('-------복호화값: $decoded');
+  return decoded;
+}
+
+void registerFriend(String decoded) {
+  List<String> message = decoded.split(",");
+  String expireTimeStr = message[0];
+  String inviteCodeStr = message[1];
+
+  debugPrint("초대코드 플러터에서 받음 ㅋㅋ: $inviteCodeStr \n만료일자: $expireTimeStr");
+
+  DateTime expireTime = DateTime.parse(expireTimeStr);
+  // 만료되기 전
+  if (expireTime.isAfter(DateTime.now())) {
+    UserService().registerFirstResponderFromInvite(inviteCodeStr);
+  } else {
+    debugPrint("만료된 초대코드입니다.");
   }
 }

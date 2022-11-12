@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_intro/flutter_intro.dart';
+import 'package:homealone/components/main/intro_guide.dart';
 import 'package:homealone/constants.dart';
 
 class GuideBar extends StatefulWidget {
@@ -12,20 +14,26 @@ class _GuideBarState extends State<GuideBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(8, 16, 8, 8),
+      margin: EdgeInsets.fromLTRB(8, 12, 8, 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        color: b25Color,
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: b25Color,
+        //     offset: Offset(0, 3),
+        //     blurRadius: 5,
+        //   ),
+        // ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Container(
             margin: EdgeInsets.all(8),
             child: Text('가이드 보러가기'),
           ),
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 8),
+            margin: EdgeInsets.symmetric(horizontal: 4),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                 shape: CircleBorder(),
@@ -34,7 +42,20 @@ class _GuideBarState extends State<GuideBar> {
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 backgroundColor: bColor,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => Intro(
+                      padding: EdgeInsets.zero,
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
+                      maskColor: const Color.fromRGBO(0, 0, 0, .6),
+                      child: const MainGuide(),
+                      buttonTextBuilder: (order) => order == 13 ? '돌아가기' : '다음',
+                    ),
+                  ),
+                );
+              },
               child: Icon(
                 Icons.question_mark,
                 color: yColor,

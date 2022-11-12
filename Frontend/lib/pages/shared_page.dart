@@ -110,7 +110,9 @@ class _RecordPageState extends State<RecordPage> {
     return Scaffold(
       body: isLoading
           ? Container(
-              alignment: Alignment.center, child: CircularProgressIndicator())
+              alignment: Alignment.center,
+              child: CircularProgressIndicator(),
+            )
           : Container(
               padding: const EdgeInsets.only(top: 8.0),
               child: Stack(

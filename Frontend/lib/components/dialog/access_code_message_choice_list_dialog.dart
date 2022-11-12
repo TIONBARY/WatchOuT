@@ -2,15 +2,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/api/api_message.dart';
-import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:sizer/sizer.dart';
 
 class AccessCodeMessageChoiceListDialog extends StatefulWidget {
-  const AccessCodeMessageChoiceListDialog(this.accessCode, {Key? key})
+  const AccessCodeMessageChoiceListDialog(this.sendMessageToEmergencyCallList,
+      {Key? key})
       : super(key: key);
-  final accessCode;
+  final Function sendMessageToEmergencyCallList;
 
   @override
   State<AccessCodeMessageChoiceListDialog> createState() =>
@@ -41,60 +41,6 @@ class _AccessCodeMessageChoiceListDialogState
               .add({"name": value.id, "number": value.get("number")})
         });
     return emergencyCallList;
-  }
-
-  void _sendSMS(String message, List<String> recipients) async {
-    Map<String, dynamic> _result =
-        await apiMessage.sendMessage(recipients, message);
-    if (_result["statusCode"] == 200) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, '귀갓길 공유 메세지를 전송했습니다.', null);
-          });
-    } else {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, _result["message"], null);
-          });
-    }
-    print(_result);
-  }
-
-  void sendMessageToEmergencyCallList() async {
-    // if (_selectedEmergencyCallList.length > 2) {
-    //   showDialog(
-    //       context: context,
-    //       builder: (BuildContext context) {
-    //         return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-    //             12.5.h, '귀갓길 공유는 최대 2명까지만 가능합니다.', null);
-    //       });
-    //   return;
-    // }
-    final response = await FirebaseFirestore.instance
-        .collection("user")
-        .doc(_auth.currentUser?.uid)
-        .get();
-    final user = response.data() as Map<String, dynamic>;
-    String message =
-        "${user["name"]} 님이 귀가를 시작했습니다. 귀가 경로를 확인하시려면 WatchOut 앱에서 다음 입장 코드를 입력하세요.\n입장 코드 : ${widget.accessCode}\n앱 다운로드 링크 : ${downloadLink}";
-    List<String> recipients = [];
-    for (int i = 0; i < _selectedEmergencyCallList.length; i++) {
-      recipients.add(_selectedEmergencyCallList[i]["number"]);
-    }
-    if (recipients.isEmpty) {
-      showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, '귀갓길 공유 대상을 선택해주세요.', null);
-          });
-      return;
-    }
-    _sendSMS(message, recipients);
   }
 
   @override
@@ -186,7 +132,9 @@ class _AccessCodeMessageChoiceListDialogState
                       ),
                     ),
                     onPressed: () {
-                      sendMessageToEmergencyCallList();
+                      widget.sendMessageToEmergencyCallList(
+                          _selectedEmergencyCallList);
+                      Navigator.of(context).pop();
                     },
                     child: Text(
                       '전송',

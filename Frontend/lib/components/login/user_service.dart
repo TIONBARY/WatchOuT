@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 
 class UserService {
   FirebaseAuth authentication = FirebaseAuth.instance;
@@ -28,6 +29,19 @@ class UserService {
     }
     if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
     return documentData;
+  }
+
+  Future<bool> isDupNum(String number) async {
+    bool flag = true;
+    await db
+        .collection("user")
+        .where("phone", isEqualTo: number)
+        .get()
+        .then((value) => {
+              print("\nlength ; ${value.docs.length}\n"),
+              if (value.docs.length == 0) {flag = false},
+            });
+    return flag;
   }
 
   void registerBasicUserInfo() {
@@ -122,5 +136,181 @@ class UserService {
         "longitude": longitude,
       });
     }
+  }
+
+  //홈 캠 관련 함수
+  void homeCamRegister(String url) {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo")
+        .set({
+      "registered": true,
+      "url": url,
+    });
+  }
+
+  void deleteHomecam() {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo")
+        .delete();
+  }
+
+  void updateHomecamUrl(String url) {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo")
+        .update({
+      "registered": true,
+      "url": url,
+    });
+  }
+
+  Future<Map<String, dynamic>?> getHomecamInfo() async {
+    DocumentReference<Map<String, dynamic>> documentReference = db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo");
+
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    return documentData;
+  }
+
+  Future<String> getHomecamUrl() async {
+    DocumentReference<Map<String, dynamic>> documentReference = db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo");
+
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+
+    if (documentData == null) {
+      print("캠 관련 url을 불러오지 못했습니다.");
+      return "error";
+    }
+    return documentData["url"];
+  }
+
+  Future<bool> isHomecamRegistered() async {
+    DocumentReference<Map<String, dynamic>> documentReference = db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("homecam")
+        .doc("myCamInfo");
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    if (documentData == null) {
+      print("등록된 홈캠 정보가 없습니다.");
+      return false;
+    }
+    return documentData?["registered"];
+  }
+
+  // 위급상황 여부를 나타냄
+  // 0. 회원 가입시 false
+  // 1. 위급 상황 발생시 true로 변경
+  // 2. 본인이 취소 시 false 로 변경
+  void updateHEmergencyStatus(bool flag) {
+    db.collection("user").doc("${user?.uid}").update({
+      "SOS": flag,
+    });
+  }
+
+  // 위급상황 여부를 나타냄
+  Future<bool> isEmergency() async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc("${user?.uid}");
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    if (documentData == null) {
+      debugPrint("등록된 위급상황 정보가 없습니다.");
+      return false;
+    }
+    return documentData?["SOS"];
+  }
+
+  // 친구 추천 코드로 추가
+  void registerFirstResponderFromInvite(String inviteCode) async {
+    // 친구정보 가져오기
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc(inviteCode);
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+
+    if (documentData == null) {
+      debugPrint("초대한 친구가 존재하지 않습니다.");
+      return;
+    }
+    String name = documentData["name"];
+    String number = documentData["phone"];
+    // 내 정보에 저장
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("firstResponder")
+        .doc(name)
+        .set({
+      "number": number,
+      "uid": inviteCode,
+      // "message": false,
+      // "activated": false
+    });
+  }
+
+  // 내 연락처 중에 웹캠이 있는 사람의 목록(작업중)
+  void getFirstResponderWithCamList(List<Map<String, dynamic>> data) {
+    for (int i = 0; i < data.length; i++) {
+      db
+          .collection("user")
+          .doc("${user?.uid}")
+          .collection("firstResponder")
+          .doc(data[i]["name"]);
+    }
+  }
+
+  // 선택한 다른 유저의 웹캠 주소
+  Future<String> getFreindHomecamUrl(String friendUid) async {
+    DocumentReference<Map<String, dynamic>> documentReference = db
+        .collection("user")
+        .doc(friendUid)
+        .collection("homecam")
+        .doc("myCamInfo");
+
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+
+    if (documentData == null) {
+      print("캠 관련 url을 불러오지 못했습니다.");
+      return "error";
+    }
+    return documentData["url"];
   }
 }

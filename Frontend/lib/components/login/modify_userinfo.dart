@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/user_provider.dart';
@@ -22,7 +21,7 @@ class ModifyUserInfo extends StatefulWidget {
 }
 
 class _ModifyUserInfoState extends State<ModifyUserInfo> {
-  final TextEditingController _textController = new TextEditingController();
+  final TextEditingController _textController = TextEditingController();
   Widget _changedTextWidget = Container();
 
   final _SignupKey = GlobalKey<FormState>();
@@ -105,7 +104,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
 
     // 파일 업로드
     UploadTask storageUploadTask =
-        storageReference.putFile(new File(profileImage!.path));
+        storageReference.putFile(File(profileImage!.path));
 
     // 파일 업로드 완료까지 대기
     TaskSnapshot taskSnapshot = await storageUploadTask;
@@ -269,20 +268,18 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                   decoration:
                       BoxDecoration(color: b25Color, shape: BoxShape.circle),
                 ),
-                Container(
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      _uploadImageToStorage();
-                    },
-                    icon: Icon(Icons.image),
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: bColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5),
-                        )),
-                    label: Text(
-                      "프로필 이미지 (선택)",
-                    ),
+                ElevatedButton.icon(
+                  onPressed: () {
+                    _uploadImageToStorage();
+                  },
+                  icon: Icon(Icons.image),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: bColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5),
+                      )),
+                  label: Text(
+                    "프로필 이미지 (선택)",
                   ),
                 ),
               ],

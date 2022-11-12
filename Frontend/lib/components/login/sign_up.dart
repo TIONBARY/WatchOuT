@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
+import 'package:homealone/components/login/sign_up_text_field_suffix.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:kpostal/kpostal.dart';
 import 'package:sizer/sizer.dart';
+
+import '../dialog/custom_dialog.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({
@@ -17,7 +20,7 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignupState extends State<SignUp> {
-  final TextEditingController _textController = new TextEditingController();
+  final TextEditingController _textController = TextEditingController();
   Widget _changedTextWidget = Container();
 
   final _SignupKey = GlobalKey<FormState>();
@@ -33,6 +36,8 @@ class _SignupState extends State<SignUp> {
   String? _phone = '';
   String? _birth = '';
 
+  bool checkDupNum = true;
+  bool submitted = false;
   final FirebaseAuth _authentication = FirebaseAuth.instance;
   User? loggedUser;
   FirebaseFirestore db = FirebaseFirestore.instance;
@@ -83,7 +88,7 @@ class _SignupState extends State<SignUp> {
   bool _isValidname(String val) {
     if (val.length > 10 && val.length < 2) // 길이 검사
       return false;
-    if (val.contains(new RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) //특수 기호 있으면 false
+    if (val.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) //특수 기호 있으면 false
       return false;
     return true;
   }
@@ -196,11 +201,12 @@ class _SignupState extends State<SignUp> {
                 ],
               ),
             ),
-            SignUpTextField(
+            SignUpTextFieldSuffix(
               validations: (String? val) {
-                return _isValidPhone(val ?? '')
-                    ? null
-                    : "올바른 전화번호 형식으로 입력해주세요.";
+                if (!_isValidPhone(val ?? '')) {
+                  return "올바른 전화번호 형식을 입력해주세요.";
+                } else if (checkDupNum) return "이미 등록된 전화번호 입니다.";
+                return null;
               },
               paddings: EdgeInsets.fromLTRB(7.5.w, 1.75.h, 7.5.w, 1.75.h),
               keyboardtypes: TextInputType.number,
@@ -208,7 +214,56 @@ class _SignupState extends State<SignUp> {
               helpertexts: '숫자만 입력해주세요.',
               onchangeds: (number) {
                 _phone = number;
+                setState(() {
+                  submitted = false;
+                  checkDupNum = true;
+                });
               },
+              suffix: ElevatedButton(
+                onPressed: () async {
+                  if (_phone == null ||
+                      _phone!.isEmpty ||
+                      !_isValidPhone(_phone ?? ''))
+                    return setState(() {
+                      submitted = false;
+                    });
+                  checkDupNum = await UserService().isDupNum(_phone!);
+                  print("\nphone : $_phone $checkDupNum\n");
+
+                  //중복인 상황
+                  if (checkDupNum) {
+                    setState(() {
+                      checkDupNum = true;
+                      submitted = false;
+                    });
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialog("중복입니다.", null);
+                        });
+                  } else {
+                    setState(() {
+                      submitted = true;
+                      checkDupNum = false;
+                    });
+                    //중복이 아닌 상황
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialog("사용 가능한 아이디입니다.", null);
+                        });
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.all(0),
+                  backgroundColor: bColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+                child: Text("중복 검사"),
+              ),
             ),
             Row(
               children: [
@@ -286,10 +341,23 @@ class _SignupState extends State<SignUp> {
                       borderRadius: BorderRadius.circular(5)),
                 ),
                 onPressed: () {
-                  if (_SignupKey.currentState!.validate()) {
+                  if (_SignupKey.currentState!.validate() &&
+                      !checkDupNum &&
+                      submitted) {
                     _register();
+                  } else if (checkDupNum) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialog("중복된 번호입니다.", null);
+                        });
+                  } else if (!submitted) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialog("중복 체크 해주세요.", null);
+                        });
                   }
-                  ;
                 },
                 child: Text(
                   '회원가입',

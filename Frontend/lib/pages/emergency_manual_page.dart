@@ -61,30 +61,20 @@ class EmergencyManual extends StatelessWidget {
         ),
         body: TabBarView(
           children: <Widget>[
-            Container(
-              child: Center(
-                child: EmergencyStalking(),
-              ),
+            Center(
+              child: EmergencyStalking(),
             ),
-            Container(
-              child: Center(
-                child: EmergencyKidnap(),
-              ),
+            Center(
+              child: EmergencyKidnap(),
             ),
-            Container(
-              child: Center(
-                child: EmergencyCar(),
-              ),
+            Center(
+              child: EmergencyCar(),
             ),
-            Container(
-              child: Center(
-                child: EmergencySafety(),
-              ),
+            Center(
+              child: EmergencySafety(),
             ),
-            Container(
-              child: Center(
-                child: EmergencyDisaster(),
-              ),
+            Center(
+              child: EmergencyDisaster(),
             ),
           ],
         ),

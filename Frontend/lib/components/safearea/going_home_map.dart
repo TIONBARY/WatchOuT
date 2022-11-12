@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -254,11 +253,9 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                           ),
                           Column(
                             children: [
-                              Container(
-                                child: Text(
-                                  widget.name + " 님의 현재 위치",
-                                  style: TextStyle(fontSize: 17.5.sp),
-                                ),
+                              Text(
+                                widget.name + " 님의 현재 위치",
+                                style: TextStyle(fontSize: 17.5.sp),
                               ),
                               Container(
                                 width: 50.w,

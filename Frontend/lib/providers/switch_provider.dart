@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
+
+const locationCheck = "locationCheck";
+const fetchBackground = "fetchBackground";
 
 class SwitchBools with ChangeNotifier {
   bool useWearOS = true;
@@ -52,6 +56,14 @@ class SwitchBools with ChangeNotifier {
 
   void changeScreen() {
     useScreen = !useScreen;
+    if (useScreen) {
+      Workmanager().registerPeriodicTask(locationCheck, fetchBackground,
+          frequency: Duration(minutes: 15),
+          constraints: Constraints(
+              networkType: NetworkType.not_required, requiresDeviceIdle: true));
+    } else {
+      Workmanager().cancelByUniqueName(locationCheck);
+    }
     save();
   }
 
