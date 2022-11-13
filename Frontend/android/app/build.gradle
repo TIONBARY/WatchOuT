@@ -37,6 +37,12 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     ndkVersion flutter.ndkVersion
 
+    packagingOptions {
+        // Fixes duplicate libraries build issue,
+        // when your project uses more than one plugin that depend on C++ libs.
+        pickFirst 'lib/**/libc++_shared.so'
+    }
+
     compileOptions {
 //        sourceCompatibility JavaVersion.VERSION_11
 //        targetCompatibility JavaVersion.VERSION_11
@@ -104,6 +110,8 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.work:work-runtime-ktx:2.7.0"
+    //noinspection GradleCompatible
+    implementation "androidx.appcompat:appcompat:$appCompatVersion"
 
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
