@@ -42,6 +42,7 @@ import java.io.ObjectOutputStream
 import java.util.Date
 import java.util.concurrent.Executors
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -100,28 +101,32 @@ class MainActivity : AppCompatActivity() {
                         // MeasureClient provides frequent updates, which requires increasing the
                         // sampling rate of device sensors, so we must be careful not to remain
                         // registered any longer than necessary.
-                        lifecycleScope.launchWhenStarted {
-                            viewModel.measureHeartRate()
-                        }
+//                        변경 있을때마다 가져오기
+//                        lifecycleScope.launchWhenStarted {
+//                            viewModel.measureHeartRate()
+//                        }
                     }
                     false -> Log.i(TAG, "Body sensors permission not granted")
                 }
             }
 
         // 백그라운드에서 일정시간마다 심박수 데이터 가져오기
-        val service = Executors.newSingleThreadScheduledExecutor()
-        val handler = Handler(Looper.getMainLooper())
-        service.scheduleAtFixedRate({
-            handler.run {
-                // Do your stuff here, It gets loop every 15 Minutes
-
-                Log.d("5분마다 호출", Date().time.toString())
-                lifecycle.coroutineScope.launch {
-                    viewModel.measureHeartRate()
-                    sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
-                }
-            }
-        }, 0, 5, TimeUnit.MINUTES)
+//        val service = Executors.newSingleThreadScheduledExecutor()
+//        val handler = Handler(Looper.getMainLooper())
+//        service.scheduleAtFixedRate({
+//            handler.run {
+//                // Do your stuff here
+//                Log.d("5초마다 호출", Date().time.toString())
+//                val job = lifecycle.coroutineScope.launch {
+////                    viewModel.measureHeartRate()
+//                    viewModel.lastHeartRate()
+////                    delay(3000)
+//                    sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
+////                    delay(3000)
+//                }
+//                job.cancel()
+//            }
+//        }, 0, 5, TimeUnit.SECONDS)
 
         // Bind viewmodel state to the UI.
         lifecycleScope.launchWhenStarted {
@@ -129,12 +134,19 @@ class MainActivity : AppCompatActivity() {
                 updateViewVisiblity(it)
             }
         }
+//        심박수 데이터 변경사항 화면에 반영
         lifecycleScope.launchWhenStarted {
             viewModel.heartRateBpm.collect {
                 binding.lastMeasuredValue.text = String.format("%.1f", it)
 //                변경이 발생할 때마다 전송
-                sendHeartRateData(dataClient, it)
+//                sendHeartRateData(dataClient, it)
             }
+        }
+
+//        // 시작시 심박수 데이터 체크 등록
+        lifecycleScope.launchWhenStarted {
+            viewModel.lastHeartRate()
+            sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
         }
     }
 

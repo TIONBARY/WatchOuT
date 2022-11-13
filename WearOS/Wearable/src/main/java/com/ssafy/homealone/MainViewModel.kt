@@ -25,11 +25,12 @@ import com.google.android.gms.wearable.Wearable
 import com.ssafy.homealone.HealthServicesManager
 import com.ssafy.homealone.MeasureMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import java.time.Duration
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.time.measureTime
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.*
 
 /**
  * Holds most of the interaction logic and UI state for the app.
@@ -59,8 +60,26 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    suspend fun lastHeartRate() {
+        healthServicesManager.heartRateMeasureFlow().cancellable().collectLatest {
+            when (it) {
+                is MeasureMessage.MeasureAvailabilty -> {
+                    Log.d(TAG, "측정 가능: ${it.availability}")
+                    _heartRateAvailable.value = it.availability
+                }
+                is MeasureMessage.MeasureData -> {
+                    val bpm = it.data.last().value.asDouble()
+                    Log.d(TAG, "심박수 : $bpm")
+                    _heartRateBpm.value = bpm
+                }
+            }
+
+        }
+    }
+
+    // 심박수 지속적으로 체크
     suspend fun measureHeartRate() {
-        healthServicesManager.heartRateMeasureFlow().collect {
+        healthServicesManager.heartRateMeasureFlow().cancellable().collect {
             when (it) {
                 is MeasureMessage.MeasureAvailabilty -> {
                     Log.d(TAG, "Availability changed: ${it.availability}")

@@ -29,6 +29,7 @@ import kotlinx.coroutines.channels.sendBlocking
 import kotlinx.coroutines.flow.callbackFlow
 import javax.inject.Inject
 import kotlinx.coroutines.channels.trySendBlocking
+import kotlinx.coroutines.delay
 
 /**
  * Entry point for [HealthServicesClient] APIs, wrapping them in coroutine-friendly APIs.
@@ -64,11 +65,11 @@ class HealthServicesManager @Inject constructor(
             }
         }
 
-        Log.d(TAG, "Registering for data")
+        Log.d(TAG, "데이터 수신 시작")
         measureClient.registerCallback(DataType.HEART_RATE_BPM, callback)
 
         awaitClose {
-            Log.d(TAG, "Unregistering for data")
+            Log.d(TAG, "데이터 수신 중단")
             measureClient.unregisterCallback(DataType.HEART_RATE_BPM, callback)
         }
     }
