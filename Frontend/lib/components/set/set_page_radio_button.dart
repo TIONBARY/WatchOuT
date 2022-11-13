@@ -5,12 +5,10 @@ import 'package:sizer/sizer.dart';
 class SetPageRadioButton extends StatefulWidget {
   const SetPageRadioButton({
     Key? key,
-    required this.margins,
     required this.texts,
     required this.values,
     required this.onchangeds,
   }) : super(key: key);
-  final margins;
   final texts;
   final values;
   final onchangeds;
@@ -25,7 +23,7 @@ class _SetPageRadioButtonState extends State<SetPageRadioButton> {
     return Flexible(
       child: Container(
         padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
-        margin: widget.margins,
+        margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
         decoration: BoxDecoration(
           color: b25Color,
           borderRadius: BorderRadius.circular(25),

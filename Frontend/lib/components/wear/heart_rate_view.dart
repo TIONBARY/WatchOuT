@@ -36,8 +36,8 @@ class _HeartRateViewState extends State<HeartRateView> {
         SfRangeValues(widget.provider.minValue, widget.provider.maxValue);
     return Flexible(
       child: Container(
-        // padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
-        padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
+        padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
+        // padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
         margin: widget.margins,
         decoration: BoxDecoration(
             color: b25Color, borderRadius: BorderRadius.circular(25)),
@@ -49,7 +49,7 @@ class _HeartRateViewState extends State<HeartRateView> {
             ),
             // ${widget.provider.heartRate}
             SizedBox(
-              height: 6.6.h,
+              height: 5.85.h,
               child: SfRangeSlider(
                 min: 40.0,
                 max: 200.0,
