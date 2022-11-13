@@ -251,6 +251,7 @@ void _permission(BuildContext context) async {
       "WatchOuT에서 \n문자 전송 기능을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.");
 }
 
+@pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
   // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
