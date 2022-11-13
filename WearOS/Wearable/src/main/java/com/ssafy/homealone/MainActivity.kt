@@ -16,25 +16,21 @@
 
 package com.ssafy.homealone
 
-import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.PendingIntent
-import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.provider.CalendarContract.EXTRA_EVENT_ID
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
-import androidx.activity.compose.setContent
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.Composable
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.*
 import com.ssafy.homealone.databinding.ActivityMainBinding
@@ -43,11 +39,16 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
+import java.util.Date
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 
 /**
  * Activity displaying the app UI. Notably, this binds data from [MainViewModel] to views on screen,
- * and performs the permission check when enabling passive data.
+ * and performs the permission check when enabling measure data.
  */
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -55,7 +56,6 @@ class MainActivity : AppCompatActivity() {
     private val messageClient by lazy { Wearable.getMessageClient(this) }
     private val capabilityClient by lazy { Wearable.getCapabilityClient(this) }
     private val nodeClient by lazy { Wearable.getNodeClient(this) }
-    private val channelName = "watch_connectivity"
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var permissionLauncher: ActivityResultLauncher<String>
@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         val descriptionText = getString(R.string.channel_description)
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channelId = "alarm_1"
+
         val mChannel = NotificationChannel(channelId, name, importance)
         mChannel.description = descriptionText
         // Register the channel with the system; you can't change the importance
@@ -83,28 +84,49 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        val emergencyBtn = findViewById<Button>(R.id.emergencyButton)
+
+        emergencyBtn.setOnLongClickListener {
+            Toast.makeText(applicationContext, "응급 신호가 전송되었습니다!", Toast.LENGTH_SHORT).show()
+            sendMessage(nodeClient, messageClient, "응급 상황입니다!")
+            true
+        }
+
         permissionLauncher =
             registerForActivityResult(ActivityResultContracts.RequestPermission()) { result ->
                 when (result) {
                     true -> {
                         Log.i(TAG, "Body sensors permission granted")
-                        viewModel.togglePassiveData(true)
+                        // Only measure while the activity is at least in STARTED state.
+                        // MeasureClient provides frequent updates, which requires increasing the
+                        // sampling rate of device sensors, so we must be careful not to remain
+                        // registered any longer than necessary.
+//                        변경 있을때마다 가져오기
+//                        lifecycleScope.launchWhenStarted {
+//                            viewModel.measureHeartRate()
+//                        }
                     }
-                    false -> {
-                        Log.i(TAG, "Body sensors permission not granted")
-                        viewModel.togglePassiveData(false)
-                    }
+                    false -> Log.i(TAG, "Body sensors permission not granted")
                 }
             }
 
-        binding.enablePassiveData.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                // Make sure we have the necessary permission first.
-                permissionLauncher.launch(Manifest.permission.BODY_SENSORS)
-            } else {
-                viewModel.togglePassiveData(false)
-            }
-        }
+        // 백그라운드에서 일정시간마다 심박수 데이터 가져오기
+//        val service = Executors.newSingleThreadScheduledExecutor()
+//        val handler = Handler(Looper.getMainLooper())
+//        service.scheduleAtFixedRate({
+//            handler.run {
+//                // Do your stuff here
+//                Log.d("5초마다 호출", Date().time.toString())
+//                val job = lifecycle.coroutineScope.launch {
+////                    viewModel.measureHeartRate()
+//                    viewModel.lastHeartRate()
+////                    delay(3000)
+//                    sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
+////                    delay(3000)
+//                }
+//                job.cancel()
+//            }
+//        }, 0, 5, TimeUnit.SECONDS)
 
         // Bind viewmodel state to the UI.
         lifecycleScope.launchWhenStarted {
@@ -112,16 +134,25 @@ class MainActivity : AppCompatActivity() {
                 updateViewVisiblity(it)
             }
         }
+//        심박수 데이터 변경사항 화면에 반영
         lifecycleScope.launchWhenStarted {
-            viewModel.latestHeartRate.collect {
-                binding.lastMeasuredValue.text = it.toString()
+            viewModel.heartRateBpm.collect {
+                binding.lastMeasuredValue.text = String.format("%.1f", it)
+//                변경이 발생할 때마다 전송
+//                sendHeartRateData(dataClient, it)
             }
         }
+
+//        // 시작시 심박수 데이터 체크 등록
         lifecycleScope.launchWhenStarted {
-            viewModel.passiveDataEnabled.collect {
-                binding.enablePassiveData.isChecked = it
-            }
+            viewModel.lastHeartRate()
+            sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        permissionLauncher.launch(android.Manifest.permission.BODY_SENSORS)
     }
 
     private fun updateViewVisiblity(uiState: UiState) {
@@ -135,8 +166,6 @@ class MainActivity : AppCompatActivity() {
         }
         // These views are visible when the capability is available.
         (uiState is UiState.HeartRateAvailable).let {
-            binding.enablePassiveData.isVisible = it
-            binding.lastMeasuredLabel.isVisible = it
             binding.lastMeasuredValue.isVisible = it
             binding.heart.isVisible = it
         }
@@ -224,10 +253,11 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         private const val TAG = "MainActivity"
-        private val channelName = "watch_connectivity"
+        private const val channelName = "watch_connectivity"
 
         //데이터 업데이트
         fun sendHeartRateData(dataClient: DataClient, data: Any) {
+            Log.d("데이터 전송 호출", data.toString())
             val eventData = objectToBytes(mutableMapOf(Pair("HEART_RATE", data.toString().trim())))
             val dataItem = PutDataRequest.create("/$channelName")
             dataItem.data = eventData
@@ -239,12 +269,12 @@ class MainActivity : AppCompatActivity() {
         // 메세지 전송
         private fun sendMessage(nodeClient: NodeClient, messageClient: MessageClient, message: String) {
             Log.d("메세지", message)
-            val messageData = objectToBytes(mutableMapOf(Pair("HEART_RATE", message)))
+            val messageData = objectToBytes(mutableMapOf(Pair("EMERGENCY", message)))
 
-            Log.d("메세지 전송", objectFromBytes(messageData).toString())
             nodeClient.connectedNodes.addOnSuccessListener { nodes ->
                 nodes.forEach {
                     messageClient.sendMessage(it.id, channelName, messageData)
+                    Log.d("메세지 전송", objectFromBytes(messageData).toString())
 
 //                messageClient.sendMessage(it.id, "/$channelName", messageData)
                 }

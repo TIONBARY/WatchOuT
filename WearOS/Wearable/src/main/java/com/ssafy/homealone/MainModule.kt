@@ -36,8 +36,4 @@ class MainModule {
     @Provides
     fun provideHealthServicesClient(@ApplicationContext context: Context): HealthServicesClient =
         HealthServices.getClient(context)
-
-    @Singleton
-    @Provides
-    fun provideDataStore(@ApplicationContext context: Context) = context.dataStore
 }

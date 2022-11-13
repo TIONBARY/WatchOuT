@@ -10,7 +10,7 @@ class HeartRateView extends StatefulWidget {
     required this.margins,
     required this.provider,
   }) : super(key: key);
-  final margins;
+  final EdgeInsetsGeometry margins;
   final HeartRateProvider provider;
 
   @override
