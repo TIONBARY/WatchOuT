@@ -87,171 +87,169 @@ class _SetButtonState extends State<SetButton> {
   Widget build(BuildContext context) {
     Provider.of<SwitchBools>(context, listen: false).onCreate();
     Provider.of<HeartRateProvider>(context, listen: false).onCreate();
-    return Column(
-      children: [
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 1.5.h, 1.w, 0.75.h),
-          texts: 'WearOS 사용',
-          values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeWearOS();
-              },
-            );
-          },
-        ),
-        Provider.of<SwitchBools>(context, listen: true).useWearOS
-            ? HeartRateView(
-                margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-                provider:
-                    Provider.of<HeartRateProvider>(context, listen: false),
-              )
-            : Container(),
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-          texts: '스크린 사용 감지',
-          values: Provider.of<SwitchBools>(context, listen: false).useScreen,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeScreen();
-              },
-            );
-          },
-        ),
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-          texts: '경보음 사용',
-          values: Provider.of<SwitchBools>(context, listen: false).useSiren,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeSiren();
-              },
-            );
-          },
-        ),
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-            decoration: BoxDecoration(
-                color: b25Color, borderRadius: BorderRadius.circular(25)),
-            child: localEmergencyCallList.isEmpty
-                ? Row(
-                    children: [
-                      Text('비상연락망을 등록해주세요.'),
-                      IconButton(
-                        onPressed: () {
-                          _displayTextInputDiaLog(context);
-                        },
-                        icon: Icon(Icons.add_circle, size: 20.sp),
-                      ),
-                    ],
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('비상연락망'),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              _displayTextInputDiaLog(context);
-                            },
-                            icon: Icon(Icons.add_circle, size: 20.sp),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              EmergencyCallDialog(context);
-                            },
-                            icon: Icon(Icons.delete, size: 20.sp),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0.75.h, 0, 0),
+      child: Column(
+        children: [
+          SetPageRadioButton(
+            texts: 'WearOS 사용',
+            values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
+            onchangeds: (value) {
+              setState(
+                () {
+                  Provider.of<SwitchBools>(context, listen: false)
+                      .changeWearOS();
+                },
+              );
+            },
           ),
-        ),
-        Flexible(
-          child: Row(
-            children: [],
+          Provider.of<SwitchBools>(context, listen: true).useWearOS
+              ? HeartRateView(
+                  margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+                  provider:
+                      Provider.of<HeartRateProvider>(context, listen: false),
+                )
+              : Container(),
+          SetPageRadioButton(
+            texts: '스크린 사용 감지',
+            values: Provider.of<SwitchBools>(context, listen: false).useScreen,
+            onchangeds: (value) {
+              setState(
+                () {
+                  Provider.of<SwitchBools>(context, listen: false)
+                      .changeScreen();
+                },
+              );
+            },
           ),
-        ),
-        Flexible(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-            height: 5.5.h,
-            width: double.maxFinite,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: bColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              onPressed: () {
-                invite();
-              },
-              child: Text(
-                '친구 초대',
-                style: TextStyle(
-                  color: yColor,
-                ),
-              ),
+          SetPageRadioButton(
+            texts: '경보음 사용',
+            values: Provider.of<SwitchBools>(context, listen: false).useSiren,
+            onchangeds: (value) {
+              setState(
+                () {
+                  Provider.of<SwitchBools>(context, listen: false)
+                      .changeSiren();
+                },
+              );
+            },
+          ),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
+              margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+              decoration: BoxDecoration(
+                  color: b25Color, borderRadius: BorderRadius.circular(25)),
+              child: localEmergencyCallList.isEmpty
+                  ? Row(
+                      children: [
+                        Text('비상연락망을 등록해주세요.'),
+                        IconButton(
+                          onPressed: () {
+                            _displayTextInputDiaLog(context);
+                          },
+                          icon: Icon(Icons.add_circle, size: 20.sp),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('비상연락망'),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _displayTextInputDiaLog(context);
+                              },
+                              icon: Icon(Icons.add_circle, size: 20.sp),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                EmergencyCallDialog(context);
+                              },
+                              icon: Icon(Icons.delete, size: 20.sp),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
             ),
           ),
-        ),
-        Flexible(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-            height: 5.5.h,
-            width: double.maxFinite,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: bColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              onPressed: () {
-                openEmergencySetting();
-              },
-              child: Text(
-                '응급 설정',
-                style: TextStyle(
-                  color: yColor,
-                ),
-              ),
-            ),
-          ),
-        ),
-        Flexible(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-            height: 5.5.h,
-            width: double.maxFinite,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: bColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              onPressed: () {
-                UserDeleteDialog(context);
-              },
-              child: Text(
-                '회원 탈퇴',
-                style: TextStyle(
-                  color: yColor,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+          // Flexible(
+          //   child: Container(
+          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+          //     height: 5.5.h,
+          //     width: double.maxFinite,
+          //     child: ElevatedButton(
+          //       style: ElevatedButton.styleFrom(
+          //         backgroundColor: bColor,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25),
+          //         ),
+          //       ),
+          //       onPressed: () {
+          //         invite();
+          //       },
+          //       child: Text(
+          //         '친구 초대',
+          //         style: TextStyle(
+          //           color: yColor,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Flexible(
+          //   child: Container(
+          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+          //     height: 5.5.h,
+          //     width: double.maxFinite,
+          //     child: ElevatedButton(
+          //       style: ElevatedButton.styleFrom(
+          //         backgroundColor: bColor,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25),
+          //         ),
+          //       ),
+          //       onPressed: () {
+          //         openEmergencySetting();
+          //       },
+          //       child: Text(
+          //         '응급 설정',
+          //         style: TextStyle(
+          //           color: yColor,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Flexible(
+          //   child: Container(
+          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+          //     height: 5.5.h,
+          //     width: double.maxFinite,
+          //     child: ElevatedButton(
+          //       style: ElevatedButton.styleFrom(
+          //         backgroundColor: bColor,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25),
+          //         ),
+          //       ),
+          //       onPressed: () {
+          //         UserDeleteDialog(context);
+          //       },
+          //       child: Text(
+          //         '회원 탈퇴',
+          //         style: TextStyle(
+          //           color: yColor,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
     );
   }
 
