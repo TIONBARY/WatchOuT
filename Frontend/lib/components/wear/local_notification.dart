@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -71,7 +72,6 @@ void onReceiveNotificationResponse(NotificationResponse response) {
     updateHeartRateRange();
   } else {
     debugPrint("알림 닫기");
-    sendEmergencyMessage();
   }
 }
 
@@ -111,6 +111,10 @@ void onStartWatch(
   //   // sendEmergencyMessage();
   // });
   // heartRate = double.parse(contexts.last.values.last);
+
+  //처음 6초동안 심박수 체크 안함
+  sleep(const Duration(seconds: 6));
+
   watch.contextStream.listen(
     (e) async => {
       heartRate = double.parse(e.values.last),
