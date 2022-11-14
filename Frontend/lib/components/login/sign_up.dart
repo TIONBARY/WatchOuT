@@ -1,14 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/login/sign_up_text_field_suffix.dart';
 import 'package:homealone/components/login/sign_up_text_field_validate.dart';
 import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:kpostal/kpostal.dart';
 import 'package:sizer/sizer.dart';
-
-import '../dialog/custom_dialog.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({
@@ -111,7 +110,7 @@ class _SignupState extends State<SignUp> {
                 ),
               ),
             ),
-            SignUpTextFieldAuto(
+            SignUpTextFieldVali(
               validations: (String? val) {
                 if (val == null || val.isEmpty) return "이름을 입력해주세요.";
                 if (_isValidname(val ?? ''))
@@ -127,17 +126,7 @@ class _SignupState extends State<SignUp> {
                 _name = name;
               },
             ),
-            // SignUpTextField(
-            //   validations: (String? val) {return _isValidname(val ?? '') ? null : "올바른 이름을 입력해주세요."},
-            //   paddings: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
-            //   keyboardtypes: TextInputType.text,
-            //   hinttexts: '닉네임',
-            //   helpertexts: '10글자 이내로 입력해주세요.',
-            //   onchangeds: (nickname) {
-            //     _nickname = nickname;
-            //   },
-            // ),
-            SignUpTextFieldAuto(
+            SignUpTextFieldVali(
               validations: (String? val) {
                 if (val == null || val.isEmpty) return "생년월일을 입력해주세요.";
                 if (!_isValidBirth(val ?? '')) return "올바른 생년월일을 입력해주세요.";
@@ -159,31 +148,37 @@ class _SignupState extends State<SignUp> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Expanded(
-                          child: ListTile(
-                        title: const Text(
-                          '남자',
-                          style: TextStyle(
-                            color: bColor,
+                        child: ListTile(
+                          title: const Text(
+                            '남자',
+                            style: TextStyle(
+                              color: bColor,
+                              fontFamily: 'HanSan',
+                            ),
+                          ),
+                          leading: Radio<String>(
+                            value: "M",
+                            groupValue: _gender,
+                            fillColor: MaterialStateColor.resolveWith(
+                              (states) => bColor,
+                            ),
+                            onChanged: (String? value) {
+                              setState(
+                                () {
+                                  _gender = value;
+                                },
+                              );
+                            },
                           ),
                         ),
-                        leading: Radio<String>(
-                          value: "M",
-                          groupValue: _gender,
-                          fillColor: MaterialStateColor.resolveWith(
-                              (states) => bColor),
-                          onChanged: (String? value) {
-                            setState(() {
-                              _gender = value;
-                            });
-                          },
-                        ),
-                      )),
+                      ),
                       Expanded(
                         child: ListTile(
                           title: const Text(
                             '여자',
                             style: TextStyle(
                               color: bColor,
+                              fontFamily: 'HanSan',
                             ),
                           ),
                           leading: Radio<String>(
@@ -192,9 +187,11 @@ class _SignupState extends State<SignUp> {
                             fillColor: MaterialStateColor.resolveWith(
                                 (states) => bColor),
                             onChanged: (String? value) {
-                              setState(() {
-                                _gender = value;
-                              });
+                              setState(
+                                () {
+                                  _gender = value;
+                                },
+                              );
                             },
                           ),
                         ),
@@ -244,7 +241,11 @@ class _SignupState extends State<SignUp> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CustomDialog("이미 등록된 번호입니다.", null);
+                          return BasicDialog(
+                              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                              12.5.h,
+                              '이미 등록된 번호입니다.',
+                              null);
                         });
                   } else {
                     setState(() {
@@ -255,19 +256,30 @@ class _SignupState extends State<SignUp> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CustomDialog("사용 가능한 번호입니다.", null);
+                          return BasicDialog(
+                              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                              12.5.h,
+                              "사용 가능한 번호입니다.",
+                              null);
                         });
                   }
                 },
                 style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.all(0),
+                  padding: EdgeInsets.fromLTRB(2.w, 0.5.h, 2.w, 0.5.h),
                   backgroundColor: bColor,
+                  minimumSize: Size.zero,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 ),
-                child: Text("중복 검사"),
+                child: Text(
+                  "중복 검사",
+                  style: TextStyle(
+                    fontSize: 10.sp,
+                    fontFamily: 'HanSan',
+                  ),
+                ),
               ),
             ),
             Row(
@@ -276,7 +288,7 @@ class _SignupState extends State<SignUp> {
                   fit: BoxFit.contain,
                   child: Container(
                     margin: EdgeInsets.fromLTRB(7.5.w, 1.75.h, 1.25.w, 1.75.h),
-                    padding: EdgeInsets.fromLTRB(5.w, 1.25.h, 1.25.w, 1.25.h),
+                    padding: EdgeInsets.fromLTRB(5.w, 1.4.h, 1.25.w, 1.4.h),
                     width: 62.5.w,
                     decoration: BoxDecoration(
                         color: Colors.white,
@@ -288,11 +300,18 @@ class _SignupState extends State<SignUp> {
                     child: (this.postCode.isEmpty && this.region.isEmpty)
                         ? Text(
                             '주소',
-                            style: TextStyle(color: b75Color),
+                            style: TextStyle(
+                              color: b75Color,
+                              fontFamily: 'HanSan',
+                            ),
                           )
                         : Text(
                             '(${this.postCode}) ${this.region}',
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: b75Color,
+                              fontFamily: 'HanSan',
+                            ),
                           ),
                   ),
                 ),
@@ -331,6 +350,9 @@ class _SignupState extends State<SignUp> {
                       },
                       child: Text(
                         '우편번호',
+                        style: TextStyle(
+                          fontFamily: 'HanSan',
+                        ),
                       ),
                     ),
                   ),
@@ -354,19 +376,31 @@ class _SignupState extends State<SignUp> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CustomDialog("회원 정보를 입력해주세요.", null);
+                          return BasicDialog(
+                              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                              12.5.h,
+                              '회원 정보를 입력해주세요.',
+                              null);
                         });
                   } else if (checkDupNum) {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CustomDialog("중복된 번호입니다.", null);
+                          return BasicDialog(
+                              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                              12.5.h,
+                              '중복된 번호입니다.',
+                              null);
                         });
                   } else if (!submitted) {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CustomDialog("중복 체크 해주세요.", null);
+                          return BasicDialog(
+                              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                              12.5.h,
+                              "중복 체크 해주세요.",
+                              null);
                         });
                   }
                 },
@@ -374,6 +408,7 @@ class _SignupState extends State<SignUp> {
                   '회원가입',
                   style: TextStyle(
                     color: yColor,
+                    fontFamily: 'HanSan',
                   ),
                 ),
               ),

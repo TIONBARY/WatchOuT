@@ -49,8 +49,14 @@ class _TabNavBarState extends State<TabNavBar> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
-            title: Text('WatchOuT',
-                style: TextStyle(color: yColor, fontSize: 20.sp)),
+            title: Text(
+              'WatchOuT',
+              style: TextStyle(
+                color: yColor,
+                fontSize: 20.sp,
+                fontFamily: 'HanSan',
+              ),
+            ),
             backgroundColor: bColor,
             actions: [
               GestureDetector(
@@ -103,13 +109,18 @@ class _TabNavBarState extends State<TabNavBar> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: TabBar(
-                    labelColor: yColor,
+                    labelStyle: TextStyle(
+                      fontFamily: 'HanSan',
+                    ),
                     indicator: BoxDecoration(
                         borderRadius: BorderRadius.circular(8.0),
                         color: _selectedColor),
+                    labelColor: yColor,
                     unselectedLabelColor: bColor,
                     tabs: [
-                      Tab(text: '홈'),
+                      Tab(
+                        text: '홈',
+                      ),
                       Tab(text: '안전 지도'),
                       Tab(text: '귀가 공유'),
                       Tab(text: '설정'),

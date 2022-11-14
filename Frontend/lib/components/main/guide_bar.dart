@@ -23,7 +23,12 @@ class _GuideBarState extends State<GuideBar> {
         children: [
           Container(
             margin: EdgeInsets.all(8),
-            child: Text('가이드 보러가기'),
+            child: Text(
+              '가이드 보러가기',
+              style: TextStyle(
+                fontFamily: 'HanSan',
+              ),
+            ),
           ),
           Container(
             margin: EdgeInsets.symmetric(horizontal: 4),

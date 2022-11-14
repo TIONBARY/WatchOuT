@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class HeartRateView extends StatefulWidget {
@@ -54,33 +55,39 @@ class _HeartRateViewState extends State<HeartRateView> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "나의 심박수 범위 : ",
+              '나의 심박수 범위 : ',
+              style: TextStyle(
+                fontFamily: 'HanSan',
+              ),
             ),
             // ${widget.provider.heartRate}
             SizedBox(
               height: 5.85.h,
-              child: SfRangeSlider(
-                min: 40.0,
-                max: 200.0,
-                values: _values,
-                activeColor: yColor,
-                inactiveColor: y50Color,
-                // shouldAlwaysShowTooltip: true,
-                showLabels: true,
-                enableTooltip: true,
-                tooltipTextFormatterCallback:
-                    (dynamic actualValue, String formattedText) {
-                  return actualValue.toStringAsFixed(0);
-                },
-                minorTicksPerInterval: 1,
-                onChanged: (SfRangeValues values) {
-                  setState(() {
-                    _values = values;
-                    widget.provider.changeMinValue(values.start);
-                    widget.provider.changeMaxValue(values.end);
-                    // save();
-                  });
-                },
+              child: SfRangeSliderTheme(
+                data: SfRangeSliderThemeData(),
+                child: SfRangeSlider(
+                  min: 40.0,
+                  max: 200.0,
+                  values: _values,
+                  activeColor: yColor,
+                  inactiveColor: y50Color,
+                  // shouldAlwaysShowTooltip: true,
+                  showLabels: true,
+                  enableTooltip: true,
+                  tooltipTextFormatterCallback:
+                      (dynamic actualValue, String formattedText) {
+                    return actualValue.toStringAsFixed(0);
+                  },
+                  minorTicksPerInterval: 1,
+                  onChanged: (SfRangeValues values) {
+                    setState(() {
+                      _values = values;
+                      widget.provider.changeMinValue(values.start);
+                      widget.provider.changeMaxValue(values.end);
+                      // save();
+                    });
+                  },
+                ),
               ),
             ),
           ],

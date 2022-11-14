@@ -78,7 +78,10 @@ class _MainButtonDownState extends State<MainButtonDown> {
                     flex: 1,
                     child: Text(
                       'C\nA\nM',
-                      style: TextStyle(fontSize: 17.5.sp),
+                      style: TextStyle(
+                        fontSize: 17.5.sp,
+                        fontFamily: 'HanSan',
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -116,6 +119,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
+                        fontFamily: 'HanSan',
                       ),
                     ),
                   ),

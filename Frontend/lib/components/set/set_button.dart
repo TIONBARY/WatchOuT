@@ -185,7 +185,12 @@ class _SetButtonState extends State<SetButton>
                   : Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('비상연락망'),
+                        Text(
+                          '비상연락망',
+                          style: TextStyle(
+                            fontFamily: 'HanSan',
+                          ),
+                        ),
                         Row(
                           children: [
                             IconButton(
@@ -225,6 +230,7 @@ class _SetButtonState extends State<SetButton>
                   '응급 설정',
                   style: TextStyle(
                     color: yColor,
+                    fontFamily: 'HanSan',
                   ),
                 ),
               ),

@@ -616,7 +616,9 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                           },
                                           child: Text(
                                             safeAreaList[i],
-                                            style: TextStyle(color: bColor),
+                                            style: TextStyle(
+                                              color: bColor,
+                                            ),
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
@@ -640,7 +642,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                               },
                                             );
                                           },
-                                          child: Text(safeAreaList[i]),
+                                          child: Text(
+                                            safeAreaList[i],
+                                            style: TextStyle(
+                                              fontFamily: 'HanSan',
+                                            ),
+                                          ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
                                             padding: EdgeInsets.fromLTRB(
@@ -717,7 +724,11 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                             },
                             child: Text(
                               pressWalkBtn ? "귀가 종료" : "귀가 시작",
-                              style: TextStyle(fontSize: 20, color: bColor),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: bColor,
+                                fontFamily: 'HanSan',
+                              ),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: yColor,
