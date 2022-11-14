@@ -200,6 +200,7 @@ class _RecordPageState extends State<RecordPage> {
                     right: 1.25.w,
                     bottom: 1.25.h,
                     child: FloatingActionButton(
+                      heroTag: "shared_page_edit",
                       child: Icon(
                         Icons.edit,
                         size: 20.sp,
@@ -214,6 +215,7 @@ class _RecordPageState extends State<RecordPage> {
                     left: 1.25.w,
                     bottom: 1.25.h,
                     child: FloatingActionButton(
+                      heroTag: "shared_page_refresh",
                       child: Icon(Icons.refresh),
                       elevation: 5,
                       hoverElevation: 10,

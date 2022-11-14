@@ -191,13 +191,13 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           });
       return kakaoMapKey;
     }
-    await _search();
+    await _search(context);
     // await registerCCTV();
     // await registerSafeOpenBox();
     // await registerEmergencyBell();
-    await _searchSafeArea();
-    await _searchSafeOpenBox();
-    await _searchEmergencyBell();
+    await _searchSafeArea(context);
+    await _searchSafeOpenBox(context);
+    await _searchEmergencyBell(context);
     return kakaoMapKey; // 5초 후 '짜잔!' 리턴
   }
 
@@ -215,8 +215,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           });
       return;
     }
-    await _search();
-    await _searchSafeArea();
+    await _search(context);
+    await _searchSafeArea(context);
     _mapController?.runJavascript('''
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
@@ -663,10 +663,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                         left: 2.w,
                         bottom: 1.h,
                         child: FloatingActionButton(
-                          child: Image.asset(
-                            "assets/siren.png",
-                            width: 7.5.w,
-                          ),
+                          heroTag: "safe_area_report",
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "긴급 신고",
@@ -674,6 +671,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           onPressed: () {
                             UrlLauncher.launchUrl(Uri.parse("tel:112"));
                           },
+                          child: Image.asset(
+                            "assets/siren.png",
+                            width: 7.5.w,
+                          ),
                         ),
                       ),
                       Positioned(
@@ -733,7 +734,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                         right: 2.w,
                         bottom: 1.h,
                         child: FloatingActionButton(
-                          child: Icon(Icons.refresh),
+                          heroTag: "safe_area_update",
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "CCTV 리스트 갱신",
@@ -741,6 +742,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           onPressed: () {
                             updateCurrLocation();
                           },
+                          child: Icon(Icons.refresh),
                         ),
                       ),
                     ],
@@ -845,21 +847,38 @@ void removeMarkers(int idx) {
     ''');
 }
 
-Future<void> _searchSafeArea() async {
+Future<void> _searchSafeArea(BuildContext context) async {
   for (int i = 0; i < 4; i++) {
     Map<String, dynamic> result = await apiKakao.searchArea(
         safeAreaList[i], initLat.toString(), initLon.toString());
     if (result['documents'] != null) {
       safeAreaCoordList[i] = [];
       result['documents'].forEach((value) => {safeAreaCoordList[i].add(value)});
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '안전 지대 정보를 불러오지 못했습니다.', null);
+          });
+      break;
     }
   }
 }
 
-Future<void> _search() async {
+Future<void> _search(BuildContext context) async {
   cctvList = [];
   final response =
       await FirebaseFirestore.instance.collection("cctv").doc(area).get();
+  if (!response.exists) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+              12.5.h, 'CCTV 정보를 불러오지 못했습니다.', null);
+        });
+    return;
+  }
   final cctvJson = response.data() as Map<String, dynamic>;
   for (int i = 0; i < cctvJson['data'].length; i++) {
     cctvList.add(cctvJson['data'][i]);
@@ -867,12 +886,21 @@ Future<void> _search() async {
   getSortedCCTVList();
 }
 
-Future<void> _searchSafeOpenBox() async {
+Future<void> _searchSafeOpenBox(BuildContext context) async {
   safeOpenBoxList = [];
   final response = await FirebaseFirestore.instance
       .collection("safeOpenBox")
       .doc("data")
       .get();
+  if (!response.exists) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+              12.5.h, '안심 택배 정보를 불러오지 못했습니다.', null);
+        });
+    return;
+  }
   final safeOpenBoxJson = response.data() as Map<String, dynamic>;
   for (int i = 0; i < safeOpenBoxJson['data'].length; i++) {
     safeOpenBoxList.add(safeOpenBoxJson['data'][i]);
@@ -880,19 +908,29 @@ Future<void> _searchSafeOpenBox() async {
   getSortedSafeOpenBoxList();
 }
 
-Future<void> _searchEmergencyBell() async {
+Future<void> _searchEmergencyBell(BuildContext context) async {
   emergencyBellList = [];
   final response = await FirebaseFirestore.instance
       .collection("emergencyBell")
       .doc("서울특별시")
       .get();
+  if (!response.exists) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+              12.5.h, '비상벨 정보를 불러오지 못했습니다.', null);
+        });
+    return;
+  }
   final emergencyBellJson = response.data() as Map<String, dynamic>;
   for (int i = 0; i < emergencyBellJson['data'].length; i++) {
     if (emergencyBellJson['data'][i]['WGSXPT'] != null &&
         emergencyBellJson['data'][i]['WGSYPT'] != null &&
         checkIsDouble(emergencyBellJson['data'][i]['WGSXPT']) &&
-        checkIsDouble(emergencyBellJson['data'][i]['WGSYPT']))
+        checkIsDouble(emergencyBellJson['data'][i]['WGSYPT'])) {
       emergencyBellList.add(emergencyBellJson['data'][i]);
+    }
   }
   getSortedEmergencyBellList();
 }

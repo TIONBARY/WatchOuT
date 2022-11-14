@@ -48,7 +48,7 @@ class GoingHomeMap extends StatefulWidget {
 }
 
 class _GoingHomeMapState extends State<GoingHomeMap> {
-  late final Future? myFuture = _getKakaoKey();
+  late final Future? myFuture = _getKakaoKey(context);
   ApiKakao apiKakao = ApiKakao();
 
   @override
@@ -56,13 +56,22 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
     super.initState();
   }
 
-  Future _getKakaoKey() async {
+  Future _getKakaoKey(BuildContext context) async {
     await dotenv.load();
     kakaoMapKey = dotenv.get('kakaoMapAPIKey');
     final response = await FirebaseFirestore.instance
         .collection("location")
         .doc(widget.accessCode)
         .get();
+    if (!response.exists) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '귀가자의 위치 정보를 불러올 수 없습니다.', null);
+          });
+      return;
+    }
     initLat = response.data()!["latitude"];
     initLon = response.data()!["longitude"];
     _currentPositionStream = FirebaseFirestore.instance
@@ -127,6 +136,106 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                 ),
               ],
               lockOverflowDrag: true,
+              grabbingHeight: 25,
+              grabbing: Container(
+                decoration: BoxDecoration(
+                  color: bColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: const Radius.circular(25.0),
+                    bottomRight: const Radius.circular(25.0),
+                  ),
+                ),
+                child: Container(
+                  // 잡는 버튼
+                  margin: EdgeInsets.fromLTRB(150, 10, 150, 10),
+                  decoration: BoxDecoration(
+                    color: yColor,
+                    borderRadius: BorderRadius.all(Radius.circular(25)),
+                  ),
+                ),
+              ),
+              sheetAbove: SnappingSheetContent(
+                draggable: true,
+                child: Container(
+                  color: Colors.white,
+                  padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+                  child: ListView(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            height: 75,
+                            width: 75,
+                            child: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(widget.profileImage),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                widget.name + " 님의 현재 위치",
+                                style: TextStyle(fontSize: 17.5.sp),
+                              ),
+                              SizedBox(
+                                width: 50.w,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                            primary:
+                                                bColor //elevated btton background color
+                                            ),
+                                        onPressed: () {
+                                          UrlLauncher.launchUrl(
+                                              Uri.parse("tel:${widget.phone}"));
+                                        },
+                                        icon: Icon(Icons.phone),
+                                        label: Text(
+                                          "전화",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      alignment: Alignment.center,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                            primary:
+                                                bColor //elevated btton background color
+                                            ),
+                                        onPressed: () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return MessageDialog(
+                                                    widget.phone);
+                                              });
+                                        },
+                                        icon: Icon(Icons.message),
+                                        label: Text(
+                                          "문자",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -197,10 +306,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                           left: 2.w,
                           bottom: 1.h,
                           child: FloatingActionButton(
-                            child: Image.asset(
-                              "assets/siren.png",
-                              width: 7.5.w,
-                            ),
+                            heroTag: "report",
                             elevation: 5,
                             hoverElevation: 10,
                             tooltip: "긴급 신고",
@@ -208,112 +314,16 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                             onPressed: () {
                               UrlLauncher.launchUrl(Uri.parse("tel:112"));
                             },
+                            child: Image.asset(
+                              "assets/siren.png",
+                              width: 7.5.w,
+                            ),
                           ),
                         ),
                       ],
                     ),
                   ),
                 ],
-              ),
-              grabbingHeight: 25,
-              grabbing: Container(
-                decoration: new BoxDecoration(
-                  color: bColor,
-                  borderRadius: new BorderRadius.only(
-                    bottomLeft: const Radius.circular(25.0),
-                    bottomRight: const Radius.circular(25.0),
-                  ),
-                ),
-                child: Container(
-                  // 잡는 버튼
-                  margin: EdgeInsets.fromLTRB(150, 10, 150, 10),
-                  decoration: new BoxDecoration(
-                    color: yColor,
-                    borderRadius: BorderRadius.all(Radius.circular(25)),
-                  ),
-                ),
-              ),
-              sheetAbove: SnappingSheetContent(
-                draggable: true,
-                child: Container(
-                  color: Colors.white,
-                  padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-                  child: ListView(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Container(
-                            height: 75,
-                            width: 75,
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(widget.profileImage),
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                widget.name + " 님의 현재 위치",
-                                style: TextStyle(fontSize: 17.5.sp),
-                              ),
-                              Container(
-                                width: 50.w,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: ElevatedButton.icon(
-                                        style: ElevatedButton.styleFrom(
-                                            primary:
-                                                bColor //elevated btton background color
-                                            ),
-                                        onPressed: () {
-                                          UrlLauncher.launchUrl(
-                                              Uri.parse("tel:${widget.phone}"));
-                                        },
-                                        icon: Icon(Icons.phone),
-                                        label: Text(
-                                          "전화",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      alignment: Alignment.center,
-                                      child: ElevatedButton.icon(
-                                        style: ElevatedButton.styleFrom(
-                                            primary:
-                                                bColor //elevated btton background color
-                                            ),
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return MessageDialog(
-                                                    widget.phone);
-                                              });
-                                        },
-                                        icon: Icon(Icons.message),
-                                        label: Text(
-                                          "문자",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                          // Flexible(flex: 3, child: Image.asset('assets/heartbeat.gif')),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
               ),
             ),
           );
