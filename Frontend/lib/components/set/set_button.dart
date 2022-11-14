@@ -253,216 +253,174 @@ class _SetButtonState extends State<SetButton>
           child: Container(
               padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
               height: 22.5.h,
-              child: submitted
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Title(
+                    color: bColor,
+                    child: Text(
+                      '비상연락망 추가',
+                      style: TextStyle(
+                        color: bColor,
+                        fontSize: 15.sp,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 7.5.h,
+                    child: Row(
                       children: [
                         Flexible(
                           flex: 1,
                           child: Container(
-                            child: IconAnimated(
-                              color: Colors.green,
-                              progress: _animation,
-                              size: 100,
-                              iconType: IconType.check,
+                            padding: EdgeInsets.only(right: 0.5.w),
+                            child: TextField(
+                              autocorrect: false,
+                              keyboardType: TextInputType.text,
+                              textInputAction: TextInputAction.next,
+                              cursorColor: bColor,
+                              controller: _nameFieldController,
+                              decoration: InputDecoration(
+                                isCollapsed: true,
+                                hintText: '이름',
+                                contentPadding: EdgeInsets.fromLTRB(
+                                    5.w, 1.25.h, 5.w, 1.25.h),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  borderSide: BorderSide(color: b25Color),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  borderSide: BorderSide(color: bColor),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  _addName = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.only(left: 0.5.w),
+                            child: TextField(
+                              autocorrect: false,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
+                              cursorColor: bColor,
+                              controller: _contactFieldController,
+                              decoration: InputDecoration(
+                                isCollapsed: true,
+                                hintText: '전화번호',
+                                contentPadding: EdgeInsets.fromLTRB(
+                                    5.w, 1.25.h, 5.w, 1.25.h),
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  borderSide: BorderSide(color: b25Color),
+                                ),
+                                filled: true,
+                                fillColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(5)),
+                                  borderSide: BorderSide(color: bColor),
+                                ),
+                              ),
+                              onChanged: (value) {
+                                setState(
+                                  () {
+                                    _addContact = value;
+                                  },
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: 40.w,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: yColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
+                            ),
+                          ),
+                          onPressed: () async {
+                            Map<String, dynamic>? tmpUser = await UserService()
+                                .getUserInfoByNumber(_addContact);
+                            setState(
+                              () {
+                                localEmergencyCallList.add(
+                                    {"name": _addName, "number": _addContact});
+
+                                if (tmpUser == null ||
+                                    tmpUser.isEmpty ||
+                                    tmpUser.length == 0) {
+                                  UserService().registerFirstResponder(
+                                      _addName, _addContact);
+                                  existUser = false;
+                                } else {
+                                  UserService().registerExistFirstResponder(
+                                      _addName, _addContact, tmpUser["uid"]);
+                                  existUser = true;
+                                }
+                                getEmergencyCallList();
+                                _nameFieldController.clear();
+                                _contactFieldController.clear();
+                                submitted = true;
+                                isAnimationOn = true;
+                                Navigator.pop(context);
+                                _showIcon();
+                                _displayFirstResponderRegister(context);
+                              },
+                            );
+                            // authService.getFirstResponder();
+                          },
+                          child: Text(
+                            '등록',
+                            style: TextStyle(
+                              color: bColor,
                             ),
                           ),
                         ),
                         ElevatedButton(
-                            onPressed: () {
-                              setState(
-                                () {
-                                  submitted = false;
-                                  isAnimationOn = false;
-                                  _reverseIcon();
-                                  _nameFieldController.clear();
-                                  _contactFieldController.clear();
-                                  Navigator.pop(context);
-                                },
-                              );
-                            },
-                            child: existUser
-                                ? Text(
-                                    "${_addName}님도  WOT를 사용중이에요!\n 비상 연락망에 등록되었습니다.")
-                                : Text(
-                                    "${_addName}님은 WOT를 사용하지 않아요.\n초대해보는 건 어떤까요?"))
-                      ],
-                    )
-                  : Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Title(
-                          color: bColor,
-                          child: Text(
-                            '비상연락망 추가',
-                            style: TextStyle(
-                              color: bColor,
-                              fontSize: 15.sp,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: b25Color,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(7),
                             ),
                           ),
-                        ),
-                        Container(
-                          height: 7.5.h,
-                          child: Row(
-                            children: [
-                              Flexible(
-                                flex: 1,
-                                child: Container(
-                                  padding: EdgeInsets.only(right: 0.5.w),
-                                  child: TextField(
-                                    autocorrect: false,
-                                    keyboardType: TextInputType.text,
-                                    textInputAction: TextInputAction.next,
-                                    cursorColor: bColor,
-                                    controller: _nameFieldController,
-                                    decoration: InputDecoration(
-                                      isCollapsed: true,
-                                      hintText: '이름',
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          5.w, 1.25.h, 5.w, 1.25.h),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(color: b25Color),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(color: bColor),
-                                      ),
-                                    ),
-                                    onChanged: (value) {
-                                      setState(() {
-                                        _addName = value;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              ),
-                              Flexible(
-                                flex: 2,
-                                child: Container(
-                                  padding: EdgeInsets.only(left: 0.5.w),
-                                  child: TextField(
-                                    autocorrect: false,
-                                    keyboardType: TextInputType.number,
-                                    textInputAction: TextInputAction.done,
-                                    cursorColor: bColor,
-                                    controller: _contactFieldController,
-                                    decoration: InputDecoration(
-                                      isCollapsed: true,
-                                      hintText: '전화번호',
-                                      contentPadding: EdgeInsets.fromLTRB(
-                                          5.w, 1.25.h, 5.w, 1.25.h),
-                                      enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(color: b25Color),
-                                      ),
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(5)),
-                                        borderSide: BorderSide(color: bColor),
-                                      ),
-                                    ),
-                                    onChanged: (value) {
-                                      setState(
-                                        () {
-                                          _addContact = value;
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: 40.w,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: yColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(7),
-                                  ),
-                                ),
-                                onPressed: () async {
-                                  Map<String, dynamic>? tmpUser =
-                                      await UserService()
-                                          .getUserInfoByNumber(_addContact);
-                                  setState(
-                                    () {
-                                      localEmergencyCallList.add({
-                                        "name": _addName,
-                                        "number": _addContact
-                                      });
-
-                                      if (tmpUser == null ||
-                                          tmpUser.isEmpty ||
-                                          tmpUser.length == 0) {
-                                        UserService().registerFirstResponder(
-                                            _addName, _addContact);
-                                        existUser = false;
-                                      } else {
-                                        UserService()
-                                            .registerExistFirstResponder(
-                                                _addName,
-                                                _addContact,
-                                                tmpUser["uid"]);
-                                        existUser = true;
-                                      }
-                                      getEmergencyCallList();
-                                      // _nameFieldController.clear();
-                                      // _contactFieldController.clear();
-                                      submitted = true;
-                                      isAnimationOn = true;
-                                      Navigator.pop(context);
-                                      _showIcon();
-                                      _displayTextInputDiaLog(context);
-                                    },
-                                  );
-                                  // authService.getFirstResponder();
-                                },
-                                child: Text(
-                                  '등록',
-                                  style: TextStyle(
-                                    color: bColor,
-                                  ),
-                                ),
-                              ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: b25Color,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(7),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _nameFieldController.clear();
-                                    _contactFieldController.clear();
-                                    Navigator.pop(context);
-                                  });
-                                },
-                                child: Text(
-                                  '취소',
-                                  style: TextStyle(color: bColor),
-                                ),
-                              ),
-                            ],
+                          onPressed: () {
+                            setState(() {
+                              _nameFieldController.clear();
+                              _contactFieldController.clear();
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: Text(
+                            '취소',
+                            style: TextStyle(color: bColor),
                           ),
                         ),
                       ],
-                    )),
+                    ),
+                  ),
+                ],
+              )),
         );
       },
     );
@@ -603,6 +561,75 @@ class _SetButtonState extends State<SetButton>
         );
       },
     );
+  }
+
+  _displayFirstResponderRegister(BuildContext context) async {
+    // Timer(const Duration(seconds: 1), () {
+    //   Navigator.of(context).popUntil((route) => route.isFirst);
+    // });
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.5)),
+            child: Container(
+              padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+              height: 22.5.h,
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: existUser
+                      ? [
+                          Title(
+                            color: bColor,
+                            child: Text(
+                              'WOT 사용자입니다.',
+                              style: TextStyle(
+                                color: bColor,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 2,
+                            child: Container(
+                              child: IconAnimated(
+                                color: Colors.green,
+                                progress: _animation,
+                                size: 100,
+                                iconType: IconType.check,
+                              ),
+                            ),
+                          ),
+                          Flexible(flex: 1, child: Text("홈 캠 기능을 연결할 수 있습니다."))
+                        ]
+                      : [
+                          Title(
+                            color: bColor,
+                            child: Text(
+                              '미사용 등록자입니다.',
+                              style: TextStyle(
+                                color: bColor,
+                                fontSize: 15.sp,
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 2,
+                            child: Container(
+                              child: IconAnimated(
+                                color: Colors.green,
+                                progress: _animation,
+                                size: 100,
+                                iconType: IconType.check,
+                              ),
+                            ),
+                          ),
+                          Flexible(flex: 1, child: Text("일부 기능이 제한될 수 있습니다."))
+                        ]),
+            ),
+          );
+        });
   }
 
   void openEmergencySetting() {
