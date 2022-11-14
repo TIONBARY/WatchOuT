@@ -247,14 +247,15 @@ class UserService {
     var querySnapshot =
         await db.collection("user").where("phone", isEqualTo: number).get();
     data = querySnapshot.docs;
-    if (data.isEmpty) print("해당 번호에 해당하는 유저가 없습니다.");
-    result = data[0].data() as Map<String, dynamic>?;
+    if (data.isEmpty)
+      print("해당 번호에 해당하는 유저가 없습니다.");
+    else
+      result = data[0].data() as Map<String, dynamic>?;
     return result;
   }
 
   //비상 연락망 검색 후 등록
-  void registerFirstResponderWithHomecam(
-      String name, String number, String uid) {
+  void registerExistFirstResponder(String name, String number, String uid) {
     db
         .collection("user")
         .doc("${user?.uid}")

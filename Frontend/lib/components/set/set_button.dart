@@ -62,6 +62,7 @@ class _SetButtonState extends State<SetButton>
   late Animation<double> _animation;
   bool isAnimationOn = false;
   bool submitted = false;
+  bool existUser = false;
 
   void _showIcon() {
     _animationController.forward();
@@ -269,11 +270,17 @@ class _SetButtonState extends State<SetButton>
                                   submitted = false;
                                   isAnimationOn = false;
                                   _reverseIcon();
+                                  _nameFieldController.clear();
+                                  _contactFieldController.clear();
                                   Navigator.pop(context);
                                 },
                               );
                             },
-                            child: Text("등록이 완료되었습니다."))
+                            child: existUser
+                                ? Text(
+                                    "${_addName}님도  WOT를 사용중이에요!\n 비상 연락망에 등록되었습니다.")
+                                : Text(
+                                    "${_addName}님은 WOT를 사용하지 않아요.\n초대해보는 건 어떤까요?"))
                       ],
                     )
                   : Column(
@@ -382,18 +389,34 @@ class _SetButtonState extends State<SetButton>
                                     borderRadius: BorderRadius.circular(7),
                                   ),
                                 ),
-                                onPressed: () {
+                                onPressed: () async {
+                                  Map<String, dynamic>? tmpUser =
+                                      await UserService()
+                                          .getUserInfoByNumber(_addContact);
                                   setState(
                                     () {
                                       localEmergencyCallList.add({
                                         "name": _addName,
                                         "number": _addContact
                                       });
-                                      UserService().registerFirstResponder(
-                                          _addName, _addContact);
+
+                                      if (tmpUser == null ||
+                                          tmpUser.isEmpty ||
+                                          tmpUser.length == 0) {
+                                        UserService().registerFirstResponder(
+                                            _addName, _addContact);
+                                        existUser = false;
+                                      } else {
+                                        UserService()
+                                            .registerExistFirstResponder(
+                                                _addName,
+                                                _addContact,
+                                                tmpUser["uid"]);
+                                        existUser = true;
+                                      }
                                       getEmergencyCallList();
-                                      _nameFieldController.clear();
-                                      _contactFieldController.clear();
+                                      // _nameFieldController.clear();
+                                      // _contactFieldController.clear();
                                       submitted = true;
                                       isAnimationOn = true;
                                       Navigator.pop(context);
