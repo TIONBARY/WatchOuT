@@ -277,6 +277,32 @@ class _MainGuideState extends State<MainGuide> {
                         children: [
                           IntroStepBuilder(
                             order: 9,
+                            text: '클릭 시 성범죄자 알림e 화면',
+                            padding: EdgeInsets.only(
+                              bottom: 1,
+                              left: 1,
+                              right: 1,
+                              top: 1,
+                            ),
+                            builder: (context, key) => AnimatedButton(
+                              key: key,
+                              width: 30.w,
+                              blurRadius: 7.5,
+                              isOutline: true,
+                              type: null,
+                              color: nColor,
+                              onTap: () async {},
+                              child: Text(
+                                '성범죄자\n알림e',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          IntroStepBuilder(
+                            order: 10,
                             text: '클릭 시 안심귀가 서비스 화면',
                             padding: EdgeInsets.only(
                               bottom: 1,
@@ -287,27 +313,9 @@ class _MainGuideState extends State<MainGuide> {
                             builder: (context, key) => MainPageAniBtn(
                               key: key,
                               margins: EdgeInsets.only(bottom: 4),
-                              types: PredefinedThemes.warning,
+                              types: PredefinedThemes.primary,
                               ontaps: () {},
                               texts: '안심귀가\n서비스',
-                              colors: Colors.white,
-                            ),
-                          ),
-                          IntroStepBuilder(
-                            order: 10,
-                            text: '클릭 시 성범죄자 알림e 화면',
-                            padding: EdgeInsets.only(
-                              bottom: 1,
-                              left: 1,
-                              right: 1,
-                              top: 1,
-                            ),
-                            builder: (context, key) => MainPageAniBtn(
-                              key: key,
-                              margins: EdgeInsets.only(top: 4),
-                              types: PredefinedThemes.warning,
-                              ontaps: () {},
-                              texts: '성범죄자\n알림e',
                               colors: Colors.white,
                             ),
                           ),
@@ -422,6 +430,7 @@ class _MainGuideState extends State<MainGuide> {
                 Navigator.pop(context);
               },
               texts: '돌아가기',
+              colors: yColor,
             ),
           ],
         ),
