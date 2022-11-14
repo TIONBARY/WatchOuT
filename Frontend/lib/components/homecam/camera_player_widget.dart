@@ -1,6 +1,9 @@
-import 'package:flutter/foundation.dart';
+import 'package:button_animations/button_animations.dart';
+import 'package:button_animations/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:homealone/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants.dart';
@@ -32,105 +35,148 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(),
-        body: FutureBuilder(
-      future: _future(),
-      builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-        if (snapshot.hasData == false) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
-              style: TextStyle(fontSize: 15),
+        appBar: AppBar(
+          title: Text('WatchOuT',
+              style: TextStyle(color: yColor, fontSize: 20.sp)),
+          backgroundColor: bColor,
+          actions: [
+            Container(
+              padding: EdgeInsets.fromLTRB(2.w, 1.h, 2.w, 1.h),
+              child: CircleAvatar(
+                backgroundImage: NetworkImage(
+                    Provider.of<MyUserInfo>(context, listen: false)
+                        .profileImage),
+              ),
             ),
-          );
-        }
-        // else if (snapshot.data["registered"] == null) {
-        //   UserService().homeCamRegister('');
-        //   return Container(
-        //     alignment: Alignment.center,
-        //     child: Column(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: [
-        //         Text("연결된 카메라가 없습니다."),
-        //         ElevatedButton(
-        //             onPressed: () {
-        //               setState(() {
-        //                 _CodeDialog(context);
-        //               });
-        //             },
-        //             child: Text("입력")),
-        //       ],
-        //     ),
-        //   );
-        // } else if (!(snapshot.data == null) && !snapshot.data["registered"]) {
-        //   //등록되어 있지 않다면
-        //   return Container(
-        //     alignment: Alignment.center,
-        //     child: Column(
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: [
-        //         Text("연결된 카메라가 없습니다."),
-        //         ElevatedButton(
-        //             onPressed: () {
-        //               setState(() {
-        //                 _CodeDialog(context);
-        //               });
-        //             },
-        //             child: Text("입력")),
-        //       ],
-        //     ),
-        //   );
-        // }
-        else {
-          url = snapshot.data["url"];
-          playerController = VlcPlayerController.network("${url}",
-              // "rtsp://watchout:ssafy123@70.12.227.183/stream1",
-              autoPlay: true);
-          return Column(
-            children: [
-              VlcPlayer(
-                controller: playerController,
-                aspectRatio: 16 / 9,
-                placeholder: const Center(
-                  child: CircularProgressIndicator(),
+          ],
+        ),
+        body: FutureBuilder(
+          future: _future(),
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            if (snapshot.hasData == false) {
+              return CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'Error: ${snapshot.error}', // 에러명을 텍스트에 뿌려줌
+                  style: TextStyle(fontSize: 15),
                 ),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  playerController.play();
-                },
-                child: const Text("Play"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  playerController.pause();
-                },
-                child: const Text("Pause"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  _CodeDialog(context);
-                },
-                child: const Text("수정"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  UserService().deleteHomecam();
-                  Navigator.pop(context);
-                },
-                child: const Text("삭제"),
-              ),
-            ],
-          );
-        }
-      },
-    ));
+              );
+            } else {
+              url = snapshot.data["url"];
+              playerController =
+                  VlcPlayerController.network("${url}", autoPlay: true);
+              return Column(
+                children: [
+                  VlcPlayer(
+                    controller: playerController,
+                    aspectRatio: 16 / 9,
+                    placeholder: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(3.sp)),
+                  AnimatedButton(
+                    height: 7.h,
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: PredefinedThemes.light,
+                    onTap: () {
+                      playerController.play();
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Play',
+                            style: TextStyle(fontSize: 12.sp, color: bColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(3.sp)),
+                  AnimatedButton(
+                    height: 7.h,
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: PredefinedThemes.light,
+                    onTap: () {
+                      playerController.pause();
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            'Pause',
+                            style: TextStyle(fontSize: 12.sp, color: bColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(3.sp)),
+                  AnimatedButton(
+                    height: 7.h,
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: PredefinedThemes.light,
+                    onTap: () {
+                      _codeDialog(context);
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            '수정',
+                            style: TextStyle(fontSize: 12.sp, color: bColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(padding: EdgeInsets.all(3.sp)),
+                  AnimatedButton(
+                    height: 7.h,
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: PredefinedThemes.light,
+                    onTap: () {
+                      UserService().deleteHomecam();
+                      Navigator.pop(context);
+                    },
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            '삭제',
+                            style: TextStyle(fontSize: 12.sp, color: bColor),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+          },
+        ));
   }
 
-  Future<void> _CodeDialog(BuildContext context) async {
+  Future<void> _codeDialog(BuildContext context) async {
     return showDialog(
       context: context,
       builder: (context) {

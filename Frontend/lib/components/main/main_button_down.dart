@@ -76,11 +76,11 @@ class _MainButtonDownState extends State<MainButtonDown> {
                 children: [
                   Expanded(
                     flex: 1,
-                      child: Text(
-                        'C\nA\nM',
-                        style: TextStyle(fontSize: 17.5.sp),
-                        textAlign: TextAlign.center,
-                      ),
+                    child: Text(
+                      'C\nA\nM',
+                      style: TextStyle(fontSize: 17.5.sp),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                   Expanded(
                     flex: 2,
@@ -163,6 +163,6 @@ class _MainButtonDownState extends State<MainButtonDown> {
 
   void openDialog(BuildContext context) async {
     Future.microtask(() => Navigator.push(
-        context, MaterialPageRoute(builder: (context) => selectPage())));
+        context, MaterialPageRoute(builder: (context) => SelectPage())));
   }
 }
