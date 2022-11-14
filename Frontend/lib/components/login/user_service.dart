@@ -31,6 +31,18 @@ class UserService {
     return documentData;
   }
 
+  Future<Map<String, dynamic>?> getOtherUserInfo(String uid) async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc(uid);
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
+    return documentData;
+  }
+
   Future<bool> isDupNum(String number) async {
     bool flag = true;
     await db
@@ -252,7 +264,7 @@ class UserService {
   }
 
   // 친구 추천 코드로 추가
-  void registerFirstResponderFromInvite(String inviteCode) async {
+  Future<String> registerFirstResponderFromInvite(String inviteCode) async {
     // 친구정보 가져오기
     DocumentReference<Map<String, dynamic>> documentReference =
         db.collection("user").doc(inviteCode);
@@ -264,7 +276,7 @@ class UserService {
 
     if (documentData == null) {
       debugPrint("초대한 친구가 존재하지 않습니다.");
-      return;
+      return "failed";
     }
     String name = documentData["name"];
     String number = documentData["phone"];
@@ -280,6 +292,7 @@ class UserService {
       // "message": false,
       // "activated": false
     });
+    return "success";
   }
 
   // 내 연락처 중에 웹캠이 있는 사람의 목록(작업중)
