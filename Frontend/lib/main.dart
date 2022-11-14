@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:background_fetch/background_fetch.dart' as fetch;
+import 'package:encrypt/encrypt.dart' as en;
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +15,7 @@ import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/wear/local_notification.dart';
 import 'package:homealone/googleLogin/loading_page.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
@@ -119,6 +121,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initializeService();
     initUsage();
+    handlePlatformChannelMethods();
     wm.Workmanager().initialize(
       callbackDispatcher,
       isInDebugMode: false,
@@ -135,62 +138,7 @@ class _MyAppState extends State<MyApp> {
     //     debugPrint(value.hashCode.toString()),
     //     debugPrint(value.getBool("useWearOS").toString())
     //   },
-    // );
-    initPlatformState();
-  }
-
-  // Platform messages are asynchronous, so we initialize in an async method.
-  Future<void> initPlatformState() async {
-    // Configure BackgroundFetch.
-    int status = await fetch.BackgroundFetch.configure(
-        fetch.BackgroundFetchConfig(
-            minimumFetchInterval: 15,
-            stopOnTerminate: false,
-            startOnBoot: true,
-            enableHeadless: true,
-            requiresBatteryNotLow: false,
-            requiresCharging: false,
-            requiresStorageNotLow: false,
-            requiresDeviceIdle: false,
-            requiredNetworkType: fetch.NetworkType.NONE),
-        (String taskId) async {
-      // <-- Event handler
-      // This is the fetch-event callback.
-      debugPrint("[백그라운드] Event received $taskId");
-      setState(() {
-        _events.insert(0, new DateTime.now());
-      });
-      initializeService();
-      initUsage();
-      // debugPrint("메인꺼");
-      // SharedPreferences.getInstance().then(
-      //   (value) => {
-      //     debugPrint(value.hashCode.toString()),
-      //     debugPrint(value.getBool("useWearOS").toString())
-      //   },
-      // );
-
-      // IMPORTANT:  You must signal completion of your task or the OS can punish your app
-      // for taking too long in the background.
-      fetch.BackgroundFetch.finish(taskId);
-    }, (String taskId) async {
-      // <-- Task timeout handler.
-      // This task has exceeded its allowed running-time.  You must stop what you're doing and immediately .finish(taskId)
-      debugPrint("[백그라운드] 시간초과 taskId: $taskId");
-      fetch.BackgroundFetch.finish(taskId);
-    });
-    debugPrint('[백그라운드] configure success: $status');
-    setState(() {
-      _status = status;
-    });
-    // setState(() {
-    //   status = status;
-    // });
-
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+    //
   }
 
   @override
@@ -291,9 +239,9 @@ void _permission(BuildContext context) async {
     return;
   }
   permissionOnce = true;
-  await askPermission(context, Permission.locationAlways,
+  askPermission(context, Permission.locationAlways,
       "WatchOuT에서 \n백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
-  await askPermission(context, Permission.location,
+  askPermission(context, Permission.location,
       "WatchOuT에서 \n'안전 지도' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
   // if (await Permission.location.isDenied) {
   //   debugPrint("위치권한 거부");
@@ -303,6 +251,7 @@ void _permission(BuildContext context) async {
       "WatchOuT에서 \n문자 전송 기능을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.");
 }
 
+@pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
   // Only available for flutter 3.0.0 and later
   DartPluginRegistrant.ensureInitialized();
@@ -321,15 +270,16 @@ Future<void> refreshUsage() async {
   pref.reload();
   Future<int> count = initUsage();
   count.then((value) {
-    print('24시간 이내에 사용한 앱 갯수 : $value');
+    debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
     if (value == 0) {
-      if (!messageIsSent)
+      if (!messageIsSent) {
         _getKakaoKey().then((response) => sendEmergencyMessage());
+      }
     } else {
       messageIsSent = false;
     }
   }).catchError((error) {
-    print(error);
+    debugPrint(error);
   });
 }
 
@@ -398,9 +348,53 @@ Future<void> prepareMessage() async {
   await getCurrentLocation();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   message =
-      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다.\n현재 예상 위치 : ${address}\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다.\n현재 예상 위치 : $address\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
   List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
     recipients = list!;
+  }
+}
+
+Future<dynamic> handlePlatformChannelMethods() async {
+  var result = await platform
+      .invokeMethod("getFriendLink")
+      .onError((error, stackTrace) => debugPrint(error.toString()));
+  if (result.runtimeType == String) {
+    //Parameters received from Native…!!!!
+    // debugPrint(result);
+    await dotenv.load();
+    String inviteRandomKey = dotenv.get('inviteRandomKey');
+    String decoded = decodeInviteKey(inviteRandomKey, result);
+    // TODO: 모달창 열고 onPressed로 이동
+    registerFriend(decoded);
+  }
+}
+
+String decodeInviteKey(String inviteRandomKey, String value) {
+  //키값
+  final key = en.Key.fromUtf8(inviteRandomKey);
+  final iv = en.IV.fromLength(16);
+  //위에 키값으로 지갑 생성
+  final encrypter = en.Encrypter(en.AES(key));
+
+  //생성된 지갑으로 복호화
+  final decoded = encrypter.decrypt64(value, iv: iv);
+  // debugPrint('-------복호화값: $decoded');
+  return decoded;
+}
+
+void registerFriend(String decoded) {
+  List<String> message = decoded.split(",");
+  String expireTimeStr = message[0];
+  String inviteCodeStr = message[1];
+
+  debugPrint("초대코드 플러터에서 받음 ㅋㅋ: $inviteCodeStr \n만료일자: $expireTimeStr");
+
+  DateTime expireTime = DateTime.parse(expireTimeStr);
+  // 만료되기 전
+  if (expireTime.isAfter(DateTime.now())) {
+    UserService().registerFirstResponderFromInvite(inviteCodeStr);
+  } else {
+    debugPrint("만료된 초대코드입니다.");
   }
 }

@@ -10,7 +10,7 @@ class HeartRateView extends StatefulWidget {
     required this.margins,
     required this.provider,
   }) : super(key: key);
-  final margins;
+  final EdgeInsetsGeometry margins;
   final HeartRateProvider provider;
 
   @override
@@ -36,7 +36,8 @@ class _HeartRateViewState extends State<HeartRateView> {
         SfRangeValues(widget.provider.minValue, widget.provider.maxValue);
     return Flexible(
       child: Container(
-        padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
+        padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
+        // padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
         margin: widget.margins,
         decoration: BoxDecoration(
             color: b25Color, borderRadius: BorderRadius.circular(25)),
@@ -47,28 +48,31 @@ class _HeartRateViewState extends State<HeartRateView> {
               "나의 심박수 범위 : ",
             ),
             // ${widget.provider.heartRate}
-            SfRangeSlider(
-              min: 40.0,
-              max: 200.0,
-              values: _values,
-              activeColor: yColor,
-              inactiveColor: y50Color,
-              // shouldAlwaysShowTooltip: true,
-              showLabels: true,
-              enableTooltip: true,
-              tooltipTextFormatterCallback:
-                  (dynamic actualValue, String formattedText) {
-                return actualValue.toStringAsFixed(0);
-              },
-              minorTicksPerInterval: 1,
-              onChanged: (SfRangeValues values) {
-                setState(() {
-                  _values = values;
-                  widget.provider.changeMinValue(values.start);
-                  widget.provider.changeMaxValue(values.end);
-                  // save();
-                });
-              },
+            SizedBox(
+              height: 5.85.h,
+              child: SfRangeSlider(
+                min: 40.0,
+                max: 200.0,
+                values: _values,
+                activeColor: yColor,
+                inactiveColor: y50Color,
+                // shouldAlwaysShowTooltip: true,
+                showLabels: true,
+                enableTooltip: true,
+                tooltipTextFormatterCallback:
+                    (dynamic actualValue, String formattedText) {
+                  return actualValue.toStringAsFixed(0);
+                },
+                minorTicksPerInterval: 1,
+                onChanged: (SfRangeValues values) {
+                  setState(() {
+                    _values = values;
+                    widget.provider.changeMinValue(values.start);
+                    widget.provider.changeMaxValue(values.end);
+                    // save();
+                  });
+                },
+              ),
             ),
           ],
         ),

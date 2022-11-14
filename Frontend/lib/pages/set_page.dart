@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homealone/components/set/circular_menu.dart';
 import 'package:homealone/components/set/set_button.dart';
 
 class SetPage extends StatefulWidget {
@@ -13,14 +14,14 @@ class _SetPageState extends State<SetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        toolbarHeight: 0,
-      ),
       body: Column(
         children: [
           Flexible(
             child: SetButton(),
             flex: 1,
+          ),
+          Expanded(
+            child: CircularMenu(),
           ),
         ],
       ),

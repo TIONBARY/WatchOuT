@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:encrypt/encrypt.dart' as en;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/login/user_service.dart';
@@ -15,6 +17,7 @@ import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 
 AuthService authService = AuthService();
@@ -84,147 +87,169 @@ class _SetButtonState extends State<SetButton> {
   Widget build(BuildContext context) {
     Provider.of<SwitchBools>(context, listen: false).onCreate();
     Provider.of<HeartRateProvider>(context, listen: false).onCreate();
-    return Column(
-      children: [
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 1.5.h, 1.w, 0.75.h),
-          texts: 'WearOS 사용',
-          values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeWearOS();
-              },
-            );
-          },
-        ),
-        Provider.of<SwitchBools>(context, listen: true).useWearOS
-            ? HeartRateView(
-                margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-                provider:
-                    Provider.of<HeartRateProvider>(context, listen: false),
-              )
-            : Container(),
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-          texts: '스크린 사용 감지',
-          values: Provider.of<SwitchBools>(context, listen: false).useScreen,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeScreen();
-              },
-            );
-          },
-        ),
-        SetPageRadioButton(
-          margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-          texts: '경보음 사용',
-          values: Provider.of<SwitchBools>(context, listen: false).useSiren,
-          onchangeds: (value) {
-            setState(
-              () {
-                Provider.of<SwitchBools>(context, listen: false).changeSiren();
-              },
-            );
-          },
-        ),
-        Flexible(
-          child: Container(
-            padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
-            decoration: BoxDecoration(
-                color: b25Color, borderRadius: BorderRadius.circular(25)),
-            child: localEmergencyCallList.isEmpty
-                ? Row(
-                    children: [
-                      Text('비상연락망을 등록해주세요.'),
-                      IconButton(
-                        onPressed: () {
-                          _displayTextInputDiaLog(context);
-                        },
-                        icon: Icon(Icons.add_circle, size: 20.sp),
-                      ),
-                    ],
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('비상연락망'),
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              _displayTextInputDiaLog(context);
-                            },
-                            icon: Icon(Icons.add_circle, size: 20.sp),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              EmergencyCallDialog(context);
-                            },
-                            icon: Icon(Icons.delete, size: 20.sp),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+    return Container(
+      margin: EdgeInsets.fromLTRB(0, 0.75.h, 0, 0),
+      child: Column(
+        children: [
+          SetPageRadioButton(
+            texts: 'WearOS 사용',
+            values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
+            onchangeds: (value) {
+              setState(
+                () {
+                  Provider.of<SwitchBools>(context, listen: false)
+                      .changeWearOS();
+                },
+              );
+            },
           ),
-        ),
-        Flexible(
-          child: Row(
-            children: [],
+          Provider.of<SwitchBools>(context, listen: true).useWearOS
+              ? HeartRateView(
+                  margins: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+                  provider:
+                      Provider.of<HeartRateProvider>(context, listen: false),
+                )
+              : Container(),
+          SetPageRadioButton(
+            texts: '스크린 사용 감지',
+            values: Provider.of<SwitchBools>(context, listen: false).useScreen,
+            onchangeds: (value) {
+              setState(
+                () {
+                  Provider.of<SwitchBools>(context, listen: false)
+                      .changeScreen();
+                },
+              );
+            },
           ),
-        ),
-        Flexible(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-            height: 5.5.h,
-            width: double.maxFinite,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: bColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              onPressed: () {
-                openEmergencySetting();
-              },
-              child: Text(
-                '응급 설정',
-                style: TextStyle(
-                  color: yColor,
-                ),
-              ),
+          SetPageRadioButton(
+            texts: '경보음 사용',
+            values: Provider.of<SwitchBools>(context, listen: false).useSiren,
+            onchangeds: (value) {
+              setState(
+                () {
+                  Provider.of<SwitchBools>(context, listen: false)
+                      .changeSiren();
+                },
+              );
+            },
+          ),
+          Flexible(
+            child: Container(
+              padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
+              margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
+              decoration: BoxDecoration(
+                  color: b25Color, borderRadius: BorderRadius.circular(25)),
+              child: localEmergencyCallList.isEmpty
+                  ? Row(
+                      children: [
+                        Text('비상연락망을 등록해주세요.'),
+                        IconButton(
+                          onPressed: () {
+                            _displayTextInputDiaLog(context);
+                          },
+                          icon: Icon(Icons.add_circle, size: 20.sp),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('비상연락망'),
+                        Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                _displayTextInputDiaLog(context);
+                              },
+                              icon: Icon(Icons.add_circle, size: 20.sp),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                EmergencyCallDialog(context);
+                              },
+                              icon: Icon(Icons.delete, size: 20.sp),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
             ),
           ),
-        ),
-        Flexible(
-          child: Container(
-            margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-            height: 5.5.h,
-            width: double.maxFinite,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: bColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(25),
-                ),
-              ),
-              onPressed: () {
-                UserDeleteDialog(context);
-              },
-              child: Text(
-                '회원 탈퇴',
-                style: TextStyle(
-                  color: yColor,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+          // Flexible(
+          //   child: Container(
+          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+          //     height: 5.5.h,
+          //     width: double.maxFinite,
+          //     child: ElevatedButton(
+          //       style: ElevatedButton.styleFrom(
+          //         backgroundColor: bColor,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25),
+          //         ),
+          //       ),
+          //       onPressed: () {
+          //         invite();
+          //       },
+          //       child: Text(
+          //         '친구 초대',
+          //         style: TextStyle(
+          //           color: yColor,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Flexible(
+          //   child: Container(
+          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+          //     height: 5.5.h,
+          //     width: double.maxFinite,
+          //     child: ElevatedButton(
+          //       style: ElevatedButton.styleFrom(
+          //         backgroundColor: bColor,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25),
+          //         ),
+          //       ),
+          //       onPressed: () {
+          //         openEmergencySetting();
+          //       },
+          //       child: Text(
+          //         '응급 설정',
+          //         style: TextStyle(
+          //           color: yColor,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+          // Flexible(
+          //   child: Container(
+          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+          //     height: 5.5.h,
+          //     width: double.maxFinite,
+          //     child: ElevatedButton(
+          //       style: ElevatedButton.styleFrom(
+          //         backgroundColor: bColor,
+          //         shape: RoundedRectangleBorder(
+          //           borderRadius: BorderRadius.circular(25),
+          //         ),
+          //       ),
+          //       onPressed: () {
+          //         UserDeleteDialog(context);
+          //       },
+          //       child: Text(
+          //         '회원 탈퇴',
+          //         style: TextStyle(
+          //           color: yColor,
+          //         ),
+          //       ),
+          //     ),
+          //   ),
+          // ),
+        ],
+      ),
     );
   }
 
@@ -615,5 +640,32 @@ class _SetButtonState extends State<SetButton> {
     debugPrint("응급 오류");
     // Timer(Duration(seconds: 1), () { showDialog()});
     showDialog(context: context, builder: (context) => PackageNotFoundDialog());
+  }
+
+  void invite() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    // 하루 뒤에 만료하는 코드
+    DateTime expDate = DateTime.now().add(Duration(days: 1));
+    String infoCode = "${expDate.toIso8601String()},${user?.uid}";
+    // debugPrint(expDate.toIso8601String());
+
+    //암호화 하기
+
+    await dotenv.load();
+    String inviteRandomKey = dotenv.get('inviteRandomKey');
+    final key = en.Key.fromUtf8(inviteRandomKey);
+    final iv = en.IV.fromLength(16);
+    final encrypter = en.Encrypter(en.AES(key));
+    String encryptedCode = encrypter.encrypt(infoCode, iv: iv).base64;
+    debugPrint('암호화 된값: $encryptedCode');
+    debugPrint(infoCode);
+    debugPrint(encryptedCode);
+
+    // String inviteUrl =
+    //     "https://www.homelaone.kr/action?inviteKey=$encryptedCode";
+    String inviteUrl =
+        "https://homelaone.page.link/?link=https://www.homelaone.kr/action?inviteKey=$encryptedCode&apn=com.ssafy.homealone&afl=https://play.google.com/store/apps/details?id=com.ssafy.homealone";
+
+    Share.share('지금 당장 [워치아웃] 앱을 설치하세요!\n$inviteUrl');
   }
 }

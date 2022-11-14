@@ -221,188 +221,200 @@ class _MainGuideState extends State<MainGuide> {
                 ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Flexible(
-                    flex: 3,
-                    child: IntroStepBuilder(
-                      order: 8,
-                      text: '클릭 시 홈캠 화면',
-                      padding: EdgeInsets.only(
-                        bottom: 1,
-                        left: 1,
-                        right: 1,
-                        top: 1,
-                      ),
-                      builder: (context, key) => AnimatedButton(
-                        key: key,
-                        height: 17.5.h,
-                        width: 50.w,
-                        blurRadius: 7.5,
-                        isOutline: true,
-                        type: PredefinedThemes.light,
-                        onTap: () {},
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                'C\nA\nM',
-                                style: TextStyle(fontSize: 17.5.sp),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                            Expanded(
-                              flex: 2,
-                              child: ClipRRect(
-                                child: Image.asset(
-                                  "assets/icons/shadowcctvreverse.png",
+            Expanded(
+              flex: 1,
+              child: Container(
+                margin: EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      child: Container(
+                        child: IntroStepBuilder(
+                          order: 8,
+                          text: '클릭 시 홈캠 화면',
+                          padding: EdgeInsets.only(
+                            bottom: 1,
+                            left: 1,
+                            right: 1,
+                            top: 1,
+                          ),
+                          builder: (context, key) => AnimatedButton(
+                            key: key,
+                            height: 17.5.h,
+                            width: 50.w,
+                            blurRadius: 7.5,
+                            isOutline: true,
+                            type: PredefinedThemes.light,
+                            onTap: () {},
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(
+                                    child: Text(
+                                      'C\nA\nM',
+                                      style: TextStyle(fontSize: 17.5.sp),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                Expanded(
+                                  flex: 2,
+                                  child: ClipRRect(
+                                    child: Image.asset(
+                                      "assets/icons/shadowcctvreverse.png",
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  Flexible(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IntroStepBuilder(
-                          order: 9,
-                          text: '클릭 시 안심귀가 서비스 화면',
-                          padding: EdgeInsets.only(
-                            bottom: 1,
-                            left: 1,
-                            right: 1,
-                            top: 1,
+                    Flexible(
+                      flex: 2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IntroStepBuilder(
+                            order: 9,
+                            text: '클릭 시 안심귀가 서비스 화면',
+                            padding: EdgeInsets.only(
+                              bottom: 1,
+                              left: 1,
+                              right: 1,
+                              top: 1,
+                            ),
+                            builder: (context, key) => MainPageAniBtn(
+                              key: key,
+                              margins: EdgeInsets.only(bottom: 4),
+                              types: PredefinedThemes.warning,
+                              ontaps: () {},
+                              texts: '안심귀가\n서비스',
+                            ),
                           ),
-                          builder: (context, key) => MainPageAniBtn(
-                            key: key,
-                            margins: EdgeInsets.only(bottom: 4),
-                            types: PredefinedThemes.warning,
-                            ontaps: () {},
-                            texts: '안심귀가\n서비스',
+                          IntroStepBuilder(
+                            order: 10,
+                            text: '클릭 시 성범죄자 알림e 화면',
+                            padding: EdgeInsets.only(
+                              bottom: 1,
+                              left: 1,
+                              right: 1,
+                              top: 1,
+                            ),
+                            builder: (context, key) => MainPageAniBtn(
+                              key: key,
+                              margins: EdgeInsets.only(top: 4),
+                              types: PredefinedThemes.warning,
+                              ontaps: () {},
+                              texts: '성범죄자\n알림e',
+                            ),
                           ),
-                        ),
-                        IntroStepBuilder(
-                          order: 10,
-                          text: '클릭 시 성범죄자 알림e 화면',
-                          padding: EdgeInsets.only(
-                            bottom: 1,
-                            left: 1,
-                            right: 1,
-                            top: 1,
-                          ),
-                          builder: (context, key) => MainPageAniBtn(
-                            key: key,
-                            margins: EdgeInsets.only(top: 4),
-                            types: PredefinedThemes.warning,
-                            ontaps: () {},
-                            texts: '성범죄자\n알림e',
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.all(8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    flex: 2,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IntroStepBuilder(
-                          order: 11,
-                          text: '클릭 시 신고 화면',
-                          padding: EdgeInsets.only(
-                            bottom: 1,
-                            left: 1,
-                            right: 1,
-                            top: 1,
+            Expanded(
+              flex: 1,
+              child: Container(
+                margin: EdgeInsets.all(8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Expanded(
+                      flex: 2,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          IntroStepBuilder(
+                            order: 11,
+                            text: '클릭 시 신고 화면',
+                            padding: EdgeInsets.only(
+                              bottom: 1,
+                              left: 1,
+                              right: 1,
+                              top: 1,
+                            ),
+                            builder: (context, key) => MainPageAniBtn(
+                              key: key,
+                              margins: EdgeInsets.only(bottom: 4),
+                              types: PredefinedThemes.warning,
+                              ontaps: () {},
+                              texts: '신고',
+                            ),
                           ),
-                          builder: (context, key) => MainPageAniBtn(
-                            key: key,
-                            margins: EdgeInsets.only(bottom: 4),
-                            types: PredefinedThemes.warning,
-                            ontaps: () {},
-                            texts: '신고',
+                          IntroStepBuilder(
+                            order: 12,
+                            text: '클릭 시 위기상황 대처메뉴얼 화면',
+                            padding: EdgeInsets.only(
+                              bottom: 1,
+                              left: 1,
+                              right: 1,
+                              top: 1,
+                            ),
+                            builder: (context, key) => MainPageAniBtn(
+                              key: key,
+                              margins: EdgeInsets.only(top: 4),
+                              types: PredefinedThemes.warning,
+                              ontaps: () {},
+                              texts: '위기상황 \n대처메뉴얼',
+                            ),
                           ),
-                        ),
-                        IntroStepBuilder(
-                          order: 12,
-                          text: '클릭 시 위기상황 대처메뉴얼 화면',
-                          padding: EdgeInsets.only(
-                            bottom: 1,
-                            left: 1,
-                            right: 1,
-                            top: 1,
-                          ),
-                          builder: (context, key) => MainPageAniBtn(
-                            key: key,
-                            margins: EdgeInsets.only(top: 4),
-                            types: PredefinedThemes.warning,
-                            ontaps: () {},
-                            texts: '위기상황 \n대처메뉴얼',
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    flex: 3,
-                    child: IntroStepBuilder(
-                      order: 13,
-                      text: '클릭시 SOS 버튼',
-                      padding: EdgeInsets.only(
-                        bottom: 1,
-                        left: 1,
-                        right: 1,
-                        top: 1,
+                        ],
                       ),
-                      builder: (context, key) => AnimatedButton(
-                        key: key,
-                        height: 17.5.h,
-                        width: 50.w,
-                        blurRadius: 7.5,
-                        isOutline: true,
-                        type: PredefinedThemes.danger,
-                        onTap: () {},
-                        child: Row(
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: ClipRRect(
-                                child: Image.asset(
-                                  "assets/icons/shadowsiren1.png",
+                    ),
+                    Expanded(
+                      flex: 3,
+                      child: IntroStepBuilder(
+                        order: 13,
+                        text: '클릭 시 SOS 화면',
+                        padding: EdgeInsets.only(
+                          bottom: 1,
+                          left: 1,
+                          right: 1,
+                          top: 1,
+                        ),
+                        builder: (context, key) => AnimatedButton(
+                          key: key,
+                          height: 17.5.h,
+                          width: 50.w,
+                          blurRadius: 7.5,
+                          isOutline: true,
+                          type: PredefinedThemes.danger,
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: ClipRRect(
+                                  child: Image.asset(
+                                    "assets/icons/shadowsiren1.png",
+                                  ),
                                 ),
                               ),
-                            ),
-                            Expanded(
-                              flex: 1,
-                              child: Text(
-                                'S\nO\nS',
-                                style: TextStyle(fontSize: 17.5.sp),
-                                textAlign: TextAlign.center,
+                              Expanded(
+                                flex: 1,
+                                child: Container(
+                                  child: Text(
+                                    'S\nO\nS',
+                                    style: TextStyle(fontSize: 17.5.sp),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             ElevatedButton(
