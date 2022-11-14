@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/components/login/sign_up_text_field_suffix.dart';
+import 'package:homealone/components/login/sign_up_text_field_validate.dart';
 import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:kpostal/kpostal.dart';
@@ -86,7 +86,7 @@ class _SignupState extends State<SignUp> {
   }
 
   bool _isValidname(String val) {
-    if (val.length > 10 && val.length < 2) // 길이 검사
+    if (val.length > 10 || val.length < 2) // 길이 검사
       return false;
     if (val.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))) //특수 기호 있으면 false
       return false;
@@ -114,9 +114,13 @@ class _SignupState extends State<SignUp> {
                 ),
               ),
             ),
-            SignUpTextField(
+            SignUpTextFieldAuto(
               validations: (String? val) {
-                return _isValidname(val ?? '') ? null : "올바른 이름을 입력해주세요.";
+                if (val == null || val.isEmpty) return "이름을 입력해주세요.";
+                if (_isValidname(val ?? ''))
+                  return null;
+                else
+                  return "올바른 이름을 입력해주세요.";
               },
               paddings: EdgeInsets.fromLTRB(7.5.w, 5.h, 7.5.w, 1.75.h),
               keyboardtypes: TextInputType.text,
@@ -136,9 +140,11 @@ class _SignupState extends State<SignUp> {
             //     _nickname = nickname;
             //   },
             // ),
-            SignUpTextField(
+            SignUpTextFieldAuto(
               validations: (String? val) {
-                return _isValidBirth(val ?? '') ? null : "올바른 생년월일을 입력해주세요.";
+                if (val == null || val.isEmpty) return "생년월일을 입력해주세요.";
+                if (!_isValidBirth(val ?? '')) return "올바른 생년월일을 입력해주세요.";
+                return null;
               },
               paddings: EdgeInsets.fromLTRB(7.5.w, 1.75.h, 7.5.w, 1.75.h),
               keyboardtypes: TextInputType.number,
@@ -205,7 +211,9 @@ class _SignupState extends State<SignUp> {
               validations: (String? val) {
                 if (!_isValidPhone(val ?? '')) {
                   return "올바른 전화번호 형식을 입력해주세요.";
-                } else if (checkDupNum) return "이미 등록된 전화번호 입니다.";
+                } else if (!submitted)
+                  return "중복 체크를 해주세요.";
+                else if (checkDupNum) return "이미 등록된 번호입니다.";
                 return null;
               },
               paddings: EdgeInsets.fromLTRB(7.5.w, 1.75.h, 7.5.w, 1.75.h),
@@ -234,12 +242,12 @@ class _SignupState extends State<SignUp> {
                   if (checkDupNum) {
                     setState(() {
                       checkDupNum = true;
-                      submitted = false;
+                      submitted = true;
                     });
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CustomDialog("중복입니다.", null);
+                          return CustomDialog("이미 등록된 번호입니다.", null);
                         });
                   } else {
                     setState(() {
@@ -250,7 +258,7 @@ class _SignupState extends State<SignUp> {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
-                          return CustomDialog("사용 가능한 아이디입니다.", null);
+                          return CustomDialog("사용 가능한 번호입니다.", null);
                         });
                   }
                 },
@@ -345,6 +353,12 @@ class _SignupState extends State<SignUp> {
                       !checkDupNum &&
                       submitted) {
                     _register();
+                  } else if (!_SignupKey.currentState!.validate()) {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CustomDialog("회원 정보를 입력해주세요.", null);
+                        });
                   } else if (checkDupNum) {
                     showDialog(
                         context: context,

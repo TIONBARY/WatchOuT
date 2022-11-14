@@ -16,9 +16,9 @@ class CustomDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0)), //this right here
       child: Container(
-        height: 100.h,
+        height: 15.h,
         child: Padding(
-          padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),
+          padding: EdgeInsets.fromLTRB(2.w, 2.h, 2.w, 0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -33,8 +33,8 @@ class CustomDialog extends StatelessWidget {
                 ),
               ),
               Container(
-                width: 60.w,
-                margin: EdgeInsets.fromLTRB(0, 10.h, 0, 0),
+                width: 15.w,
+                margin: EdgeInsets.fromLTRB(0, 3.h, 0, 0),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.all(0),
