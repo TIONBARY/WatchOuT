@@ -18,8 +18,13 @@ class SelectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('WatchOuT', style: TextStyle(color: yColor, fontSize: 20.sp)),
+        title: Text('WatchOuT',
+            style: TextStyle(
+              color: yColor,
+              fontSize: 20.sp,
+              fontFamily: 'HanSan',
+            )),
+        automaticallyImplyLeading: false,
         backgroundColor: bColor,
         actions: [
           Container(

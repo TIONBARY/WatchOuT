@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:homealone/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants.dart';
@@ -24,6 +26,25 @@ class _OtherCamInfoFieldState extends State<OtherCamInfoField> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('WatchOuT',
+            style: TextStyle(
+              color: yColor,
+              fontSize: 20.sp,
+              fontFamily: 'HanSan',
+            )),
+        automaticallyImplyLeading: false,
+        backgroundColor: bColor,
+        actions: [
+          Container(
+            padding: EdgeInsets.fromLTRB(2.w, 1.h, 2.w, 1.h),
+            child: CircleAvatar(
+              backgroundImage: NetworkImage(
+                  Provider.of<MyUserInfo>(context, listen: false).profileImage),
+            ),
+          ),
+        ],
+      ),
       body: Container(
         padding: const EdgeInsets.only(top: 8.0),
         child: Stack(

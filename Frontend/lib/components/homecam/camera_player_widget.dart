@@ -37,7 +37,12 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
     return Scaffold(
         appBar: AppBar(
           title: Text('WatchOuT',
-              style: TextStyle(color: yColor, fontSize: 20.sp)),
+              style: TextStyle(
+                color: yColor,
+                fontSize: 20.sp,
+                fontFamily: 'HanSan',
+              )),
+          automaticallyImplyLeading: false,
           backgroundColor: bColor,
           actions: [
             Container(

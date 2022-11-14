@@ -39,6 +39,7 @@ class SwitchBools with ChangeNotifier {
     }
     for (var key in keys) {
       if (pref.getBool(key) == null) {
+        save();
         return;
       }
     }

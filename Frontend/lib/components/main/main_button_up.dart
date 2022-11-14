@@ -125,9 +125,10 @@ class _MainButtonUpState extends State<MainButtonUp> {
       SharedPreferences pref = await SharedPreferences.getInstance();
       useSiren =
           pref.getBool('useSiren') == null ? false : pref.getBool('useSiren')!;
+      print('----------------------${pref.getBool('useSiren')}');
       if (useSiren) {
         await _sosSoundSetting();
-        VolumeControl.setVolume(1);
+        VolumeControl.setVolume(0.1);
         assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
             audioFocusStrategy:
                 AudioFocusStrategy.request(resumeAfterInterruption: true));
