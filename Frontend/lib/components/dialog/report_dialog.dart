@@ -29,7 +29,7 @@ class _ReportDialogState extends State<ReportDialog> {
                 style: TextStyle(fontSize: 20),
               ),
             ),
-            Container(
+            SizedBox(
               width: 35.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

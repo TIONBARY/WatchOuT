@@ -63,38 +63,34 @@ class _MainButtonDownState extends State<MainButtonDown> {
         children: [
           Flexible(
             flex: 3,
-            child: Container(
-              child: AnimatedButton(
-                height: 17.5.h,
-                width: 50.w,
-                blurRadius: 7.5,
-                isOutline: true,
-                type: PredefinedThemes.light,
-                onTap: () {
-                  openDialog(context);
-                },
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        child: Text(
-                          'C\nA\nM',
-                          style: TextStyle(fontSize: 17.5.sp),
-                          textAlign: TextAlign.center,
-                        ),
+            child: AnimatedButton(
+              height: 17.5.h,
+              width: 50.w,
+              blurRadius: 7.5,
+              isOutline: true,
+              type: PredefinedThemes.light,
+              onTap: () {
+                openDialog(context);
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                      child: Text(
+                        'C\nA\nM',
+                        style: TextStyle(fontSize: 17.5.sp),
+                        textAlign: TextAlign.center,
+                      ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: ClipRRect(
+                      child: Image.asset(
+                        "assets/icons/shadowcctvreverse.png",
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: ClipRRect(
-                        child: Image.asset(
-                          "assets/icons/shadowcctvreverse.png",
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

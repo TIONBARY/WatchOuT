@@ -69,57 +69,55 @@ class _AccessCodeMessageChoiceListDialogState
                 ),
               ),
             ),
-            Container(
-              child: MultiSelectDialogField(
-                decoration: BoxDecoration(
-                  border: Border.all(color: b25Color),
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                items: emergencyCallList
+            MultiSelectDialogField(
+              decoration: BoxDecoration(
+                border: Border.all(color: b25Color),
+                borderRadius: BorderRadius.circular(5),
+              ),
+              items: emergencyCallList
+                  .map((e) => MultiSelectItem(e, e["name"]))
+                  .toList(),
+              chipDisplay: MultiSelectChipDisplay(
+                items: _selectedEmergencyCallList
                     .map((e) => MultiSelectItem(e, e["name"]))
                     .toList(),
-                chipDisplay: MultiSelectChipDisplay(
-                  items: _selectedEmergencyCallList
-                      .map((e) => MultiSelectItem(e, e["name"]))
-                      .toList(),
-                  onTap: (value) {
-                    setState(() {
-                      _selectedEmergencyCallList.remove(value);
-                    });
-                  },
-                  chipColor: bColor,
-                  textStyle: TextStyle(color: Colors.white),
-                ),
-                listType: MultiSelectListType.LIST,
-                onConfirm: (values) {
-                  _selectedEmergencyCallList = values;
+                onTap: (value) {
+                  setState(() {
+                    _selectedEmergencyCallList.remove(value);
+                  });
                 },
-                buttonIcon: Icon(
-                  Icons.arrow_drop_down,
-                  color: bColor,
-                ),
-                buttonText: Text(
-                  "비상연락망",
-                  style: TextStyle(color: bColor),
-                ),
-                dialogHeight: 25.h,
-                title: Text("귀갓길을 공유할 \n보호자를 선택해주세요.",
-                    style: TextStyle(
-                      color: bColor,
-                      fontSize: 12.5.sp,
-                    ),
-                    textAlign: TextAlign.center),
-                confirmText: Text(
-                  "확인",
-                  style: TextStyle(color: bColor),
-                ),
-                cancelText: Text(
-                  "취소",
-                  style: TextStyle(color: bColor),
-                ),
+                chipColor: bColor,
+                textStyle: TextStyle(color: Colors.white),
+              ),
+              listType: MultiSelectListType.LIST,
+              onConfirm: (values) {
+                _selectedEmergencyCallList = values;
+              },
+              buttonIcon: Icon(
+                Icons.arrow_drop_down,
+                color: bColor,
+              ),
+              buttonText: Text(
+                "비상연락망",
+                style: TextStyle(color: bColor),
+              ),
+              dialogHeight: 25.h,
+              title: Text("귀갓길을 공유할 \n보호자를 선택해주세요.",
+                  style: TextStyle(
+                    color: bColor,
+                    fontSize: 12.5.sp,
+                  ),
+                  textAlign: TextAlign.center),
+              confirmText: Text(
+                "확인",
+                style: TextStyle(color: bColor),
+              ),
+              cancelText: Text(
+                "취소",
+                style: TextStyle(color: bColor),
               ),
             ),
-            Container(
+            SizedBox(
               width: 37.5.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

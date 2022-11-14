@@ -61,19 +61,4 @@ class _ModifyUserInfoPageState extends State<ModifyUserInfoPage> {
       body: ModifyUserInfo(),
     );
   }
-
-  Widget _handleCurentScreen() {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        final userInfoRef = db
-            .collection("user")
-            .where("googleUID", isEqualTo: "${loggedUser?.uid}");
-        var userInfo;
-        userInfoRef.get().then((value) => userInfo = value);
-        //유저 상세 정보 저장해주기
-        return Text("유저 상세 데이터 저장");
-      },
-    );
-  }
 }

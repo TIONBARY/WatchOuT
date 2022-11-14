@@ -305,7 +305,6 @@ class _MainButtonUpState extends State<MainButtonUp> {
           ),
           Expanded(
             flex: 3,
-            child: Container(
               child: AnimatedButton(
                 height: 17.5.h,
                 width: 50.w,
@@ -327,18 +326,15 @@ class _MainButtonUpState extends State<MainButtonUp> {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Container(
                         child: Text(
                           'S\nO\nS',
                           style: TextStyle(fontSize: 17.5.sp),
                           textAlign: TextAlign.center,
                         ),
-                      ),
                     ),
                   ],
                 ),
               ),
-            ),
           ),
         ],
       ),

@@ -117,7 +117,7 @@ class _RecordPageState extends State<RecordPage> {
               padding: const EdgeInsets.only(top: 8.0),
               child: Stack(
                 children: [
-                  _goingHomeUserList.length == 0
+                  _goingHomeUserList.isEmpty
                       ? Container(
                           alignment: Alignment.center,
                           child: Text(
@@ -143,15 +143,13 @@ class _RecordPageState extends State<RecordPage> {
                               children: [
                                 Flexible(
                                   flex: 3,
-                                  child: Container(
-                                    child: SizedBox(
-                                      height: 20.h,
-                                      width: 20.w,
-                                      child: CircleAvatar(
-                                        backgroundImage: NetworkImage(
-                                            _goingHomeUserList[index]
-                                                ["profileImage"]),
-                                      ),
+                                  child: SizedBox(
+                                    height: 20.h,
+                                    width: 20.w,
+                                    child: CircleAvatar(
+                                      backgroundImage: NetworkImage(
+                                          _goingHomeUserList[index]
+                                              ["profileImage"]),
                                     ),
                                   ),
                                 ),
@@ -207,7 +205,7 @@ class _RecordPageState extends State<RecordPage> {
                       ),
                       backgroundColor: bColor,
                       onPressed: () {
-                        _CodeDialog(context);
+                        _codeDialog(context);
                       },
                     ),
                   ),
@@ -232,7 +230,7 @@ class _RecordPageState extends State<RecordPage> {
     );
   }
 
-  Future<void> _CodeDialog(BuildContext context) async {
+  Future<void> _codeDialog(BuildContext context) async {
     final _SignupKey = GlobalKey<FormState>();
     return showDialog(
       context: context,
@@ -261,7 +259,7 @@ class _RecordPageState extends State<RecordPage> {
                     },
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 37.5.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -278,7 +276,6 @@ class _RecordPageState extends State<RecordPage> {
                             addGoingHomeUser();
                             Navigator.pop(context);
                           }
-                          ;
                         },
                         child: Text(
                           '등록',
