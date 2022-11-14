@@ -157,26 +157,44 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
               sheetAbove: SnappingSheetContent(
                 draggable: true,
                 child: Container(
-                  color: Colors.white,
+                  color: b25Color,
                   padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
                   child: ListView(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          SizedBox(
-                            height: 75,
-                            width: 75,
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(widget.profileImage),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: b25Color,
+                                  offset: Offset(0, 3),
+                                  blurRadius: 7.5,
+                                  spreadRadius: 5,
+                                ),
+                              ],
+                            ),
+                            child: SizedBox(
+                              height: 75,
+                              width: 75,
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(widget.profileImage),
+                              ),
                             ),
                           ),
                           Column(
                             children: [
                               Text(
                                 widget.name + " 님의 현재 위치",
-                                style: TextStyle(fontSize: 17.5.sp),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 17.5.sp,
+                                  fontFamily: 'HanSan',
+                                ),
                               ),
                               SizedBox(
                                 width: 50.w,
@@ -186,6 +204,15 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                                   children: [
                                     Container(
                                       alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: b25Color,
+                                            offset: Offset(0, 3),
+                                            blurRadius: 7.5,
+                                          ),
+                                        ],
+                                      ),
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
                                             primary:
@@ -198,12 +225,24 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                                         icon: Icon(Icons.phone),
                                         label: Text(
                                           "전화",
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: 'HanSan',
+                                          ),
                                         ),
                                       ),
                                     ),
                                     Container(
                                       alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: b25Color,
+                                            offset: Offset(0, 3),
+                                            blurRadius: 7.5,
+                                          ),
+                                        ],
+                                      ),
                                       child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
                                             primary:
@@ -220,7 +259,10 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                                         icon: Icon(Icons.message),
                                         label: Text(
                                           "문자",
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontFamily: 'HanSan',
+                                          ),
                                         ),
                                       ),
                                     ),

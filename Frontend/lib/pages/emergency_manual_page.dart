@@ -29,12 +29,16 @@ class EmergencyManual extends StatelessWidget {
             style: TextStyle(
               color: yColor,
               fontSize: 15.sp,
+              fontFamily: 'HanSan',
             ),
           ),
           backgroundColor: bColor,
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(4.83.h),
             child: TabBar(
+              labelStyle: TextStyle(
+                fontFamily: 'HanSan',
+              ),
               isScrollable: true,
               unselectedLabelColor: y75Color,
               labelColor: yColor,

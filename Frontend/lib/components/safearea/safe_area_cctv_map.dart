@@ -362,7 +362,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           context: context,
           builder: (BuildContext context) {
             return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                15.h, '귀갓길 공유 메세지를 전송했습니다.\n지속적인 공유를 위해 앱을 끄지 말아주세요.', null);
+                17.5.h, '귀갓길 공유 메세지를 전송했습니다.\n지속적인 공유를 위해 앱을 끄지 말아주세요.', null);
           });
     } else {
       showDialog(
@@ -618,6 +618,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                             safeAreaList[i],
                                             style: TextStyle(
                                               color: bColor,
+                                              fontFamily: 'HanSan',
                                             ),
                                           ),
                                           style: ElevatedButton.styleFrom(

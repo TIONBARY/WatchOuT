@@ -457,6 +457,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                           borderRadius: BorderRadius.circular(5)),
                     ),
                     onPressed: () {
+                      Navigator.of(context).pop();
                       UserDeleteDialog(context);
                     },
                     child: Text(
@@ -486,7 +487,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
             padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-            height: 16.h,
+            height: 15.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -517,6 +518,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                           '확인',
                           style: TextStyle(
                             color: bColor,
+                            fontFamily: 'HanSan',
                           ),
                         ),
                       ),
@@ -532,7 +534,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                         },
                         child: Text(
                           '취소',
-                          style: TextStyle(color: bColor),
+                          style: TextStyle(
+                            color: bColor,
+                            fontFamily: 'HanSan',
+                          ),
                         ),
                       ),
                     ],

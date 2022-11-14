@@ -25,6 +25,7 @@ class SignUpTextField extends StatelessWidget {
     return Container(
       padding: paddings,
       child: TextFormField(
+        style: TextStyle(fontFamily: 'HanSan'),
         autocorrect: false,
         validator: validations,
         keyboardType: keyboardtypes,
@@ -33,17 +34,28 @@ class SignUpTextField extends StatelessWidget {
         decoration: InputDecoration(
           isCollapsed: true,
           hintText: hinttexts,
+          hintStyle: TextStyle(fontFamily: 'HanSan'),
           helperText: helpertexts,
+          helperStyle: TextStyle(fontFamily: 'HanSan'),
+          errorStyle: TextStyle(fontFamily: 'HanSan'),
           contentPadding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
+          filled: true,
+          fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
             borderSide: BorderSide(color: b25Color),
           ),
-          filled: true,
-          fillColor: Colors.white,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
             borderSide: BorderSide(color: bColor),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderSide: BorderSide(color: b25Color),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderSide: BorderSide(color: b25Color),
           ),
         ),
         onChanged: onchangeds,
