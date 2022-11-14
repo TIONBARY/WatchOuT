@@ -38,7 +38,12 @@ class _SetPageRadioButtonState extends State<SetPageRadioButton> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.texts),
+            Text(
+              widget.texts,
+              style: TextStyle(
+                fontFamily: 'HanSan',
+              ),
+            ),
             Switch(
               value: widget.values,
               onChanged: widget.onchangeds,
