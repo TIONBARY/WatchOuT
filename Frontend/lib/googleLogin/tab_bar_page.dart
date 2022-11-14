@@ -86,7 +86,7 @@ class _TabNavBarState extends State<TabNavBar> {
                   );
                 },
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(1.w, 1.h, 1.w, 1.h),
+                  padding: EdgeInsets.fromLTRB(2.w, 1.h, 2.w, 1.h),
                   child: CircleAvatar(
                     backgroundImage: NetworkImage(
                         Provider.of<MyUserInfo>(context, listen: false)
@@ -94,25 +94,6 @@ class _TabNavBarState extends State<TabNavBar> {
                   ),
                 ),
               ),
-              // IconButton(
-              //   icon: Icon(
-              //     Icons.exit_to_app_sharp,
-              //     color: Colors.white,
-              //   ),
-              //   onPressed: () {
-              //     AuthService().signOut();
-              //     Navigator.pushAndRemoveUntil(
-              //         context,
-              //         MaterialPageRoute(
-              //             builder: (BuildContext context) => HomePage()),
-              //         (route) => false);
-              //   },
-              // SharedPreferences.getInstance().then((prefs) async => {
-              //   await prefs.remove('username'),
-              //   await prefs.remove('userphone'),
-              //   await prefs.remove('contactlist'),
-              // });
-              // ),
             ],
           ),
           body: Padding(

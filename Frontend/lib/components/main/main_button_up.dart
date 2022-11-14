@@ -16,6 +16,7 @@ import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
+import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -267,6 +268,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                   types: PredefinedThemes.warning,
                   ontaps: _showReportDialog,
                   texts: '신고',
+                  colors: bColor,
                 ),
                 MainPageAniBtn(
                   margins: EdgeInsets.only(top: 4),
@@ -296,6 +298,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                     );
                   },
                   texts: '위기상황 \n대처메뉴얼',
+                  colors: bColor,
                 ),
               ],
             ),

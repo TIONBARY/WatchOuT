@@ -290,6 +290,7 @@ class _MainGuideState extends State<MainGuide> {
                               types: PredefinedThemes.warning,
                               ontaps: () {},
                               texts: '안심귀가\n서비스',
+                              colors: Colors.white,
                             ),
                           ),
                           IntroStepBuilder(
@@ -307,6 +308,7 @@ class _MainGuideState extends State<MainGuide> {
                               types: PredefinedThemes.warning,
                               ontaps: () {},
                               texts: '성범죄자\n알림e',
+                              colors: Colors.white,
                             ),
                           ),
                         ],
@@ -343,6 +345,7 @@ class _MainGuideState extends State<MainGuide> {
                               types: PredefinedThemes.warning,
                               ontaps: () {},
                               texts: '신고',
+                              colors: bColor,
                             ),
                           ),
                           IntroStepBuilder(
@@ -360,6 +363,7 @@ class _MainGuideState extends State<MainGuide> {
                               types: PredefinedThemes.warning,
                               ontaps: () {},
                               texts: '위기상황 \n대처메뉴얼',
+                              colors: bColor,
                             ),
                           ),
                         ],

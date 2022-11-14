@@ -18,10 +18,11 @@ class _SetPageState extends State<SetPage> {
         children: [
           Flexible(
             child: SetButton(),
-            flex: 1,
+            flex: 2,
           ),
-          Expanded(
+          Flexible(
             child: CircularMenu(),
+            flex: 1,
           ),
         ],
       ),

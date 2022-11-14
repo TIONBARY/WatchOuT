@@ -9,11 +9,13 @@ class MainPageAniBtn extends StatelessWidget {
     required this.types,
     required this.ontaps,
     required this.texts,
+    required this.colors,
   }) : super(key: key);
   final margins;
   final types;
   final ontaps;
   final texts;
+  final colors;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,9 @@ class MainPageAniBtn extends StatelessWidget {
         child: Text(
           texts,
           textAlign: TextAlign.center,
+          style: TextStyle(
+            color: colors,
+          ),
         ),
       ),
     );
