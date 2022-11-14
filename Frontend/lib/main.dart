@@ -227,6 +227,16 @@ Future<void> askPermission(
   if (await permission.isGranted) {
     return;
   }
+  if (permission == Permission.locationAlways) {
+    Future.microtask(() => Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => BasicDialog(
+                EdgeInsets.fromLTRB(5.w, 4.h, 5.w, 3.h),
+                24.h,
+                '24시간 무응답 시 응급 상황 전파 기능은\n백그라운드에서 위치 정보를 수신하고,\n자동 문자 전송이 이루어질 수 있습니다.\n이 기능을 원치 않으시면 설정 페이지에서\n 스크린 사용 감지를 off로 바꿔주세요.',
+                null))));
+  }
   Future.microtask(() => Navigator.push(
       context,
       MaterialPageRoute(
@@ -240,14 +250,6 @@ void _permission(BuildContext context) async {
     return;
   }
   permissionOnce = true;
-  Future.microtask(() => Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (context) => BasicDialog(
-              EdgeInsets.fromLTRB(5.w, 4.h, 5.w, 3.h),
-              24.h,
-              '24시간 무응답 시 응급 상황 전파 기능은\n백그라운드에서 위치 정보를 수신하고,\n자동 문자 전송이 이루어질 수 있습니다.\n이 기능을 원치 않으시면 설정 페이지에서\n 스크린 사용 감지를 off로 바꿔주세요.',
-              null))));
   askPermission(context, Permission.locationAlways,
       "WatchOuT에서 \n백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
   askPermission(context, Permission.location,

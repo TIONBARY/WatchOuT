@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
 
-class SignUpTextFieldSuffix extends StatelessWidget {
-  const SignUpTextFieldSuffix({
+class SignUpTextFieldAuto extends StatelessWidget {
+  const SignUpTextFieldAuto({
     Key? key,
     required this.paddings,
     required this.keyboardtypes,
@@ -11,7 +11,6 @@ class SignUpTextFieldSuffix extends StatelessWidget {
     required this.helpertexts,
     required this.onchangeds,
     required this.validations,
-    this.suffix,
   }) : super(key: key);
 
   final paddings;
@@ -20,7 +19,6 @@ class SignUpTextFieldSuffix extends StatelessWidget {
   final helpertexts;
   final onchangeds;
   final validations;
-  final suffix;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +46,6 @@ class SignUpTextFieldSuffix extends StatelessWidget {
             borderRadius: BorderRadius.all(Radius.circular(5)),
             borderSide: BorderSide(color: bColor),
           ),
-          suffix: suffix,
         ),
         onChanged: onchangeds,
       ),

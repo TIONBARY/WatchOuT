@@ -28,7 +28,7 @@ class BasicDialog extends StatelessWidget {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: b25Color,
+                backgroundColor: yColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(7),
                 ),
