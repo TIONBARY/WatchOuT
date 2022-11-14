@@ -23,7 +23,7 @@ class TabNavBar extends StatefulWidget {
   State<TabNavBar> createState() => _TabNavBarState();
 }
 
-class _TabNavBarState extends State<TabNavBar> with WidgetsBindingObserver {
+class _TabNavBarState extends State<TabNavBar> {
   late bool check;
   final _selectedColor = bColor;
 
@@ -125,24 +125,14 @@ class _TabNavBarState extends State<TabNavBar> with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    print(state);
-    if (state == AppLifecycleState.resumed) {
-      handlePlatformChannelMethods(context);
-    }
-  }
-
-  @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
     checkUserInfo();
     handlePlatformChannelMethods(context);
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance?.removeObserver(this);
     super.dispose();
   }
 
