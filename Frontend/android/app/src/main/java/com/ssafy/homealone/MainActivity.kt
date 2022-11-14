@@ -6,6 +6,7 @@ import io.flutter.embedding.android.FlutterActivity
 import android.os.Bundle
 import io.flutter.plugin.common.MethodChannel
 import android.media.AudioManager
+import io.flutter.embedding.android.FlutterFragmentActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 import android.content.Context
@@ -37,6 +38,9 @@ class MainActivity : FlutterActivity() {
 
         GeneratedPluginRegistrant.registerWith(FlutterEngine(this))
 
+        var intent: Intent = getIntent()
+        inviteCode = parseInvite(intent)
+
         MethodChannel(flutterEngine?.getDartExecutor()?.getBinaryMessenger()!!, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sosSoundSetting") {
                 s = sosSoundSetting()
@@ -64,9 +68,6 @@ class MainActivity : FlutterActivity() {
                     result.error("UNAVAILABLE", "문자 전송에 실패했습니다.", null)
                 }
             } else if (call.method == "getFriendLink") {
-
-                var intent: Intent = getIntent()
-                inviteCode = parseInvite(intent)
 
                 Log.d("URI_PARSING", "초대코드:$inviteCode")
                 if (inviteCode != "") {
