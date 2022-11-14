@@ -375,7 +375,9 @@ class _SetButtonState extends State<SetButton>
                                   existUser = false;
                                 } else {
                                   UserService().registerExistFirstResponder(
-                                      _addName, _addContact, tmpUser["uid"]);
+                                      _addName,
+                                      _addContact,
+                                      tmpUser["googleUID"]);
                                   existUser = true;
                                 }
                                 getEmergencyCallList();
