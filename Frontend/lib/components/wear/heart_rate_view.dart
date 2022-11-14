@@ -40,7 +40,16 @@ class _HeartRateViewState extends State<HeartRateView> {
         // padding: EdgeInsets.fromLTRB(5.w, 0.h, 5.w, 0.h),
         margin: widget.margins,
         decoration: BoxDecoration(
-            color: b25Color, borderRadius: BorderRadius.circular(25)),
+          color: b25Color,
+          borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: b25Color.withOpacity(0.125),
+              offset: Offset(0, 3),
+              blurRadius: 5,
+            ),
+          ],
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

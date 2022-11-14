@@ -17,13 +17,6 @@ class _GuideBarState extends State<GuideBar> {
       margin: EdgeInsets.fromLTRB(8, 12, 8, 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: b25Color,
-        //     offset: Offset(0, 3),
-        //     blurRadius: 5,
-        //   ),
-        // ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
