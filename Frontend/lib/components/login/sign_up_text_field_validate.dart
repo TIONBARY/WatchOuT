@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
 
-class SignUpTextFieldAuto extends StatelessWidget {
-  const SignUpTextFieldAuto({
+class SignUpTextFieldVali extends StatelessWidget {
+  const SignUpTextFieldVali({
     Key? key,
     required this.paddings,
     required this.keyboardtypes,
@@ -25,6 +25,9 @@ class SignUpTextFieldAuto extends StatelessWidget {
     return Container(
       padding: paddings,
       child: TextFormField(
+        style: TextStyle(
+          fontFamily: 'HanSan',
+        ),
         autovalidateMode: AutovalidateMode.onUserInteraction,
         autocorrect: false,
         validator: validations,
@@ -34,17 +37,28 @@ class SignUpTextFieldAuto extends StatelessWidget {
         decoration: InputDecoration(
           isCollapsed: true,
           hintText: hinttexts,
+          hintStyle: TextStyle(fontFamily: 'HanSan'),
           helperText: helpertexts,
-          contentPadding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
+          helperStyle: TextStyle(fontFamily: 'HanSan'),
+          errorStyle: TextStyle(fontFamily: 'HanSan'),
+          contentPadding: EdgeInsets.fromLTRB(5.w, 1.5.h, 5.w, 1.5.h),
+          filled: true,
+          fillColor: Colors.white,
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
             borderSide: BorderSide(color: b25Color),
           ),
-          filled: true,
-          fillColor: Colors.white,
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
             borderSide: BorderSide(color: bColor),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderSide: BorderSide(color: b25Color),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(5)),
+            borderSide: BorderSide(color: b25Color),
           ),
         ),
         onChanged: onchangeds,

@@ -144,7 +144,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                   margin: EdgeInsets.fromLTRB(15.w, 2.5.h, 1.25.w, 1.25.h),
                   child: Text(
                     '이름 : ',
-                    style: TextStyle(fontSize: 12.5.sp),
+                    style: TextStyle(
+                      fontSize: 12.5.sp,
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                 ),
                 FittedBox(
@@ -163,7 +166,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                     child: Text(
                       Provider.of<MyUserInfo>(context, listen: false).name,
                       textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 12.5.sp),
+                      style: TextStyle(
+                        fontSize: 12.5.sp,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ),
@@ -175,7 +181,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                   margin: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 1.25.w, 1.25.h),
                   child: Text(
                     '생년월일 : ',
-                    style: TextStyle(fontSize: 12.5.sp),
+                    style: TextStyle(
+                      fontSize: 12.5.sp,
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                 ),
                 FittedBox(
@@ -195,7 +204,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                     child: Text(
                       Provider.of<MyUserInfo>(context, listen: false).birth,
                       textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 12.5.sp),
+                      style: TextStyle(
+                        fontSize: 12.5.sp,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ),
@@ -207,7 +219,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                   margin: EdgeInsets.fromLTRB(15.w, 1.25.h, 1.25.w, 1.25.h),
                   child: Text(
                     '성별 : ',
-                    style: TextStyle(fontSize: 12.5.sp),
+                    style: TextStyle(
+                      fontSize: 12.5.sp,
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                 ),
                 FittedBox(
@@ -229,7 +244,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                           ? '남자'
                           : '여자',
                       textAlign: TextAlign.left,
-                      style: TextStyle(fontSize: 12.5.sp),
+                      style: TextStyle(
+                        fontSize: 12.5.sp,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ),
@@ -278,6 +296,9 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                       )),
                   label: Text(
                     "프로필 이미지 (선택)",
+                    style: TextStyle(
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                 ),
               ],
@@ -295,10 +316,14 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 cursorColor: bColor,
+                style: TextStyle(fontFamily: 'HanSan'),
                 decoration: InputDecoration(
                   isCollapsed: true,
                   hintText: '전화번호',
                   helperText: '숫자만 입력해주세요.',
+                  helperStyle: TextStyle(
+                    fontFamily: 'HanSan',
+                  ),
                   contentPadding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
@@ -344,10 +369,16 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                             Provider.of<MyUserInfo>(context, listen: false)
                                 .region,
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: 'HanSan',
+                            ),
                           )
                         : Text(
                             '(${this.postCode}) ${this.region}',
                             overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontFamily: 'HanSan',
+                            ),
                           ),
                   ),
                 ),
@@ -382,6 +413,9 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                     },
                     child: Text(
                       '우편번호',
+                      style: TextStyle(
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ),
@@ -409,6 +443,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                       '회원정보 수정',
                       style: TextStyle(
                         color: yColor,
+                        fontFamily: 'HanSan',
                       ),
                     ),
                   ),
@@ -428,6 +463,7 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                       '회원 탈퇴',
                       style: TextStyle(
                         color: Colors.white,
+                        fontFamily: 'HanSan',
                       ),
                     ),
                   ),

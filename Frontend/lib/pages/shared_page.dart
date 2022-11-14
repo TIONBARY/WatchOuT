@@ -122,7 +122,10 @@ class _RecordPageState extends State<RecordPage> {
                           alignment: Alignment.center,
                           child: Text(
                             "귀가 중인 사용자가 없습니다.",
-                            style: TextStyle(fontSize: 15.sp),
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontFamily: 'HanSan',
+                            ),
                           ),
                         )
                       : GridView.builder(
