@@ -411,12 +411,14 @@ class _MainGuideState extends State<MainGuide> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
+            MainPageAniBtn(
+              margins: EdgeInsets.only(top: 4),
+              types: PredefinedThemes.warning,
+              ontaps: () {
                 Navigator.pop(context);
               },
-              child: Text('돌아가기'),
-            )
+              texts: '돌아가기',
+            ),
           ],
         ),
       ),
