@@ -2,34 +2,36 @@ import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
 
-class ReportDialog extends StatefulWidget {
-  const ReportDialog(this.func, {Key? key}) : super(key: key);
-
-  final Function func;
+class RegisterFriendDialog extends StatefulWidget {
+  const RegisterFriendDialog(this.function, this.name, this.phone, {Key? key})
+      : super(key: key);
+  final Function function;
+  final String name;
+  final String phone;
 
   @override
-  State<ReportDialog> createState() => _ReportDialogState();
+  State<RegisterFriendDialog> createState() => _RegisterFriendDialogState();
 }
 
-class _ReportDialogState extends State<ReportDialog> {
+class _RegisterFriendDialogState extends State<RegisterFriendDialog> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
         padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-        height: 25.h,
+        height: 15.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
               color: bColor,
               child: Text(
-                "사진 촬영 시 112로 신고 문자가 전송됩니다. \n정말 전송하시겠습니까?",
-                style: TextStyle(fontSize: 20),
+                "${widget.name}(번호 : ${widget.phone}) 님께서 \n친구 요청을 보냈습니다. 수락하시겠습니까?",
+                style: TextStyle(fontSize: 15),
               ),
             ),
-            SizedBox(
+            Container(
               width: 35.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -42,11 +44,11 @@ class _ReportDialogState extends State<ReportDialog> {
                       ),
                     ),
                     onPressed: () {
-                      widget.func();
+                      widget.function();
                       Navigator.of(context).pop();
                     },
                     child: Text(
-                      '전송',
+                      '수락',
                       style: TextStyle(color: bColor),
                     ),
                   ),

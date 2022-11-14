@@ -1,6 +1,14 @@
+import 'package:encrypt/encrypt.dart' as en;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/set/circular_button.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/main.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 class CircularMenu extends StatefulWidget {
@@ -85,39 +93,39 @@ class _CircularMenuState extends State<CircularMenu>
                   child: CircularButton(
                     heights: 50,
                     widths: 50,
-                    colors: Colors.blue,
+                    colors: nColor,
                     icons: Icon(
-                      Icons.add,
+                      Icons.person_add_alt_1,
                       color: Colors.white,
                     ),
                     onpresseds: () {
-                      print('First Button');
+                      invite();
                     },
                   ),
                 ),
               ),
-              Transform.translate(
-                offset: Offset.fromDirection(getRadiansFromDegree(225),
-                    degTwoTranslationAnimation.value * 100),
-                child: Transform(
-                  transform: Matrix4.rotationZ(
-                      getRadiansFromDegree(rotationAnimation.value))
-                    ..scale(degTwoTranslationAnimation.value),
-                  alignment: Alignment.center,
-                  child: CircularButton(
-                    heights: 50,
-                    widths: 50,
-                    colors: Colors.black,
-                    icons: Icon(
-                      Icons.camera_alt,
-                      color: Colors.white,
-                    ),
-                    onpresseds: () {
-                      print('Second button');
-                    },
-                  ),
-                ),
-              ),
+              // Transform.translate(
+              //   offset: Offset.fromDirection(getRadiansFromDegree(225),
+              //       degTwoTranslationAnimation.value * 100),
+              //   child: Transform(
+              //     transform: Matrix4.rotationZ(
+              //         getRadiansFromDegree(rotationAnimation.value))
+              //       ..scale(degTwoTranslationAnimation.value),
+              //     alignment: Alignment.center,
+              //     child: CircularButton(
+              //       heights: 50,
+              //       widths: 50,
+              //       colors: Colors.black,
+              //       icons: Icon(
+              //         Icons.camera_alt,
+              //         color: Colors.white,
+              //       ),
+              //       onpresseds: () {
+              //         print('Second button');
+              //       },
+              //     ),
+              //   ),
+              // ),
               Transform.translate(
                 offset: Offset.fromDirection(getRadiansFromDegree(180),
                     degThreeTranslationAnimation.value * 100),
@@ -129,13 +137,26 @@ class _CircularMenuState extends State<CircularMenu>
                   child: CircularButton(
                     heights: 50,
                     widths: 50,
-                    colors: Colors.orangeAccent,
+                    colors: yColor,
                     icons: Icon(
-                      Icons.person,
+                      Icons.exit_to_app_sharp,
                       color: Colors.white,
                     ),
                     onpresseds: () {
-                      print('Third Button');
+                      AuthService().signOut();
+                      Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) => HomePage(),
+                          ),
+                          (route) => false);
+                      SharedPreferences.getInstance().then(
+                        (prefs) async => {
+                          await prefs.remove('username'),
+                          await prefs.remove('userphone'),
+                          await prefs.remove('contactlist'),
+                        },
+                      );
                     },
                   ),
                 ),
@@ -166,5 +187,32 @@ class _CircularMenuState extends State<CircularMenu>
         ),
       ],
     );
+  }
+
+  void invite() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    // 하루 뒤에 만료하는 코드
+    DateTime expDate = DateTime.now().add(Duration(days: 1));
+    String infoCode = "${expDate.toIso8601String()},${user?.uid}";
+    // debugPrint(expDate.toIso8601String());
+
+    //암호화 하기
+
+    await dotenv.load();
+    String inviteRandomKey = dotenv.get('inviteRandomKey');
+    final key = en.Key.fromUtf8(inviteRandomKey);
+    final iv = en.IV.fromLength(16);
+    final encrypter = en.Encrypter(en.AES(key));
+    String encryptedCode = encrypter.encrypt(infoCode, iv: iv).base64;
+    debugPrint('암호화 된값: $encryptedCode');
+    debugPrint(infoCode);
+    debugPrint(encryptedCode);
+
+    // String inviteUrl =
+    //     "https://www.homelaone.kr/action?inviteKey=$encryptedCode";
+    String inviteUrl =
+        "https://homelaone.page.link/?link=https://www.homelaone.kr/action?inviteKey=$encryptedCode&apn=com.ssafy.homealone&afl=https://play.google.com/store/apps/details?id=com.ssafy.homealone";
+
+    Share.share('지금 당장 [워치아웃] 앱을 설치하세요!\n$inviteUrl');
   }
 }

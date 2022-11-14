@@ -6,6 +6,7 @@ import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/components/homecam/cam_select_page.dart';
 import 'package:homealone/components/main/main_page_animated_button.dart';
+import 'package:homealone/constants.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -62,38 +63,34 @@ class _MainButtonDownState extends State<MainButtonDown> {
         children: [
           Flexible(
             flex: 3,
-            child: Container(
-              child: AnimatedButton(
-                height: 17.5.h,
-                width: 50.w,
-                blurRadius: 7.5,
-                isOutline: true,
-                type: PredefinedThemes.light,
-                onTap: () {
-                  openDialog(context);
-                },
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        child: Text(
-                          'C\nA\nM',
-                          style: TextStyle(fontSize: 17.5.sp),
-                          textAlign: TextAlign.center,
-                        ),
+            child: AnimatedButton(
+              height: 17.5.h,
+              width: 50.w,
+              blurRadius: 7.5,
+              isOutline: true,
+              type: PredefinedThemes.light,
+              onTap: () {
+                openDialog(context);
+              },
+              child: Row(
+                children: [
+                  Expanded(
+                    flex: 1,
+                      child: Text(
+                        'C\nA\nM',
+                        style: TextStyle(fontSize: 17.5.sp),
+                        textAlign: TextAlign.center,
+                      ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: ClipRRect(
+                      child: Image.asset(
+                        "assets/icons/shadowcctvreverse.png",
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: ClipRRect(
-                        child: Image.asset(
-                          "assets/icons/shadowcctvreverse.png",
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -102,9 +99,30 @@ class _MainButtonDownState extends State<MainButtonDown> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
+                Container(
+                  margin: EdgeInsets.only(top: 4),
+                  child: AnimatedButton(
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: null,
+                    color: nColor,
+                    onTap: () async {
+                      await launch('https://m.sexoffender.go.kr/main.nsc',
+                          forceWebView: false, forceSafariVC: false);
+                    },
+                    child: Text(
+                      '성범죄자\n알림e',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
                 MainPageAniBtn(
                   margins: EdgeInsets.only(bottom: 4),
-                  types: PredefinedThemes.warning,
+                  types: PredefinedThemes.primary,
                   ontaps: () {
                     (sidoName == '서울')
                         ? showDialog(
@@ -133,15 +151,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                           );
                   },
                   texts: '안심귀가\n서비스',
-                ),
-                MainPageAniBtn(
-                  margins: EdgeInsets.only(top: 4),
-                  types: PredefinedThemes.warning,
-                  ontaps: () async {
-                    await launch('https://m.sexoffender.go.kr/main.nsc',
-                        forceWebView: false, forceSafariVC: false);
-                  },
-                  texts: '성범죄자\n알림e',
+                  colors: Colors.white,
                 ),
               ],
             ),

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -42,7 +41,7 @@ class _camInfoFieldState extends State<camInfoField> {
                     validations: null,
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 37.5.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

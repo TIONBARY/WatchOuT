@@ -15,7 +15,7 @@ class CustomDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0)), //this right here
-      child: Container(
+      child: SizedBox(
         height: 15.h,
         child: Padding(
           padding: EdgeInsets.fromLTRB(2.w, 2.h, 2.w, 0),

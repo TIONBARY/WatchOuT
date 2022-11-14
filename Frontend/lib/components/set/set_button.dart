@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:encrypt/encrypt.dart' as en;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/login/user_service.dart';
@@ -18,7 +16,6 @@ import 'package:homealone/providers/switch_provider.dart';
 import 'package:icon_animated/widgets/icon_animated.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:sizer/sizer.dart';
 
 AuthService authService = AuthService();
@@ -134,18 +131,6 @@ class _SetButtonState extends State<SetButton>
                 )
               : Container(),
           SetPageRadioButton(
-            texts: '스크린 사용 감지',
-            values: Provider.of<SwitchBools>(context, listen: false).useScreen,
-            onchangeds: (value) {
-              setState(
-                () {
-                  Provider.of<SwitchBools>(context, listen: false)
-                      .changeScreen();
-                },
-              );
-            },
-          ),
-          SetPageRadioButton(
             texts: '경보음 사용',
             values: Provider.of<SwitchBools>(context, listen: false).useSiren,
             onchangeds: (value) {
@@ -157,12 +142,33 @@ class _SetButtonState extends State<SetButton>
               );
             },
           ),
+          SetPageRadioButton(
+            texts: '스크린 사용 감지',
+            values: Provider.of<SwitchBools>(context, listen: false).useScreen,
+            onchangeds: (value) {
+              setState(
+                () {
+                  Provider.of<SwitchBools>(context, listen: false)
+                      .changeScreen();
+                },
+              );
+            },
+          ),
           Flexible(
             child: Container(
               padding: EdgeInsets.fromLTRB(5.w, 0.5.h, 5.w, 0.5.h),
               margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 0.75.h),
               decoration: BoxDecoration(
-                  color: b25Color, borderRadius: BorderRadius.circular(25)),
+                color: b25Color,
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: [
+                  BoxShadow(
+                    color: b25Color.withOpacity(0.125),
+                    offset: Offset(0, 3),
+                    blurRadius: 5,
+                  ),
+                ],
+              ),
               child: localEmergencyCallList.isEmpty
                   ? Row(
                       children: [
@@ -199,150 +205,32 @@ class _SetButtonState extends State<SetButton>
                     ),
             ),
           ),
-          // Flexible(
-          //   child: Container(
-          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-          //     height: 5.5.h,
-          //     width: double.maxFinite,
-          //     child: ElevatedButton(
-          //       style: ElevatedButton.styleFrom(
-          //         backgroundColor: bColor,
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(25),
-          //         ),
-          //       ),
-          //       onPressed: () {
-          //         UserService().getUserInfoByNumber("01090319389");
-          //       },
-          //       child: Text(
-          //         '친구 초대',
-          //         style: TextStyle(
-          //           color: yColor,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // Flexible(
-          //   child: Container(
-          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-          //     height: 5.5.h,
-          //     width: double.maxFinite,
-          //     child: ElevatedButton(
-          //       style: ElevatedButton.styleFrom(
-          //         backgroundColor: bColor,
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(25),
-          //         ),
-          //       ),
-          //       onPressed: () {
-          //         openEmergencySetting();
-          //       },
-          //       child: Text(
-          //         '응급 설정',
-          //         style: TextStyle(
-          //           color: yColor,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // Flexible(
-          //   child: Container(
-          //     margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
-          //     height: 5.5.h,
-          //     width: double.maxFinite,
-          //     child: ElevatedButton(
-          //       style: ElevatedButton.styleFrom(
-          //         backgroundColor: bColor,
-          //         shape: RoundedRectangleBorder(
-          //           borderRadius: BorderRadius.circular(25),
-          //         ),
-          //       ),
-          //       onPressed: () {
-          //         UserDeleteDialog(context);
-          //       },
-          //       child: Text(
-          //         '회원 탈퇴',
-          //         style: TextStyle(
-          //           color: yColor,
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> UserDeleteDialog(BuildContext context) async {
-    // final _SignupKey = GlobalKey<FormState>();
-    return showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
-          child: Container(
-            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-            height: 16.h,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Title(
-                  color: bColor,
-                  child: Text(
-                    'WatchOuT을 \n정말 탈퇴하시겠습니까?',
-                    textAlign: TextAlign.center,
+          Flexible(
+            child: Container(
+              margin: EdgeInsets.fromLTRB(1.w, 0.75.h, 1.w, 1.5.h),
+              height: 5.5.h,
+              width: double.maxFinite,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: bColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
                   ),
                 ),
-                Container(
-                  width: 40.w,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: yColor,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        ),
-                        onPressed: () {
-                          UserService().deleteUser();
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          '확인',
-                          style: TextStyle(
-                            color: bColor,
-                          ),
-                        ),
-                      ),
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: b25Color,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: Text(
-                          '취소',
-                          style: TextStyle(color: bColor),
-                        ),
-                      ),
-                    ],
+                onPressed: () {
+                  openEmergencySetting();
+                },
+                child: Text(
+                  '응급 설정',
+                  style: TextStyle(
+                    color: yColor,
                   ),
                 ),
-              ],
+              ),
             ),
           ),
-        );
-      },
+        ],
+      ),
     );
   }
 
@@ -698,32 +586,5 @@ class _SetButtonState extends State<SetButton>
     debugPrint("응급 오류");
     // Timer(Duration(seconds: 1), () { showDialog()});
     showDialog(context: context, builder: (context) => PackageNotFoundDialog());
-  }
-
-  void invite() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    // 하루 뒤에 만료하는 코드
-    DateTime expDate = DateTime.now().add(Duration(days: 1));
-    String infoCode = "${expDate.toIso8601String()},${user?.uid}";
-    // debugPrint(expDate.toIso8601String());
-
-    //암호화 하기
-
-    await dotenv.load();
-    String inviteRandomKey = dotenv.get('inviteRandomKey');
-    final key = en.Key.fromUtf8(inviteRandomKey);
-    final iv = en.IV.fromLength(16);
-    final encrypter = en.Encrypter(en.AES(key));
-    String encryptedCode = encrypter.encrypt(infoCode, iv: iv).base64;
-    debugPrint('암호화 된값: $encryptedCode');
-    debugPrint(infoCode);
-    debugPrint(encryptedCode);
-
-    // String inviteUrl =
-    //     "https://www.homelaone.kr/action?inviteKey=$encryptedCode";
-    String inviteUrl =
-        "https://homelaone.page.link/?link=https://www.homelaone.kr/action?inviteKey=$encryptedCode&apn=com.ssafy.homealone&afl=https://play.google.com/store/apps/details?id=com.ssafy.homealone";
-
-    Share.share('지금 당장 [워치아웃] 앱을 설치하세요!\n$inviteUrl');
   }
 }

@@ -27,7 +27,11 @@ class _MainGuideState extends State<MainGuide> {
             padding: EdgeInsets.fromLTRB(1.w, 1.h, 1.w, 1.h),
             child: IntroStepBuilder(
               order: 1,
-              text: '클릭 시 회원정보 수정',
+              // text: '클릭시 개인 정보 수정 화면',
+              text: Text(
+                '클릭시 SOS 버rrr튼',
+                style: TextStyle(fontFamily: 'WdcsR'),
+              ).data,
               padding: EdgeInsets.only(
                 bottom: 1,
                 left: 1,
@@ -173,8 +177,8 @@ class _MainGuideState extends State<MainGuide> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    child: Text('가이드 보러가기'),
                     margin: EdgeInsets.all(8),
+                    child: Text('가이드 보러가기'),
                   ),
                   IntroStepBuilder(
                     order: 6,
@@ -188,7 +192,6 @@ class _MainGuideState extends State<MainGuide> {
                     builder: (context, key) => ElevatedButton(
                       key: key,
                       onPressed: () {},
-                      child: Icon(Icons.question_mark, color: yColor),
                       style: IconButton.styleFrom(
                         shape: CircleBorder(),
                         minimumSize: Size.zero,
@@ -196,6 +199,7 @@ class _MainGuideState extends State<MainGuide> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         backgroundColor: bColor,
                       ),
+                      child: Icon(Icons.question_mark, color: yColor),
                     ),
                   ),
                 ],
@@ -226,46 +230,42 @@ class _MainGuideState extends State<MainGuide> {
                   children: [
                     Flexible(
                       flex: 3,
-                      child: Container(
-                        child: IntroStepBuilder(
-                          order: 8,
-                          text: '클릭 시 홈캠 화면',
-                          padding: EdgeInsets.only(
-                            bottom: 1,
-                            left: 1,
-                            right: 1,
-                            top: 1,
-                          ),
-                          builder: (context, key) => AnimatedButton(
-                            key: key,
-                            height: 17.5.h,
-                            width: 50.w,
-                            blurRadius: 7.5,
-                            isOutline: true,
-                            type: PredefinedThemes.light,
-                            onTap: () {},
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    child: Text(
-                                      'C\nA\nM',
-                                      style: TextStyle(fontSize: 17.5.sp),
-                                      textAlign: TextAlign.center,
-                                    ),
+                      child: IntroStepBuilder(
+                        order: 8,
+                        text: '클릭 시 홈캠 화면',
+                        padding: EdgeInsets.only(
+                          bottom: 1,
+                          left: 1,
+                          right: 1,
+                          top: 1,
+                        ),
+                        builder: (context, key) => AnimatedButton(
+                          key: key,
+                          height: 17.5.h,
+                          width: 50.w,
+                          blurRadius: 7.5,
+                          isOutline: true,
+                          type: PredefinedThemes.light,
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  'C\nA\nM',
+                                  style: TextStyle(fontSize: 17.5.sp),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: ClipRRect(
+                                  child: Image.asset(
+                                    "assets/icons/shadowcctvreverse.png",
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 2,
-                                  child: ClipRRect(
-                                    child: Image.asset(
-                                      "assets/icons/shadowcctvreverse.png",
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -277,6 +277,32 @@ class _MainGuideState extends State<MainGuide> {
                         children: [
                           IntroStepBuilder(
                             order: 9,
+                            text: '클릭 시 성범죄자 알림e 화면',
+                            padding: EdgeInsets.only(
+                              bottom: 1,
+                              left: 1,
+                              right: 1,
+                              top: 1,
+                            ),
+                            builder: (context, key) => AnimatedButton(
+                              key: key,
+                              width: 30.w,
+                              blurRadius: 7.5,
+                              isOutline: true,
+                              type: null,
+                              color: nColor,
+                              onTap: () async {},
+                              child: Text(
+                                '성범죄자\n알림e',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
+                          IntroStepBuilder(
+                            order: 10,
                             text: '클릭 시 안심귀가 서비스 화면',
                             padding: EdgeInsets.only(
                               bottom: 1,
@@ -287,26 +313,10 @@ class _MainGuideState extends State<MainGuide> {
                             builder: (context, key) => MainPageAniBtn(
                               key: key,
                               margins: EdgeInsets.only(bottom: 4),
-                              types: PredefinedThemes.warning,
+                              types: PredefinedThemes.primary,
                               ontaps: () {},
                               texts: '안심귀가\n서비스',
-                            ),
-                          ),
-                          IntroStepBuilder(
-                            order: 10,
-                            text: '클릭 시 성범죄자 알림e 화면',
-                            padding: EdgeInsets.only(
-                              bottom: 1,
-                              left: 1,
-                              right: 1,
-                              top: 1,
-                            ),
-                            builder: (context, key) => MainPageAniBtn(
-                              key: key,
-                              margins: EdgeInsets.only(top: 4),
-                              types: PredefinedThemes.warning,
-                              ontaps: () {},
-                              texts: '성범죄자\n알림e',
+                              colors: Colors.white,
                             ),
                           ),
                         ],
@@ -343,6 +353,7 @@ class _MainGuideState extends State<MainGuide> {
                               types: PredefinedThemes.warning,
                               ontaps: () {},
                               texts: '신고',
+                              colors: bColor,
                             ),
                           ),
                           IntroStepBuilder(
@@ -360,6 +371,7 @@ class _MainGuideState extends State<MainGuide> {
                               types: PredefinedThemes.warning,
                               ontaps: () {},
                               texts: '위기상황 \n대처메뉴얼',
+                              colors: bColor,
                             ),
                           ),
                         ],
@@ -396,12 +408,10 @@ class _MainGuideState extends State<MainGuide> {
                               ),
                               Expanded(
                                 flex: 1,
-                                child: Container(
-                                  child: Text(
-                                    'S\nO\nS',
-                                    style: TextStyle(fontSize: 17.5.sp),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                child: Text(
+                                  'S\nO\nS',
+                                  style: TextStyle(fontSize: 17.5.sp),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
                             ],
@@ -413,12 +423,15 @@ class _MainGuideState extends State<MainGuide> {
                 ),
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
+            MainPageAniBtn(
+              margins: EdgeInsets.only(top: 4),
+              types: PredefinedThemes.warning,
+              ontaps: () {
                 Navigator.pop(context);
               },
-              child: Text('돌아가기'),
-            )
+              texts: '돌아가기',
+              colors: yColor,
+            ),
           ],
         ),
       ),

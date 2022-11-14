@@ -160,7 +160,7 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
                         validations: null,
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: 37.5.w,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

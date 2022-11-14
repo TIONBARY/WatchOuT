@@ -17,13 +17,6 @@ class _GuideBarState extends State<GuideBar> {
       margin: EdgeInsets.fromLTRB(8, 12, 8, 4),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
-        // boxShadow: [
-        //   BoxShadow(
-        //     color: b25Color,
-        //     offset: Offset(0, 3),
-        //     blurRadius: 5,
-        //   ),
-        // ],
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.end,
@@ -50,8 +43,9 @@ class _GuideBarState extends State<GuideBar> {
                       padding: EdgeInsets.zero,
                       borderRadius: const BorderRadius.all(Radius.circular(4)),
                       maskColor: const Color.fromRGBO(0, 0, 0, .6),
+                      maskClosable: true,
+                      buttonTextBuilder: (order) => order == 13 ? '완료' : '다음',
                       child: const MainGuide(),
-                      buttonTextBuilder: (order) => order == 13 ? '돌아가기' : '다음',
                     ),
                   ),
                 );
