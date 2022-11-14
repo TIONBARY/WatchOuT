@@ -66,6 +66,7 @@ class _AccessCodeMessageChoiceListDialogState
                 style: TextStyle(
                   color: bColor,
                   fontSize: 15.sp,
+                  fontFamily: 'HanSan',
                 ),
               ),
             ),
@@ -99,22 +100,32 @@ class _AccessCodeMessageChoiceListDialogState
               ),
               buttonText: Text(
                 "비상연락망",
-                style: TextStyle(color: bColor),
+                style: TextStyle(
+                  color: bColor,
+                  fontFamily: 'HanSan',
+                ),
               ),
               dialogHeight: 25.h,
-              title: Text("귀갓길을 공유할 \n보호자를 선택해주세요.",
+              title: Text('귀갓길을 공유할 \n보호자를 선택해주세요.',
                   style: TextStyle(
                     color: bColor,
                     fontSize: 12.5.sp,
+                    fontFamily: 'HanSan',
                   ),
                   textAlign: TextAlign.center),
               confirmText: Text(
                 "확인",
-                style: TextStyle(color: bColor),
+                style: TextStyle(
+                  color: bColor,
+                  fontFamily: 'HanSan',
+                ),
               ),
               cancelText: Text(
                 "취소",
-                style: TextStyle(color: bColor),
+                style: TextStyle(
+                  color: bColor,
+                  fontFamily: 'HanSan',
+                ),
               ),
             ),
             SizedBox(
@@ -136,7 +147,10 @@ class _AccessCodeMessageChoiceListDialogState
                     },
                     child: Text(
                       '전송',
-                      style: TextStyle(color: bColor),
+                      style: TextStyle(
+                        color: bColor,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                   ElevatedButton(
@@ -152,7 +166,10 @@ class _AccessCodeMessageChoiceListDialogState
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: bColor),
+                      style: TextStyle(
+                        color: bColor,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ],

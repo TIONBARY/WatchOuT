@@ -160,7 +160,10 @@ class _RecordPageState extends State<RecordPage> {
                                   flex: 1,
                                   child: Text(
                                     _goingHomeUserList[index]["name"],
-                                    style: TextStyle(fontSize: 12.5.sp),
+                                    style: TextStyle(
+                                      fontSize: 12.5.sp,
+                                      fontFamily: 'HanSan',
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -190,7 +193,10 @@ class _RecordPageState extends State<RecordPage> {
                                                   _goingHomeUserList[index]
                                                       ["phone"])));
                                     },
-                                    child: Text('위치 확인'),
+                                    child: Text(
+                                      '위치 확인',
+                                      style: TextStyle(fontFamily: 'HanSan'),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -284,6 +290,7 @@ class _RecordPageState extends State<RecordPage> {
                           '등록',
                           style: TextStyle(
                             color: bColor,
+                            fontFamily: 'HanSan',
                           ),
                         ),
                       ),
@@ -300,7 +307,10 @@ class _RecordPageState extends State<RecordPage> {
                         },
                         child: Text(
                           '취소',
-                          style: TextStyle(color: bColor),
+                          style: TextStyle(
+                            color: bColor,
+                            fontFamily: 'HanSan',
+                          ),
                         ),
                       ),
                     ],

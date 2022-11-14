@@ -263,6 +263,7 @@ class _SetButtonState extends State<SetButton>
                       style: TextStyle(
                         color: bColor,
                         fontSize: 15.sp,
+                        fontFamily: 'HanSan',
                       ),
                     ),
                   ),
@@ -275,6 +276,7 @@ class _SetButtonState extends State<SetButton>
                           child: Container(
                             padding: EdgeInsets.only(right: 0.5.w),
                             child: TextField(
+                              style: TextStyle(fontFamily: 'HanSan'),
                               autocorrect: false,
                               keyboardType: TextInputType.text,
                               textInputAction: TextInputAction.next,
@@ -283,6 +285,7 @@ class _SetButtonState extends State<SetButton>
                               decoration: InputDecoration(
                                 isCollapsed: true,
                                 hintText: '이름',
+                                hintStyle: TextStyle(fontFamily: 'HanSan'),
                                 contentPadding: EdgeInsets.fromLTRB(
                                     5.w, 1.25.h, 5.w, 1.25.h),
                                 enabledBorder: OutlineInputBorder(
@@ -311,6 +314,7 @@ class _SetButtonState extends State<SetButton>
                           child: Container(
                             padding: EdgeInsets.only(left: 0.5.w),
                             child: TextField(
+                              style: TextStyle(fontFamily: 'HanSan'),
                               autocorrect: false,
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.done,
@@ -319,6 +323,7 @@ class _SetButtonState extends State<SetButton>
                               decoration: InputDecoration(
                                 isCollapsed: true,
                                 hintText: '전화번호',
+                                hintStyle: TextStyle(fontFamily: 'HanSan'),
                                 contentPadding: EdgeInsets.fromLTRB(
                                     5.w, 1.25.h, 5.w, 1.25.h),
                                 enabledBorder: OutlineInputBorder(
@@ -396,6 +401,7 @@ class _SetButtonState extends State<SetButton>
                             '등록',
                             style: TextStyle(
                               color: bColor,
+                              fontFamily: 'HanSan',
                             ),
                           ),
                         ),
@@ -415,7 +421,10 @@ class _SetButtonState extends State<SetButton>
                           },
                           child: Text(
                             '취소',
-                            style: TextStyle(color: bColor),
+                            style: TextStyle(
+                              color: bColor,
+                              fontFamily: 'HanSan',
+                            ),
                           ),
                         ),
                       ],
@@ -448,6 +457,7 @@ class _SetButtonState extends State<SetButton>
                     style: TextStyle(
                       color: bColor,
                       fontSize: 15.sp,
+                      fontFamily: 'HanSan',
                     ),
                   ),
                 ),
@@ -469,7 +479,10 @@ class _SetButtonState extends State<SetButton>
                       });
                     },
                     chipColor: yColor,
-                    textStyle: TextStyle(color: bColor),
+                    textStyle: TextStyle(
+                      color: bColor,
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                   listType: MultiSelectListType.LIST,
                   onConfirm: (values) {
@@ -481,7 +494,10 @@ class _SetButtonState extends State<SetButton>
                   ),
                   buttonText: Text(
                     "비상연락망",
-                    style: TextStyle(color: bColor),
+                    style: TextStyle(
+                      color: bColor,
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                   dialogHeight: 25.h,
                   title: Text(
@@ -489,16 +505,23 @@ class _SetButtonState extends State<SetButton>
                     style: TextStyle(
                       color: bColor,
                       fontSize: 12.5.sp,
+                      fontFamily: 'HanSan',
                     ),
                     textAlign: TextAlign.center,
                   ),
                   confirmText: Text(
                     "확인",
-                    style: TextStyle(color: bColor),
+                    style: TextStyle(
+                      color: bColor,
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                   cancelText: Text(
                     "취소",
-                    style: TextStyle(color: bColor),
+                    style: TextStyle(
+                      color: bColor,
+                      fontFamily: 'HanSan',
+                    ),
                   ),
                 ),
                 Container(
@@ -535,7 +558,10 @@ class _SetButtonState extends State<SetButton>
                         },
                         child: Text(
                           '삭제',
-                          style: TextStyle(color: bColor),
+                          style: TextStyle(
+                            color: bColor,
+                            fontFamily: 'HanSan',
+                          ),
                         ),
                       ),
                       ElevatedButton(
@@ -551,7 +577,10 @@ class _SetButtonState extends State<SetButton>
                         },
                         child: Text(
                           "취소",
-                          style: TextStyle(color: bColor),
+                          style: TextStyle(
+                            color: bColor,
+                            fontFamily: 'HanSan',
+                          ),
                         ),
                       ),
                     ],

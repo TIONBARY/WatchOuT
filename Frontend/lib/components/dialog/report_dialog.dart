@@ -18,15 +18,15 @@ class _ReportDialogState extends State<ReportDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
         padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-        height: 25.h,
+        height: 17.5.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
               color: bColor,
               child: Text(
-                "사진 촬영 시 112로 신고 문자가 전송됩니다. \n정말 전송하시겠습니까?",
-                style: TextStyle(fontSize: 20),
+                '사진 촬영 시 \n112로 신고 문자가 전송됩니다. \n정말 전송하시겠습니까?',
+                textAlign: TextAlign.center,
               ),
             ),
             SizedBox(
@@ -47,7 +47,10 @@ class _ReportDialogState extends State<ReportDialog> {
                     },
                     child: Text(
                       '전송',
-                      style: TextStyle(color: bColor),
+                      style: TextStyle(
+                        color: bColor,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                   ElevatedButton(
@@ -63,7 +66,10 @@ class _ReportDialogState extends State<ReportDialog> {
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: bColor),
+                      style: TextStyle(
+                        color: bColor,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ],
