@@ -52,7 +52,7 @@ class SelectPage extends StatelessWidget {
                   : Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => camInfoField(),
+                        builder: (context) => CamInfoField(),
                       ),
                     );
             },
@@ -78,7 +78,7 @@ class SelectPage extends StatelessWidget {
             type: PredefinedThemes.light,
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => otherCamInfoField()));
+                  MaterialPageRoute(builder: (context) => OtherCamInfoField()));
             },
             child: Row(
               children: [

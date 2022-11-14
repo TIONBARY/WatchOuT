@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -6,14 +5,14 @@ import '../../constants.dart';
 import '../login/sign_up_text_field.dart';
 import 'others_cam.dart';
 
-class otherCamInfoField extends StatefulWidget {
-  const otherCamInfoField({Key? key}) : super(key: key);
+class OtherCamInfoField extends StatefulWidget {
+  const OtherCamInfoField({Key? key}) : super(key: key);
 
   @override
-  State<otherCamInfoField> createState() => _otherCamInfoFieldState();
+  State<OtherCamInfoField> createState() => _OtherCamInfoFieldState();
 }
 
-class _otherCamInfoFieldState extends State<otherCamInfoField> {
+class _OtherCamInfoFieldState extends State<OtherCamInfoField> {
   bool isLoading = true;
   String _code = '';
 
@@ -38,7 +37,7 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
                     ),
                   )
                 : OthersCam(
-                    url: '$_code',
+                    url: _code,
                   ),
             Positioned(
               right: 1.25.w,
@@ -47,7 +46,7 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
                 heroTag: "other_cam_info_field_edit",
                 backgroundColor: bColor,
                 onPressed: () {
-                  _CodeDialog(context);
+                  _codeDialog(context);
                 },
                 child: Icon(
                   Icons.edit,
@@ -74,7 +73,7 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
     );
   }
 
-  Future<void> _CodeDialog(BuildContext context) async {
+  Future<void> _codeDialog(BuildContext context) async {
     final _SignupKey = GlobalKey<FormState>();
     return showDialog(
       context: context,
@@ -101,7 +100,7 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
                     },
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 37.5.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

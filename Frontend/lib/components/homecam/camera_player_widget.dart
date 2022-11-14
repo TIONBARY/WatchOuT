@@ -25,7 +25,7 @@ class CameraPlayerWidget extends StatefulWidget {
 
 class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
   late VlcPlayerController playerController;
-  final _SignupKey = GlobalKey<FormState>();
+  final _signupKey = GlobalKey<FormState>();
   String _code = '';
   late String url;
   Future _future() async {
@@ -66,7 +66,7 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
             } else {
               url = snapshot.data["url"];
               playerController =
-                  VlcPlayerController.network("${url}", autoPlay: true);
+                  VlcPlayerController.network(url, autoPlay: true);
               return Column(
                 children: [
                   VlcPlayer(
@@ -193,7 +193,7 @@ class _CameraPlayerWidgetState extends State<CameraPlayerWidget> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Form(
-                      key: _SignupKey,
+                      key: _signupKey,
                       child: SignUpTextField(
                         paddings:
                             EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
