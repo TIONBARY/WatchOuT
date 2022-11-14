@@ -48,7 +48,7 @@ class GoingHomeMap extends StatefulWidget {
 }
 
 class _GoingHomeMapState extends State<GoingHomeMap> {
-  late final Future? myFuture = _getKakaoKey();
+  late final Future? myFuture = _getKakaoKey(context);
   ApiKakao apiKakao = ApiKakao();
 
   @override
@@ -56,13 +56,22 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
     super.initState();
   }
 
-  Future _getKakaoKey() async {
+  Future _getKakaoKey(BuildContext context) async {
     await dotenv.load();
     kakaoMapKey = dotenv.get('kakaoMapAPIKey');
     final response = await FirebaseFirestore.instance
         .collection("location")
         .doc(widget.accessCode)
         .get();
+    if (!response.exists) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '귀가자의 위치 정보를 불러올 수 없습니다.', null);
+          });
+      return;
+    }
     initLat = response.data()!["latitude"];
     initLon = response.data()!["longitude"];
     _currentPositionStream = FirebaseFirestore.instance
@@ -297,6 +306,7 @@ class _GoingHomeMapState extends State<GoingHomeMap> {
                           left: 2.w,
                           bottom: 1.h,
                           child: FloatingActionButton(
+                            heroTag: "report",
                             elevation: 5,
                             hoverElevation: 10,
                             tooltip: "긴급 신고",

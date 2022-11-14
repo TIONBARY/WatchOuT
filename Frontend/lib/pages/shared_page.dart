@@ -198,20 +198,23 @@ class _RecordPageState extends State<RecordPage> {
                     right: 1.25.w,
                     bottom: 1.25.h,
                     child: FloatingActionButton(
-                      backgroundColor: bColor,
-                      onPressed: () {
-                        _codeDialog(context);
-                      },
+                      heroTag: "shared_page_edit",
                       child: Icon(
                         Icons.edit,
                         size: 20.sp,
                       ),
+                      backgroundColor: bColor,
+                      onPressed: () {
+                        _codeDialog(context);
+                      },
                     ),
                   ),
                   Positioned(
                     left: 1.25.w,
                     bottom: 1.25.h,
                     child: FloatingActionButton(
+                      heroTag: "shared_page_refresh",
+                      child: Icon(Icons.refresh),
                       elevation: 5,
                       hoverElevation: 10,
                       tooltip: "귀가 공유 리스트 갱신",
@@ -219,7 +222,6 @@ class _RecordPageState extends State<RecordPage> {
                       onPressed: () {
                         updateGoingHomeUserList();
                       },
-                      child: Icon(Icons.refresh),
                     ),
                   ),
                 ],

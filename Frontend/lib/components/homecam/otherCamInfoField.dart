@@ -44,6 +44,7 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
               right: 1.25.w,
               bottom: 1.25.h,
               child: FloatingActionButton(
+                heroTag: "other_cam_info_field_edit",
                 backgroundColor: bColor,
                 onPressed: () {
                   _CodeDialog(context);
@@ -58,6 +59,7 @@ class _otherCamInfoFieldState extends State<otherCamInfoField> {
               left: 1.25.w,
               bottom: 1.25.h,
               child: FloatingActionButton(
+                heroTag: "other_cam_info_field_update",
                 elevation: 5,
                 hoverElevation: 10,
                 tooltip: "귀가 공유 리스트 갱신",
