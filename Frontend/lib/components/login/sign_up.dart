@@ -78,7 +78,8 @@ class _SignupState extends State<SignUp> {
 
   bool _isValidBirth(String val) {
     if (val.length != 6) return false;
-    return RegExp(r'(?:[0]9)?[0-9]{6}$').hasMatch(val);
+    return RegExp(r'\d{2}([0]\d|[1][0-2])([0][1-9]|[1-2]\d|[3][0-1])')
+        .hasMatch(val);
   }
 
   bool _isValidname(String val) {
