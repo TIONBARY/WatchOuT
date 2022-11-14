@@ -57,6 +57,8 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
             Provider.of<MyUserInfo>(context, listen: false).latitude;
         this.longitude =
             Provider.of<MyUserInfo>(context, listen: false).longitude;
+        this._profileImageURL =
+            Provider.of<MyUserInfo>(context, listen: false).profileImage;
       }
     } catch (e) {
       print("sign_up.dart에서 유저 정보를 받아오지 못했습니다.");
