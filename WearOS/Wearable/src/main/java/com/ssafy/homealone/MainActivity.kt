@@ -116,15 +116,9 @@ class MainActivity : AppCompatActivity() {
 //        service.scheduleAtFixedRate({
 //            handler.run {
 //                // Do your stuff here
-//                Log.d("5초마다 호출", Date().time.toString())
-//                val job = lifecycle.coroutineScope.launch {
-////                    viewModel.measureHeartRate()
-//                    viewModel.lastHeartRate()
-////                    delay(3000)
-//                    sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
-////                    delay(3000)
-//                }
-//                job.cancel()
+////                Log.d("5초마다 호출", Date().time.toString())
+////            sendHeartRateMessage(nodeClient, messageClient, viewModel.heartRateBpm.value)
+////                sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
 //            }
 //        }, 0, 5, TimeUnit.SECONDS)
 
@@ -137,16 +131,17 @@ class MainActivity : AppCompatActivity() {
 //        심박수 데이터 변경사항 화면에 반영
         lifecycleScope.launchWhenStarted {
             viewModel.heartRateBpm.collect {
-                binding.lastMeasuredValue.text = String.format("%.1f", it)
+                binding.lastMeasuredValue.text = String.format("%d", it.toInt())
 //                변경이 발생할 때마다 전송
-//                sendHeartRateData(dataClient, it)
+                sendHeartRateData(dataClient, it)
             }
         }
 
 //        // 시작시 심박수 데이터 체크 등록
         lifecycleScope.launchWhenStarted {
             viewModel.lastHeartRate()
-            sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
+//            sendHeartRateData(dataClient, viewModel.heartRateBpm.value)
+//            sendHeartRateMessage(nodeClient, messageClient, viewModel.heartRateBpm.value)
         }
     }
 
@@ -264,6 +259,21 @@ class MainActivity : AppCompatActivity() {
             dataClient.putDataItem(dataItem)
                 .addOnSuccessListener { Log.d("데이터 전송 성공", data.toString()) }
                 .addOnFailureListener {  Log.e("데이터 전송 실패", it.message.toString()) }
+        }
+
+        //데이터 업데이트
+        fun sendHeartRateMessage(nodeClient: NodeClient, messageClient: MessageClient, heartRate: Double) {
+            Log.d("심박수 메세지 전송 호출", heartRate.toString())
+            val messageData = objectToBytes(mutableMapOf(Pair("HEART_RATE", heartRate.toString().trim())))
+
+            nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+                nodes.forEach {
+                    messageClient.sendMessage(it.id, channelName, messageData)
+                    Log.d("메세지 전송", objectFromBytes(messageData).toString())
+
+//                messageClient.sendMessage(it.id, "/$channelName", messageData)
+                }
+            }
         }
 
         // 메세지 전송
