@@ -107,7 +107,7 @@ class _MessageDialogState extends State<MessageDialog> {
                 },
               ),
             ),
-            Container(
+            SizedBox(
               width: 35.w,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,

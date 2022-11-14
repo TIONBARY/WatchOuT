@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
@@ -15,7 +14,7 @@ class CustomDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0)), //this right here
-      child: Container(
+      child: SizedBox(
         height: 100.h,
         child: Padding(
           padding: EdgeInsets.fromLTRB(20.w, 10.h, 20.w, 0),

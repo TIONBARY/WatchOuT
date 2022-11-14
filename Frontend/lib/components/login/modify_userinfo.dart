@@ -21,9 +21,6 @@ class ModifyUserInfo extends StatefulWidget {
 }
 
 class _ModifyUserInfoState extends State<ModifyUserInfo> {
-  final TextEditingController _textController = TextEditingController();
-  Widget _changedTextWidget = Container();
-
   final _SignupKey = GlobalKey<FormState>();
 
   String? _phone = '';
@@ -250,6 +247,8 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                 Container(
                   height: 75,
                   width: 75,
+                  decoration:
+                      BoxDecoration(color: b25Color, shape: BoxShape.circle),
                   child: Center(
                     child: profileImage == null
                         ? CircleAvatar(
@@ -258,15 +257,13 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                                     .profileImage),
                             radius: 200,
                           )
-                        : new CircleAvatar(
-                            backgroundImage: new FileImage(
+                        : CircleAvatar(
+                            backgroundImage: FileImage(
                               File(profileImage!.path),
                             ),
                             radius: 200,
                           ),
                   ),
-                  decoration:
-                      BoxDecoration(color: b25Color, shape: BoxShape.circle),
                 ),
                 ElevatedButton.icon(
                   onPressed: () {

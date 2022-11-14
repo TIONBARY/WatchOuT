@@ -20,9 +20,6 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignupState extends State<SignUp> {
-  final TextEditingController _textController = TextEditingController();
-  Widget _changedTextWidget = Container();
-
   final _SignupKey = GlobalKey<FormState>();
 
   String postCode = '';

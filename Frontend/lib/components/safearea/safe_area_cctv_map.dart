@@ -614,10 +614,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                               },
                                             );
                                           },
-                                          child: Text(
-                                            safeAreaList[i],
-                                            style: TextStyle(color: bColor),
-                                          ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
                                             padding: EdgeInsets.fromLTRB(
@@ -630,6 +626,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                             tapTargetSize: MaterialTapTargetSize
                                                 .shrinkWrap,
                                           ),
+                                          child: Text(
+                                            safeAreaList[i],
+                                            style: TextStyle(color: bColor),
+                                          ),
                                         )
                                       : ElevatedButton(
                                           onPressed: () {
@@ -640,7 +640,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                               },
                                             );
                                           },
-                                          child: Text(safeAreaList[i]),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
                                             padding: EdgeInsets.fromLTRB(
@@ -653,6 +652,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                             tapTargetSize: MaterialTapTargetSize
                                                 .shrinkWrap,
                                           ),
+                                          child: Text(safeAreaList[i]),
                                         ),
                               ],
                             ),
@@ -663,10 +663,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                         left: 2.w,
                         bottom: 1.h,
                         child: FloatingActionButton(
-                          child: Image.asset(
-                            "assets/siren.png",
-                            width: 7.5.w,
-                          ),
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "긴급 신고",
@@ -674,6 +670,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           onPressed: () {
                             UrlLauncher.launchUrl(Uri.parse("tel:112"));
                           },
+                          child: Image.asset(
+                            "assets/siren.png",
+                            width: 7.5.w,
+                          ),
                         ),
                       ),
                       Positioned(
@@ -714,10 +714,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                 },
                               );
                             },
-                            child: Text(
-                              pressWalkBtn ? "귀가 종료" : "귀가 시작",
-                              style: TextStyle(fontSize: 20, color: bColor),
-                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: yColor,
                               padding: EdgeInsets.all(3.w),
@@ -726,6 +722,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                               ),
                               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             ),
+                            child: Text(
+                              pressWalkBtn ? "귀가 종료" : "귀가 시작",
+                              style: TextStyle(fontSize: 20, color: bColor),
+                            ),
                           ),
                         ),
                       ),
@@ -733,7 +733,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                         right: 2.w,
                         bottom: 1.h,
                         child: FloatingActionButton(
-                          child: Icon(Icons.refresh),
                           elevation: 5,
                           hoverElevation: 10,
                           tooltip: "CCTV 리스트 갱신",
@@ -741,6 +740,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                           onPressed: () {
                             updateCurrLocation();
                           },
+                          child: Icon(Icons.refresh),
                         ),
                       ),
                     ],
