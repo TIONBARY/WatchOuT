@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -389,32 +390,126 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                 ),
               ],
             ),
-            Container(
-              padding: EdgeInsets.fromLTRB(20.w, 1.25.h, 20.w, 2.5.h),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: bColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                ),
-                onPressed: () {
-                  if (_SignupKey.currentState!.validate()) {
-                    _update();
-                    Navigator.pop(context);
-                  }
-                  ;
-                },
-                child: Text(
-                  '회원정보 수정',
-                  style: TextStyle(
-                    color: yColor,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 1.25.h, 0, 2.5.h),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: bColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                    ),
+                    onPressed: () {
+                      if (_SignupKey.currentState!.validate()) {
+                        _update();
+                        Navigator.pop(context);
+                      }
+                      ;
+                    },
+                    child: Text(
+                      '회원정보 수정',
+                      style: TextStyle(
+                        color: yColor,
+                      ),
+                    ),
                   ),
                 ),
-              ),
+                Container(
+                  padding: EdgeInsets.fromLTRB(0, 1.25.h, 0, 2.5.h),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                    ),
+                    onPressed: () {
+                      UserDeleteDialog(context);
+                    },
+                    child: Text(
+                      '회원 탈퇴',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> UserDeleteDialog(BuildContext context) async {
+    // final _SignupKey = GlobalKey<FormState>();
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+            height: 16.h,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Title(
+                  color: bColor,
+                  child: Text(
+                    'WatchOuT을 \n정말 탈퇴하시겠습니까?',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+                Container(
+                  width: 40.w,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: yColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          UserService().deleteUser();
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '확인',
+                          style: TextStyle(
+                            color: bColor,
+                          ),
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: b25Color,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(7),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          '취소',
+                          style: TextStyle(color: bColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

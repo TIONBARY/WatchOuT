@@ -27,6 +27,13 @@ class _SetPageRadioButtonState extends State<SetPageRadioButton> {
         decoration: BoxDecoration(
           color: b25Color,
           borderRadius: BorderRadius.circular(25),
+          boxShadow: [
+            BoxShadow(
+              color: b25Color.withOpacity(0.125),
+              offset: Offset(0, 3),
+              blurRadius: 5,
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
