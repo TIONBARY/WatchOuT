@@ -13,6 +13,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
 import 'package:homealone/api/api_message.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/permission_rationale_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/login/user_service.dart';
@@ -239,6 +240,14 @@ void _permission(BuildContext context) async {
     return;
   }
   permissionOnce = true;
+  Future.microtask(() => Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => BasicDialog(
+              EdgeInsets.fromLTRB(5.w, 4.h, 5.w, 3.h),
+              24.h,
+              '24시간 무응답 시 응급 상황 전파 기능은\n백그라운드에서 위치 정보를 수신하고,\n자동 문자 전송이 이루어질 수 있습니다.\n이 기능을 원치 않으시면 설정 페이지에서\n 스크린 사용 감지를 off로 바꿔주세요.',
+              null))));
   askPermission(context, Permission.locationAlways,
       "WatchOuT에서 \n백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
   askPermission(context, Permission.location,
@@ -248,7 +257,7 @@ void _permission(BuildContext context) async {
   //   return;
   // }
   askPermission(context, Permission.sms,
-      "WatchOuT에서 \n문자 전송 기능을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.");
+      "WatchOuT에서 \n'응급 상황 전파', '귀갓길 공유', \n'귀갓길 공유자에게 문자' 기능에서\n문자 전송 기능을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.");
 }
 
 @pragma('vm:entry-point')
