@@ -28,14 +28,20 @@ class CallDialog extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
         padding: EdgeInsets.fromLTRB(5.w, 2.h, 5.w, 1.5.h),
-        height: (this.texts == null) ? 15.h : 22.5.h,
+        height: (this.texts == null) ? 15.h : 25.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Title(
               color: bColor,
               child: (this.titles == null)
-                  ? Text(names, style: TextStyle(fontSize: 12.5.sp))
+                  ? Text(
+                      names,
+                      style: TextStyle(
+                        fontSize: 12.5.sp,
+                        fontFamily: 'HanSan',
+                      ),
+                    )
                   : Text(emoji[titles]! + " " + names,
                       style: TextStyle(fontSize: 12.5.sp)),
             ),
@@ -75,7 +81,10 @@ class CallDialog extends StatelessWidget {
                           },
                           child: Text(
                             "통화",
-                            style: TextStyle(color: bColor),
+                            style: TextStyle(
+                              color: bColor,
+                              fontFamily: 'HanSan',
+                            ),
                           ),
                         ),
                   ElevatedButton(
@@ -96,7 +105,10 @@ class CallDialog extends StatelessWidget {
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: bColor),
+                      style: TextStyle(
+                        color: bColor,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ],

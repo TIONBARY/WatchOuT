@@ -20,14 +20,20 @@ class SOSDialog extends StatelessWidget {
               color: bColor,
               child: Column(
                 children: [
-                  SlideCountdown(
-                    duration: const Duration(seconds: 5),
+                  Text(
+                    '긴급 상황을 전파합니다.',
+                    style: TextStyle(fontFamily: 'HanSan'),
                   ),
-                  Text("\n긴급 상황을 전파합니다."),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(5.w, 1.h, 5.w, 1.h),
+                    child: SlideCountdown(
+                      duration: const Duration(seconds: 5),
+                    ),
+                  ),
                 ],
               ),
             ),
-            Image.asset("assets/icons/shadowsiren.png", height: 6.h),
+            Image.asset("assets/icons/shadowsiren.png", height: 7.5.h),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: b25Color,
@@ -40,7 +46,7 @@ class SOSDialog extends StatelessWidget {
               },
               child: Text(
                 '취소',
-                style: TextStyle(color: bColor),
+                style: TextStyle(color: bColor, fontFamily: 'HanSan'),
               ),
             ),
           ],
