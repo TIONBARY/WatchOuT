@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sizer/sizer.dart';
 
 class PackageNotFoundDialog extends StatelessWidget {
-  PackageNotFoundDialog();
+  PackageNotFoundDialog({super.key});
 
   @override
   Widget build(BuildContext context) {

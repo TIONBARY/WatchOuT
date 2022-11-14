@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -48,7 +49,6 @@ Future<void> initializeService() async {
     androidConfiguration: AndroidConfiguration(
       // this will be executed when app is in foreground or background in separated isolate
       onStart: onStart,
-
       // auto start service
       autoStart: true,
       isForegroundMode: false,
@@ -70,6 +70,8 @@ void onReceiveNotificationResponse(NotificationResponse response) {
   debugPrint("호출 $value");
   if (value == "expand") {
     updateHeartRateRange();
+  } else {
+    debugPrint("알림 닫기");
   }
 }
 
@@ -99,11 +101,20 @@ void onStartWatch(
   // var newGap = "0.0";
   bool? useWearOS = pref.getBool("useWearOS");
   Map<String, String> msg = HashMap<String, String>();
-  List<Map<String, dynamic>> contexts = await watch.receivedApplicationContexts;
-  if (contexts.isEmpty) {
-    return;
-  }
-  heartRate = double.parse(contexts.last.values.last);
+
+  watch.messageStream.listen((event) {
+    debugPrint("메세지: ${event.values.last}");
+    sendEmergencyMessage();
+  });
+  // watch.contextStream.listen((event) {
+  //   // debugPrint("심박수1: ${event.values.last}");
+  //   // sendEmergencyMessage();
+  // });
+  // heartRate = double.parse(contexts.last.values.last);
+
+  //처음 6초동안 심박수 체크 안함
+  sleep(const Duration(seconds: 6));
+
   watch.contextStream.listen(
     (e) async => {
       heartRate = double.parse(e.values.last),
@@ -161,6 +172,7 @@ void onStartWatch(
                       ),
                 ),
               ),
+              // TODO: 5초간 기다린 뒤에 알림이 해제되지 않앗으면 바로 응급알림
             },
         },
     },

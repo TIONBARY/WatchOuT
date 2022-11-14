@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/user_provider.dart';
@@ -7,9 +8,11 @@ import 'package:sizer/sizer.dart';
 
 import 'basic_dialog.dart';
 
+const platform = MethodChannel('com.ssafy.homealone/channel');
+
 class MessageDialog extends StatefulWidget {
   const MessageDialog(this.phone, {Key? key}) : super(key: key);
-  final phone;
+  final String phone;
 
   @override
   State<MessageDialog> createState() => _MessageDialogState();
@@ -21,9 +24,9 @@ class _MessageDialogState extends State<MessageDialog> {
   TextEditingController textController = TextEditingController();
 
   void _sendSMS(String message, List<String> recipients) async {
-    Map<String, dynamic> _result =
-        await apiMessage.sendMessage(recipients, message);
-    if (_result["statusCode"] == 200) {
+    String _result = await platform.invokeMethod(
+        'sendTextMessage', {'message': message, 'recipients': recipients});
+    if (_result == "sent") {
       showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -39,16 +42,14 @@ class _MessageDialogState extends State<MessageDialog> {
           context: context,
           builder: (BuildContext context) {
             return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, _result["message"], null);
+                12.5.h, "메세지 전송에 실패했습니다.", null);
           });
     }
-    print(_result);
   }
 
   void sendMessage() async {
     String name = Provider.of<MyUserInfo>(context, listen: false).name;
-    _sendSMS(
-        "${_message}\n* ${name} 님이 WatchOut 앱에서 발송한 문자입니다.", [widget.phone]);
+    _sendSMS("$_message\n* $name 님이 WatchOut 앱에서 발송한 문자입니다.", [widget.phone]);
   }
 
   @override
@@ -74,7 +75,7 @@ class _MessageDialogState extends State<MessageDialog> {
                 controller: textController,
                 autocorrect: false,
                 validator: (String? val) {
-                  if (val == null || val.length == 0) {
+                  if (val == null || val.isEmpty) {
                     return "메세지를 입력해주세요.";
                   } else {
                     return null;

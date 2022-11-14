@@ -22,18 +22,24 @@ plugins {
     id 'kotlin-kapt'
 }
 
-android {
-    compileSdkVersion 33
+ext {
+  compileSdkVersion = 33
+}
 
-    defaultConfig {
+android {
+  namespace 'com.ssafy.homealone'
+  compileSdk 33
+
+  defaultConfig {
         // NOTE: This must be the same in the phone app and the wear app for the capabilities API
         applicationId "com.ssafy.homealone"
         versionCode 1
         versionName "1.0"
-        minSdk 21
-        targetSdk 32
+        minSdk 31
+        targetSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     lintOptions {
@@ -68,13 +74,12 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
     }
-    buildToolsVersion '33.0.0'
 }
 
 dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation "androidx.fragment:fragment-ktx:1.5.3"
+    implementation "androidx.fragment:fragment-ktx:1.5.4"
 
     // Hilt dependency injection
     implementation "com.google.dagger:hilt-android:$hilt_version"
@@ -85,6 +90,7 @@ dependencies {
     // Wear
     implementation 'androidx.wear:wear:1.2.0'
     // Health Services
+    //noinspection GradleDependency
     implementation "androidx.health:health-services-client:1.0.0-alpha03"
     // Used to bridge between Futures and coroutines
     implementation 'com.google.guava:guava:30.1.1-android'
@@ -95,6 +101,7 @@ dependencies {
 
     // Lifecycle
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle_version"
+    //noinspection GradleDependency
     implementation "androidx.lifecycle:lifecycle-service:$lifecycle_version"
 
     // WorkManager
@@ -116,6 +123,7 @@ dependencies {
     implementation libs.androidx.lifecycle.viewmodel.compose
     implementation libs.androidx.lifecycle.runtime.ktx
     implementation libs.playservices.wearable
+    implementation 'com.android.support:multidex:2.0.1'
 
     wearApp projects.wearable
 }
