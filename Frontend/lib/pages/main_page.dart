@@ -13,6 +13,8 @@ import 'package:sizer/sizer.dart';
 
 import '../components/main/carousel.dart';
 
+bool friendDialogOpened = false;
+
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
 
@@ -30,6 +32,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   Future<dynamic> handlePlatformChannelMethods(BuildContext context) async {
+    if (friendDialogOpened) return;
+    friendDialogOpened = true;
     var result = await platform
         .invokeMethod("getFriendLink")
         .onError((error, stackTrace) => debugPrint(error.toString()));
@@ -62,18 +66,17 @@ class _MainPageState extends State<MainPage> {
     String expireTimeStr = message[0];
     String inviteCodeStr = message[1];
 
-    debugPrint("초대코드 플러터에서 받음 ㅋㅋ: $inviteCodeStr \n만료일자: $expireTimeStr");
+    debugPrint("초대코드 플러터에서 받음: $inviteCodeStr \n만료일자: $expireTimeStr");
     Map<String, dynamic>? friend =
         await UserService().getOtherUserInfo(inviteCodeStr);
     if (friend == null) {
-      Future.microtask(() => Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) => BasicDialog(
-                  EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                  12.5.h,
-                  '유효하지 않은 초대코드입니다.',
-                  null))));
+      showDialog(
+          context: context,
+          builder: (context) => BasicDialog(
+              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+              12.5.h,
+              '유효하지 않은 초대코드입니다.',
+              null));
       return;
     }
     String name = friend["name"];

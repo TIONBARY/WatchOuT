@@ -82,6 +82,8 @@ class UserService {
         .doc(name)
         .set({
       "number": number,
+      "appUser": false,
+      "uid": '',
       // "phone": false,
       // "message": false,
       // "activated": false
@@ -235,6 +237,35 @@ class UserService {
       return false;
     }
     return documentData?["registered"];
+  }
+
+  //앱 사용자 간 비상 연락망 검색
+  Future<Map<String, dynamic>?> getUserInfoByNumber(String number) async {
+    // where 쿼리문으로 검색 후 Map 형태로 가공하여 반환하기
+    List<QueryDocumentSnapshot> data;
+    Map<String, dynamic>? result;
+    var querySnapshot =
+        await db.collection("user").where("phone", isEqualTo: number).get();
+    data = querySnapshot.docs;
+    if (data.isEmpty)
+      print("해당 번호에 해당하는 유저가 없습니다.");
+    else
+      result = data[0].data() as Map<String, dynamic>?;
+    return result;
+  }
+
+  //비상 연락망 검색 후 등록
+  void registerExistFirstResponder(String name, String number, String uid) {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("firstResponder")
+        .doc(name)
+        .set({
+      "number": number,
+      "appUser": true,
+      "uid": uid,
+    });
   }
 
   // 위급상황 여부를 나타냄
