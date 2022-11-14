@@ -18,8 +18,13 @@ class SelectPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title:
-            Text('WatchOuT', style: TextStyle(color: yColor, fontSize: 20.sp)),
+        title: Text('WatchOuT',
+            style: TextStyle(
+              color: yColor,
+              fontSize: 20.sp,
+              fontFamily: 'HanSan',
+            )),
+        automaticallyImplyLeading: false,
         backgroundColor: bColor,
         actions: [
           Container(
@@ -52,7 +57,7 @@ class SelectPage extends StatelessWidget {
                   : Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => camInfoField(),
+                        builder: (context) => CamInfoField(),
                       ),
                     );
             },
@@ -78,7 +83,7 @@ class SelectPage extends StatelessWidget {
             type: PredefinedThemes.light,
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => otherCamInfoField()));
+                  MaterialPageRoute(builder: (context) => OtherCamInfoField()));
             },
             child: Row(
               children: [

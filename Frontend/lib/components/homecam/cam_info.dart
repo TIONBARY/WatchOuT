@@ -5,15 +5,15 @@ import '../../constants.dart';
 import '../login/sign_up_text_field.dart';
 import '../login/user_service.dart';
 
-class camInfoField extends StatefulWidget {
-  const camInfoField({Key? key}) : super(key: key);
+class CamInfoField extends StatefulWidget {
+  const CamInfoField({Key? key}) : super(key: key);
 
   @override
-  State<camInfoField> createState() => _camInfoFieldState();
+  State<CamInfoField> createState() => _CamInfoFieldState();
 }
 
-class _camInfoFieldState extends State<camInfoField> {
-  final _SignupKey = GlobalKey<FormState>();
+class _CamInfoFieldState extends State<CamInfoField> {
+  final _signupKey = GlobalKey<FormState>();
   String _code = '';
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class _camInfoFieldState extends State<camInfoField> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Form(
-                  key: _SignupKey,
+                  key: _signupKey,
                   child: SignUpTextField(
                     paddings: EdgeInsets.fromLTRB(2.5.w, 1.25.h, 2.5.w, 1.25.h),
                     keyboardtypes: TextInputType.text,
