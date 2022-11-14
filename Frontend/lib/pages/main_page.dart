@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/main/guide_bar.dart';
 import 'package:homealone/components/main/main_button_down.dart';
@@ -20,21 +19,19 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        child: Column(
-          children: [
-            GuideBar(),
-            Carousel(),
-            Expanded(
-              flex: 1,
-              child: MainButtonDown(),
-            ),
-            Expanded(
-              flex: 1,
-              child: MainButtonUp(),
-            ),
-          ],
-        ),
+      body: Column(
+        children: [
+          GuideBar(),
+          Carousel(),
+          Expanded(
+            flex: 1,
+            child: MainButtonDown(),
+          ),
+          Expanded(
+            flex: 1,
+            child: MainButtonUp(),
+          ),
+        ],
       ),
     );
   }

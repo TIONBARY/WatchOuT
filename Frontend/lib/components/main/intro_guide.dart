@@ -177,8 +177,8 @@ class _MainGuideState extends State<MainGuide> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Container(
-                    child: Text('가이드 보러가기'),
                     margin: EdgeInsets.all(8),
+                    child: Text('가이드 보러가기'),
                   ),
                   IntroStepBuilder(
                     order: 6,
@@ -192,7 +192,6 @@ class _MainGuideState extends State<MainGuide> {
                     builder: (context, key) => ElevatedButton(
                       key: key,
                       onPressed: () {},
-                      child: Icon(Icons.question_mark, color: yColor),
                       style: IconButton.styleFrom(
                         shape: CircleBorder(),
                         minimumSize: Size.zero,
@@ -200,6 +199,7 @@ class _MainGuideState extends State<MainGuide> {
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                         backgroundColor: bColor,
                       ),
+                      child: Icon(Icons.question_mark, color: yColor),
                     ),
                   ),
                 ],
@@ -230,46 +230,42 @@ class _MainGuideState extends State<MainGuide> {
                   children: [
                     Flexible(
                       flex: 3,
-                      child: Container(
-                        child: IntroStepBuilder(
-                          order: 8,
-                          text: '클릭 시 홈캠 화면',
-                          padding: EdgeInsets.only(
-                            bottom: 1,
-                            left: 1,
-                            right: 1,
-                            top: 1,
-                          ),
-                          builder: (context, key) => AnimatedButton(
-                            key: key,
-                            height: 17.5.h,
-                            width: 50.w,
-                            blurRadius: 7.5,
-                            isOutline: true,
-                            type: PredefinedThemes.light,
-                            onTap: () {},
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(
-                                    child: Text(
-                                      'C\nA\nM',
-                                      style: TextStyle(fontSize: 17.5.sp),
-                                      textAlign: TextAlign.center,
-                                    ),
+                      child: IntroStepBuilder(
+                        order: 8,
+                        text: '클릭 시 홈캠 화면',
+                        padding: EdgeInsets.only(
+                          bottom: 1,
+                          left: 1,
+                          right: 1,
+                          top: 1,
+                        ),
+                        builder: (context, key) => AnimatedButton(
+                          key: key,
+                          height: 17.5.h,
+                          width: 50.w,
+                          blurRadius: 7.5,
+                          isOutline: true,
+                          type: PredefinedThemes.light,
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 1,
+                                child: Text(
+                                  'C\nA\nM',
+                                  style: TextStyle(fontSize: 17.5.sp),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              Expanded(
+                                flex: 2,
+                                child: ClipRRect(
+                                  child: Image.asset(
+                                    "assets/icons/shadowcctvreverse.png",
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 2,
-                                  child: ClipRRect(
-                                    child: Image.asset(
-                                      "assets/icons/shadowcctvreverse.png",
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -400,12 +396,10 @@ class _MainGuideState extends State<MainGuide> {
                               ),
                               Expanded(
                                 flex: 1,
-                                child: Container(
-                                  child: Text(
-                                    'S\nO\nS',
-                                    style: TextStyle(fontSize: 17.5.sp),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                child: Text(
+                                  'S\nO\nS',
+                                  style: TextStyle(fontSize: 17.5.sp),
+                                  textAlign: TextAlign.center,
                                 ),
                               ),
                             ],

@@ -17,8 +17,8 @@ class _SetPageState extends State<SetPage> {
       body: Column(
         children: [
           Flexible(
-            child: SetButton(),
             flex: 1,
+            child: SetButton(),
           ),
           Expanded(
             child: CircularMenu(),
