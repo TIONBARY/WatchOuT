@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/utils/double_click_pop.dart';
@@ -20,11 +19,8 @@ class TabNavBar extends StatefulWidget {
 }
 
 class _TabNavBarState extends State<TabNavBar> {
-  final _authentication = FirebaseAuth.instance;
   late bool check;
-  late TabController _tabController;
   final _selectedColor = bColor;
-  final _unselectedColor = Color(0xff5f6368);
 
   Future<void> checkUserInfo() async {
     check = await UserService().isActivated();
