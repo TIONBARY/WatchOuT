@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/call_dialog.dart';
 import 'package:homealone/components/dialog/cam_info_dialog.dart';
-import 'package:homealone/components/homecam/camera_player_widget.dart';
+import 'package:homealone/components/homecam/camera_player.dart';
 import 'package:homealone/components/homecam/other_cam_Info_shared_page.dart';
 import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/main/main_page_animated_button.dart';
@@ -194,7 +194,7 @@ class _MainButtonUpState extends State<MainButtonUp> {
                         ? Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => CameraPlayerWidget(),
+                              builder: (context) => CameraPlayer(),
                             ),
                           )
                         : Navigator.push(
