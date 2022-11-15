@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/constants.dart';
@@ -51,8 +52,18 @@ class _CamInfoDialogState extends State<CamInfoDialog> {
                       ),
                     ),
                     onPressed: () {
-                      UserService().homeCamRegister(_code);
-                      Navigator.pop(context);
+                      _code.contains('://')
+                          ? {
+                              UserService().homeCamRegister(_code),
+                              Navigator.pop(context)
+                            }
+                          : showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return BasicDialog(EdgeInsets.all(10), 10.h,
+                                    '주소를 확인해주세요.', null);
+                              },
+                            );
                     },
                     child: Text(
                       '등록',
