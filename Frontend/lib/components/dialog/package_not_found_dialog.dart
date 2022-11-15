@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
 
 class PackageNotFoundDialog extends StatelessWidget {
@@ -21,7 +22,7 @@ class PackageNotFoundDialog extends StatelessWidget {
           text: TextSpan(
               text: "해당 기능을 지원하지 않는 기종입니다!",
               style: TextStyle(
-                color: Colors.black,
+                color: bColor,
                 fontSize: 20.sp,
                 fontWeight: FontWeight.bold,
               )),
