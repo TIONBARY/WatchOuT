@@ -229,7 +229,7 @@ Future<void> showEmergencyNotification(
     );
   }
 
-  sleep(Duration(seconds: 1));
+  sleep(Duration(seconds: 15));
   List<ActiveNotification> activeNotifications =
       await flutterLocalNotificationsPlugin.getActiveNotifications();
   if (activeNotifications.isNotEmpty) {
