@@ -409,6 +409,7 @@ class _MainGuideState extends State<MainGuide> {
                         flex: 3,
                         child: IntroStepBuilder(
                           order: 13,
+                          // 화면에 안 나옴
                           text: '클릭 시 SOS 화면',
                           padding: EdgeInsets.only(
                             bottom: 1,
@@ -416,6 +417,38 @@ class _MainGuideState extends State<MainGuide> {
                             right: 1,
                             top: 1,
                           ),
+                          overlayBuilder: (params) {
+                            return Container(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  const Text(
+                                    // 화면에 나옴
+                                    '클릭 시 SOS 화면',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      top: 16,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        IntroButton(
+                                          onPressed: () {
+                                            params.onFinish();
+                                            Navigator.of(context).pop();
+                                          },
+                                          text: '완료',
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
                           builder: (context, key) => AnimatedButton(
                             key: key,
                             height: 17.5.h,
