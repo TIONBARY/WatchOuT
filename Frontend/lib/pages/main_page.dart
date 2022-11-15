@@ -32,11 +32,11 @@ class _MainPageState extends State<MainPage> {
           Carousel(),
           Expanded(
             flex: 1,
-            child: MainButtonDown(),
+            child: MainButtonUp(),
           ),
           Expanded(
             flex: 1,
-            child: MainButtonUp(),
+            child: MainButtonDown(),
           ),
         ],
       ),
