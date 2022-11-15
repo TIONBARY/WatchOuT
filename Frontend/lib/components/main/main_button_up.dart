@@ -93,18 +93,20 @@ class _MainButtonUpState extends State<MainButtonUp> {
         await apiMessage.sendMMSMessage(file, recipients, message);
     if (_result["statusCode"] == 200) {
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, '신고 메세지를 전송했습니다.', null);
-          });
+        context: context,
+        builder: (BuildContext context) {
+          return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+              12.5.h, '신고 메세지를 전송했습니다.', null);
+        },
+      );
     } else {
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                12.5.h, _result["message"], null);
-          });
+        context: context,
+        builder: (BuildContext context) {
+          return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+              12.5.h, _result["message"], null);
+        },
+      );
     }
   }
 
@@ -114,11 +116,12 @@ class _MainButtonUpState extends State<MainButtonUp> {
       Navigator.pop(dialogContext);
       if (recipients.isEmpty) {
         showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                  12.5.h, '비상연락처를 등록해주세요.', null);
-            });
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '비상연락처를 등록해주세요.', null);
+          },
+        );
         return;
       }
       _sendSMS(message, recipients);
@@ -215,10 +218,11 @@ class _MainButtonUpState extends State<MainButtonUp> {
 
   void _showReportDialog() {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return ReportDialog(_takePhoto);
-        });
+      context: context,
+      builder: (BuildContext context) {
+        return ReportDialog(_takePhoto);
+      },
+    );
   }
 
   void _checkForWidgetLaunch() {
