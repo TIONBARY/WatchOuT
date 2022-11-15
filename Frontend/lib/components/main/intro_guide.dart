@@ -38,12 +38,7 @@ class _MainGuideState extends State<MainGuide> {
                 text: Text(
                   '클릭시 SOS 버튼',
                 ).data,
-                padding: EdgeInsets.only(
-                  bottom: 1,
-                  left: 1,
-                  right: 1,
-                  top: 1,
-                ),
+                padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                 onWidgetLoad: () {
                   Intro.of(context).start();
                 },
@@ -55,11 +50,11 @@ class _MainGuideState extends State<MainGuide> {
           ],
         ),
         body: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: Column(
             children: [
               Container(
-                height: kToolbarHeight - 8.0,
+                height: kToolbarHeight - 8,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: Colors.grey.shade200,
@@ -69,17 +64,12 @@ class _MainGuideState extends State<MainGuide> {
                     IntroStepBuilder(
                       order: 2,
                       text: '클릭 시 홈 화면',
-                      padding: EdgeInsets.only(
-                        bottom: 1,
-                        left: 1,
-                        right: 1,
-                        top: 1,
-                      ),
+                      padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
                         flex: 1,
                         child: Container(
-                          height: kToolbarHeight - 8.0,
+                          height: kToolbarHeight - 8,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: bColor,
@@ -99,17 +89,12 @@ class _MainGuideState extends State<MainGuide> {
                     IntroStepBuilder(
                       order: 3,
                       text: '클릭 시 안전 지도 화면',
-                      padding: EdgeInsets.only(
-                        bottom: 1,
-                        left: 1,
-                        right: 1,
-                        top: 1,
-                      ),
+                      padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
                         flex: 1,
                         child: Container(
-                          height: kToolbarHeight - 8.0,
+                          height: kToolbarHeight - 8,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: Colors.grey.shade200,
@@ -129,17 +114,12 @@ class _MainGuideState extends State<MainGuide> {
                     IntroStepBuilder(
                       order: 4,
                       text: '클릭 시 귀가 공유 화면',
-                      padding: EdgeInsets.only(
-                        bottom: 1,
-                        left: 1,
-                        right: 1,
-                        top: 1,
-                      ),
+                      padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
                         flex: 1,
                         child: Container(
-                          height: kToolbarHeight - 8.0,
+                          height: kToolbarHeight - 8,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: Colors.grey.shade200,
@@ -159,17 +139,12 @@ class _MainGuideState extends State<MainGuide> {
                     IntroStepBuilder(
                       order: 5,
                       text: '클릭 시 설정 화면',
-                      padding: EdgeInsets.only(
-                        bottom: 1,
-                        left: 1,
-                        right: 1,
-                        top: 1,
-                      ),
+                      padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
                         flex: 1,
                         child: Container(
-                          height: kToolbarHeight - 8.0,
+                          height: kToolbarHeight - 8,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             color: Colors.grey.shade200,
@@ -204,12 +179,7 @@ class _MainGuideState extends State<MainGuide> {
                     IntroStepBuilder(
                       order: 6,
                       text: '클릭 시 가이드 화면',
-                      padding: EdgeInsets.only(
-                        bottom: 1,
-                        left: 1,
-                        right: 1,
-                        top: 1,
-                      ),
+                      padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => ElevatedButton(
                         key: key,
                         onPressed: () {},
@@ -226,19 +196,19 @@ class _MainGuideState extends State<MainGuide> {
                   ],
                 ),
               ),
-              IntroStepBuilder(
-                order: 7,
-                text: '클릭 시 유투브 화면',
-                padding: EdgeInsets.only(
-                  bottom: 1,
-                  left: 1,
-                  right: 1,
-                  top: 1,
-                ),
-                builder: (context, key) => Container(
-                  key: key,
-                  child: Image.asset(
-                    'assets/guidesample.png',
+              Expanded(
+                child: IntroStepBuilder(
+                  order: 7,
+                  text: '클릭 시 유투브 화면',
+                  padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
+                  builder: (context, key) => ClipRRect(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(5),
+                    ),
+                    key: key,
+                    child: Image.asset(
+                      'assets/guidesample.jpg',
+                    ),
                   ),
                 ),
               ),
@@ -255,12 +225,8 @@ class _MainGuideState extends State<MainGuide> {
                           child: IntroStepBuilder(
                             order: 8,
                             text: '클릭 시 홈캠 화면',
-                            padding: EdgeInsets.only(
-                              bottom: 1,
-                              left: 1,
-                              right: 1,
-                              top: 1,
-                            ),
+                            padding: EdgeInsets.fromLTRB(
+                                -2.w, -2.25.h, -2.w, -2.25.h),
                             builder: (context, key) => AnimatedButton(
                               key: key,
                               height: 17.5.h,
@@ -305,12 +271,8 @@ class _MainGuideState extends State<MainGuide> {
                             IntroStepBuilder(
                               order: 9,
                               text: '클릭 시 안심귀가 서비스 화면',
-                              padding: EdgeInsets.only(
-                                bottom: 1,
-                                left: 1,
-                                right: 1,
-                                top: 1,
-                              ),
+                              padding:
+                                  EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, 2),
                               builder: (context, key) => AnimatedButton(
                                 key: key,
                                 width: 30.w,
@@ -332,12 +294,8 @@ class _MainGuideState extends State<MainGuide> {
                             IntroStepBuilder(
                               order: 10,
                               text: '클릭 시 성범죄자 알림e 화면',
-                              padding: EdgeInsets.only(
-                                bottom: 1,
-                                left: 1,
-                                right: 1,
-                                top: 1,
-                              ),
+                              padding:
+                                  EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, -1),
                               builder: (context, key) => MainPageAniBtn(
                                 key: key,
                                 margins: EdgeInsets.only(bottom: 4),
@@ -369,12 +327,8 @@ class _MainGuideState extends State<MainGuide> {
                             IntroStepBuilder(
                               order: 11,
                               text: '클릭 시 신고 화면',
-                              padding: EdgeInsets.only(
-                                bottom: 1,
-                                left: 1,
-                                right: 1,
-                                top: 1,
-                              ),
+                              padding:
+                                  EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, -1),
                               builder: (context, key) => MainPageAniBtn(
                                 key: key,
                                 margins: EdgeInsets.only(bottom: 4),
@@ -387,12 +341,8 @@ class _MainGuideState extends State<MainGuide> {
                             IntroStepBuilder(
                               order: 12,
                               text: '클릭 시 위기상황 대처메뉴얼 화면',
-                              padding: EdgeInsets.only(
-                                bottom: 1,
-                                left: 1,
-                                right: 1,
-                                top: 1,
-                              ),
+                              padding:
+                                  EdgeInsets.fromLTRB(-2.5.w, -1, -2.5.w, 2),
                               builder: (context, key) => MainPageAniBtn(
                                 key: key,
                                 margins: EdgeInsets.only(top: 4),
@@ -411,12 +361,8 @@ class _MainGuideState extends State<MainGuide> {
                           order: 13,
                           // 화면에 안 나옴
                           text: '클릭 시 SOS 화면',
-                          padding: EdgeInsets.only(
-                            bottom: 1,
-                            left: 1,
-                            right: 1,
-                            top: 1,
-                          ),
+                          padding:
+                              EdgeInsets.fromLTRB(-2.w, -2.25.h, -2.w, -2.25.h),
                           overlayBuilder: (params) {
                             return Container(
                               padding: const EdgeInsets.all(16),
@@ -488,16 +434,16 @@ class _MainGuideState extends State<MainGuide> {
                   ),
                 ),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                style: ElevatedButton.styleFrom(backgroundColor: bColor),
-                child: Text(
-                  '돌아가기',
-                  style: TextStyle(color: yColor),
-                ),
-              )
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.pop(context);
+              //   },
+              //   style: ElevatedButton.styleFrom(backgroundColor: bColor),
+              //   child: Text(
+              //     '돌아가기',
+              //     style: TextStyle(color: yColor),
+              //   ),
+              // ),
             ],
           ),
         ),
