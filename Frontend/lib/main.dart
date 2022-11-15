@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:background_fetch/background_fetch.dart' as fetch;
+import 'package:background_sms/background_sms.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -75,6 +76,16 @@ void main() {
       child: MyApp(),
     ),
   );
+  wm.Workmanager().cancelAll();
+  wm.Workmanager().initialize(
+    callbackDispatcher,
+    isInDebugMode: false,
+  );
+  wm.Workmanager().registerPeriodicTask(locationCheck, fetchBackground,
+      frequency: Duration(minutes: 15),
+      initialDelay: Duration(seconds: 60),
+      constraints: wm.Constraints(
+          networkType: wm.NetworkType.not_required, requiresDeviceIdle: true));
 
   fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
@@ -92,16 +103,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     initializeService();
     initUsage();
-    wm.Workmanager().initialize(
-      callbackDispatcher,
-      isInDebugMode: false,
-    );
-    wm.Workmanager().registerPeriodicTask(locationCheck, fetchBackground,
-        frequency: Duration(minutes: 15),
-        initialDelay: Duration(seconds: 60),
-        constraints: wm.Constraints(
-            networkType: wm.NetworkType.not_required,
-            requiresDeviceIdle: true));
   }
 
   @override
@@ -138,7 +139,6 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-
     quickActions.setShortcutItems([
       ShortcutItem(type: "SafeZone", localizedTitle: "안전 구역", icon: 'safezone'),
       ShortcutItem(
@@ -303,11 +303,19 @@ void callbackDispatcher() {
 }
 
 Future<void> _sendSMS(String message, List<String> recipients) async {
-  String result = await MethodChannel('com.ssafy.homealone/channel')
-      .invokeMethod('sendTextMessage', {
-    'message': message,
-    'recipients': recipients
-  }).catchError((error) => print(error));
+  // String result = await MethodChannel('com.ssafy.homealone/channel')
+  //     .invokeMethod('sendTextMessage', {
+  //   'message': message,
+  //   'recipients': recipients
+  // }).catchError((error) => print(error));
+  for (String recipient in recipients) {
+    SmsStatus result = await BackgroundSms.sendMessage(
+        phoneNumber: recipient, message: message);
+    if (result == SmsStatus.failed) {
+      print('failed');
+    }
+  }
+  print('success');
 }
 
 Future<void> sendEmergencyMessage() async {
@@ -329,7 +337,7 @@ Future<void> prepareMessage() async {
   await getCurrentLocation();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   message =
-      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다. 긴급 조치가 필요합니다.\n현재 예상 위치 : $address\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위치 : $address";
   List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
     recipients = list!;
