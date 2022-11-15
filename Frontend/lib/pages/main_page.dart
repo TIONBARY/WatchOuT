@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/main/guide_bar.dart';
 import 'package:homealone/components/main/main_button_down.dart';
@@ -16,8 +15,6 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  final _authentication = FirebaseAuth.instance;
-
   @override
   void initState() {
     super.initState();
@@ -32,11 +29,11 @@ class _MainPageState extends State<MainPage> {
           Carousel(),
           Expanded(
             flex: 1,
-            child: MainButtonDown(),
+            child: MainButtonUp(),
           ),
           Expanded(
             flex: 1,
-            child: MainButtonUp(),
+            child: MainButtonDown(),
           ),
         ],
       ),

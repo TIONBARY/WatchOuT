@@ -1,50 +1,60 @@
-import 'dart:async';
-
-import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:button_animations/button_animations.dart';
 import 'package:button_animations/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:gallery_saver/gallery_saver.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:home_widget/home_widget.dart';
-import 'package:homealone/api/api_kakao.dart';
-import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
-import 'package:homealone/components/dialog/report_dialog.dart';
-import 'package:homealone/components/dialog/sos_dialog.dart';
+import 'package:homealone/components/dialog/call_dialog.dart';
+import 'package:homealone/components/dialog/cam_info_dialog.dart';
+import 'package:homealone/components/homecam/camera_player.dart';
+import 'package:homealone/components/homecam/other_cam_Info_shared_page.dart';
+import 'package:homealone/components/login/user_service.dart';
+import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:homealone/providers/user_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
-import 'package:volume_control/volume_control.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-import 'main_page_animated_button.dart';
-
-ApiKakao apiKakao = ApiKakao();
-ApiMessage apiMessage = ApiMessage();
-
-String kakaoMapKey = "";
-
-double initLat = 37.5;
-double initLon = 127.5;
-
-bool emergencyFromWidget = false;
+Map guCall = {
+  '강남구': '02-3423-6000',
+  '강동구': '02-3425-5009',
+  '강북구': '02-901-6112',
+  '강서구': '02-2600-1281',
+  '관악구': '02-879-7640',
+  '광진구': '02-450-1330',
+  '구로구': '02-860-2525',
+  '금천구': '02-2627-2414',
+  '도봉구': '02-2091-3109',
+  '동작구': '02-820-1040',
+  '서대문구': '02-330-1119',
+  '성동구': '02-2286-6262',
+  '송파구': '02-2147-2799',
+  '영등포구': '02-831-9736',
+  '은평구': '02-351-8000',
+  '중구': '02-3396-4000',
+  '노원구': '02-2116-3742',
+  '동대문구': '02-2127-4626',
+  '마포구': '02-3153-8104',
+  '서초구': '02-2155-8510',
+  '성북구': '02-2241-1900',
+  '양천구': '02-2620-3399',
+  '용산구': '02-2199-6300',
+  '종로구': '02-2148-1111',
+  '중랑구': '02-2094-1148',
+};
 
 class MainButtonUp extends StatefulWidget {
-  const MainButtonUp({Key? key}) : super(key: key);
-
   @override
   State<MainButtonUp> createState() => _MainButtonUpState();
 }
 
 class _MainButtonUpState extends State<MainButtonUp> {
   final _authentication = FirebaseAuth.instance;
+<<<<<<< Frontend/lib/components/main/main_button_up.dart
   Map<String, dynamic>? user;
   List<Map<String, dynamic>> emergencyCallList = [];
   Timer? timer;
@@ -262,84 +272,39 @@ class _MainButtonUpState extends State<MainButtonUp> {
     _checkForWidgetLaunch();
     HomeWidget.widgetClicked.listen(_widgetClicked);
   }
+=======
+>>>>>>> Frontend/lib/components/main/main_button_up.dart
 
   @override
   Widget build(BuildContext context) {
+    String address = Provider.of<MyUserInfo>(context, listen: false).region;
+    final splitedAddress = address.split(' ');
+    String sidoName = splitedAddress[1];
+    String guName = splitedAddress[2];
+    String? phones = guCall[guName];
+
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-            flex: 2,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                MainPageAniBtn(
-                  margins: EdgeInsets.only(bottom: 4),
-                  types: PredefinedThemes.warning,
-                  ontaps: _showReportDialog,
-                  texts: '신고',
-                  colors: bColor,
-                ),
-                MainPageAniBtn(
-                  margins: EdgeInsets.only(top: 4),
-                  types: PredefinedThemes.warning,
-                  ontaps: () {
-                    showModalBottomSheet(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return FractionallySizedBox(
-                          heightFactor: 0.8,
-                          child: Container(
-                            height: 450.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25),
-                                topRight: Radius.circular(25),
-                              ),
-                            ),
-                            child: EmergencyManual(), // 모달 내부
-                          ),
-                        );
-                      },
-                    );
-                  },
-                  texts: '위기상황 \n대처메뉴얼',
-                  colors: bColor,
-                ),
-              ],
-            ),
-          ),
-          Expanded(
+          Flexible(
             flex: 3,
             child: AnimatedButton(
               height: 17.5.h,
               width: 50.w,
               blurRadius: 7.5,
               isOutline: true,
-              type: PredefinedThemes.danger,
+              type: PredefinedThemes.light,
               onTap: () {
-                return sendEmergencyMessage();
+                CamDialog(context);
               },
               child: Row(
                 children: [
                   Expanded(
-                    flex: 2,
-                    child: ClipRRect(
-                      child: Image.asset(
-                        "assets/icons/shadowsiren1.png",
-                      ),
-                    ),
-                  ),
-                  Expanded(
                     flex: 1,
                     child: Text(
-                      'S\nO\nS',
+                      'C\nA\nM',
                       style: TextStyle(
                         fontSize: 17.5.sp,
                         fontFamily: 'HanSan',
@@ -347,12 +312,159 @@ class _MainButtonUpState extends State<MainButtonUp> {
                       textAlign: TextAlign.center,
                     ),
                   ),
+                  Expanded(
+                    flex: 2,
+                    child: ClipRRect(
+                      child: Image.asset(
+                        "assets/icons/shadowcctvreverse.png",
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ),
+          Flexible(
+            flex: 2,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(top: 4),
+                  child: AnimatedButton(
+                    width: 30.w,
+                    blurRadius: 7.5,
+                    isOutline: true,
+                    type: null,
+                    color: nColor,
+                    onTap: () async {
+                      await launch('https://m.sexoffender.go.kr/main.nsc',
+                          forceWebView: false, forceSafariVC: false);
+                    },
+                    child: Text(
+                      '성범죄자\n알림e',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'HanSan',
+                      ),
+                    ),
+                  ),
+                ),
+                MainPageAniBtn(
+                  margins: EdgeInsets.only(bottom: 4),
+                  types: PredefinedThemes.primary,
+                  ontaps: () {
+                    (sidoName == '서울')
+                        ? showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              // Future.delayed(Duration(seconds: 3), () {
+                              //   UrlLauncher.launchUrl(Uri.parse("tel:" + phones));
+                              // });
+                              return CallDialog(
+                                  null,
+                                  guName + '청 스카우트 상황실',
+                                  phones!,
+                                  '※ 주말 및 공휴일 제외 \n월 : 22 ~ 24시, 화 ~ 금 : 22 ~ 01시',
+                                  null);
+                            },
+                          )
+                        : showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return BasicDialog(
+                                  EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                                  12.5.h,
+                                  '안심귀가 서비스는 \'서울\' 에서만 제공됩니다.',
+                                  null);
+                            },
+                          );
+                  },
+                  texts: '안심귀가\n서비스',
+                  colors: Colors.white,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
+    );
+  }
+
+  void CamDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
+          child: Container(
+            padding: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
+            height: 15.h,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AnimatedButton(
+                  height: 7.h,
+                  width: 30.w,
+                  blurRadius: 7.5,
+                  isOutline: true,
+                  type: PredefinedThemes.light,
+                  onTap: () async {
+                    bool flag = await UserService().isHomecamRegistered();
+                    flag
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CameraPlayer(),
+                            ),
+                          )
+                        : Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CamInfoDialog(),
+                            ),
+                          );
+                  },
+                  child: Text(
+                    '나의 캠',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: bColor,
+                      fontFamily: 'HanSan',
+                    ),
+                  ),
+                ),
+                AnimatedButton(
+                  height: 7.h,
+                  width: 30.w,
+                  blurRadius: 7.5,
+                  isOutline: true,
+                  type: PredefinedThemes.light,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OtherCamInfo(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    '상대방 캠',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: bColor,
+                      fontFamily: 'HanSan',
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

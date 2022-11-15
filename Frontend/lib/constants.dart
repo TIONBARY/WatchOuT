@@ -11,6 +11,4 @@ const y50Color = Color(0x80FFC84B);
 const y25Color = Color(0x40FFC84B);
 
 const nColor = Color(0xFF0E54AA);
-const n75Color = Color(0xBF0E54AA);
-const n50Color = Color(0x800E54AA);
-const n25Color = Color(0x400E54AA);
+const oColor = Color(0xFFE4804E);
