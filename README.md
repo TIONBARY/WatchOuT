@@ -1,5 +1,4 @@
-# 서비스명
-![Logo]()
+![WatchOuT_Logo](/uploads/9ca0336067bf12a4e8ed0110bf61d728/WatchOuT_Logo.png)
 
 # 개요
 - **프로젝트 기간** : 2022.10.10 ~ 2022.11.17 (7주)
