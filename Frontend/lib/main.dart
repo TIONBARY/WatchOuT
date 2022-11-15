@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:homealone/api/api_kakao.dart';
@@ -46,8 +45,6 @@ bool messageIsSent = false;
 
 const locationCheck = "locationCheck";
 const fetchBackground = "fetchBackground";
-
-const platform = MethodChannel('com.ssafy.homealone/channel');
 
 @pragma('vm:entry-point')
 void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
@@ -213,12 +210,18 @@ Future<void> askPermission(
               PermissionRationaleDialog(permission, message))));
 }
 
-bool permissionOnce = false;
+bool _permissionOnce = false;
 void _permission(BuildContext context) async {
-  if (permissionOnce) {
+  if (_permissionOnce) {
     return;
   }
-  permissionOnce = true;
+  SharedPreferences pref = await SharedPreferences.getInstance();
+  bool? permissionOnce = pref.getBool("permissionOnce");
+  if (permissionOnce != null && permissionOnce!) {
+    return;
+  }
+  _permissionOnce = true;
+
   askPermission(context, Permission.locationAlways,
       "WatchOuT 백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
   askPermission(context, Permission.location,
@@ -249,11 +252,12 @@ Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
-  count.then((value) {
+  // await sendEmergencyMessage();
+  count.then((value) async {
     debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
     if (value == 0) {
       if (!messageIsSent) {
-        _getKakaoKey().then((response) => sendEmergencyMessage());
+        await sendEmergencyMessage();
       }
     } else {
       messageIsSent = false;
@@ -294,19 +298,16 @@ void callbackDispatcher() {
         await refreshUsage();
         break;
     }
-    return Future.value(true);
+    return true;
   });
 }
 
-Future _getKakaoKey() async {
-  await dotenv.load();
-  kakaoMapKey = dotenv.get('kakaoMapAPIKey');
-  return kakaoMapKey;
-}
-
-void _sendSMS(String message, List<String> recipients) async {
-  await platform.invokeMethod(
-      'sendTextMessage', {'message': message, 'recipients': recipients});
+Future<void> _sendSMS(String message, List<String> recipients) async {
+  String result = await MethodChannel('com.ssafy.homealone/channel')
+      .invokeMethod('sendTextMessage', {
+    'message': message,
+    'recipients': recipients
+  }).catchError((error) => print(error));
 }
 
 Future<void> sendEmergencyMessage() async {
@@ -315,7 +316,7 @@ Future<void> sendEmergencyMessage() async {
     print(message);
     print(recipients);
     messageIsSent = true;
-    _sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    await _sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
   }
 }
 

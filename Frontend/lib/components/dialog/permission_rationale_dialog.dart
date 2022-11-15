@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:homealone/constants.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 
 class PermissionRationaleDialog extends StatelessWidget {
@@ -41,9 +42,12 @@ class PermissionRationaleDialog extends StatelessWidget {
                 ),
               ),
               onPressed: () async {
-                if (await permission.request().isGranted) {
-                  Navigator.pop(context);
-                }
+                // if (await permission.request().isGranted) {
+                await permission.request();
+                SharedPreferences pref = await SharedPreferences.getInstance();
+                pref.setBool("permissionOnce", true);
+                Navigator.pop(context);
+                // }
               },
               child: Text(
                 '확인',

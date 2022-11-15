@@ -10,6 +10,10 @@ import 'package:homealone/components/homecam/other_cam_Info_shared_page.dart';
 import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/components/main/main_page_animated_button.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/pages/emergency_manual_page.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:homealone/providers/user_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
@@ -50,6 +54,226 @@ class MainButtonUp extends StatefulWidget {
 
 class _MainButtonUpState extends State<MainButtonUp> {
   final _authentication = FirebaseAuth.instance;
+<<<<<<< Frontend/lib/components/main/main_button_up.dart
+  Map<String, dynamic>? user;
+  List<Map<String, dynamic>> emergencyCallList = [];
+  Timer? timer;
+  String message = "";
+  List<String> recipients = [];
+  late BuildContext dialogContext;
+  final assetsAudioPlayer = AssetsAudioPlayer();
+  bool useSiren = false;
+  String address = "";
+  static const platform = MethodChannel('com.ssafy.homealone/channel');
+
+  Future _getKakaoKey() async {
+    await dotenv.load();
+    kakaoMapKey = dotenv.get('kakaoMapAPIKey');
+    FirebaseFirestore.instance
+        .collection("user")
+        .doc(_authentication.currentUser?.uid)
+        .get()
+        .then((response) {
+      user = response.data() as Map<String, dynamic>;
+    });
+    return kakaoMapKey;
+  }
+
+  void _sendSMS(String message, List<String> recipients) async {
+    final status = await Permission.sms.status;
+    if (status.isDenied) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                15.h, 'SMS 전송 권한이 없어\n 긴급 호출 문자를 전송하지 않습니다.', null);
+          });
+      return;
+    }
+    String _result = await platform.invokeMethod(
+        'sendTextMessage', {'message': message, 'recipients': recipients});
+    if (_result == "sent") {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '긴급 호출 메세지를 전송했습니다.', null);
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, "메세지 전송에 실패했습니다.", null);
+          });
+    }
+  }
+
+  void _sendMMS(XFile file, String message, List<String> recipients) async {
+    Map<String, dynamic> _result =
+        await apiMessage.sendMMSMessage(file, recipients, message);
+    if (_result["statusCode"] == 200) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, '신고 메세지를 전송했습니다.', null);
+          });
+    } else {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                12.5.h, _result["message"], null);
+          });
+    }
+  }
+
+  void sendEmergencyMessage() async {
+    prepareMessage();
+    timer = Timer(Duration(seconds: 5), () async {
+      Navigator.pop(dialogContext);
+      if (recipients.isEmpty) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                  12.5.h, '비상연락처를 등록해주세요.', null);
+            });
+        return;
+      }
+      _sendSMS(message, recipients);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      useSiren =
+          pref.getBool('useSiren') == null ? false : pref.getBool('useSiren')!;
+      print('----------------------${pref.getBool('useSiren')}');
+      if (useSiren) {
+        await _sosSoundSetting();
+        VolumeControl.setVolume(0.1);
+        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
+            audioFocusStrategy:
+                AudioFocusStrategy.request(resumeAfterInterruption: true));
+      }
+    });
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          dialogContext = context;
+          return SOSDialog();
+        }).then((value) {
+      timer?.cancel();
+    });
+  }
+
+  Future<void> _sosSoundSetting() async {
+    try {
+      final String result = await platform.invokeMethod('sosSoundSetting');
+    } on PlatformException catch (e) {
+      print('sound setting failed');
+    }
+  }
+
+  Future<void> getCurrentLocation() async {
+    Position position = await Geolocator.getCurrentPosition();
+    initLat = position.latitude;
+    initLon = position.longitude;
+    address =
+        await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
+  }
+
+  void prepareMessage() async {
+    await getCurrentLocation();
+    message =
+        "${user?["name"]} 님이 WatchOut 앱에서 SOS 버튼을 눌렀습니다. 긴급 조치가 필요합니다. \n현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+    await getEmergencyCallList();
+    recipients = [];
+    for (var i = 0; i < emergencyCallList.length; i++) {
+      recipients.add(emergencyCallList[i]["number"]);
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getEmergencyCallList() async {
+    final firstResponder = await FirebaseFirestore.instance
+        .collection("user")
+        .doc(_authentication.currentUser?.uid)
+        .collection("firstResponder");
+    final result = await firstResponder.get();
+    setState(() {
+      emergencyCallList = [];
+    });
+    result.docs.forEach((value) => {
+          emergencyCallList
+              .add({"name": value.id, "number": value.get("number")})
+        });
+    return emergencyCallList;
+  }
+
+  void sendReportMessage(XFile file) async {
+    await getCurrentLocation();
+    message =
+        "${user?["name"]} 님이 WatchOut 앱에서 신고 버튼을 눌렀습니다. 현재 상황은 위 사진과 같습니다. 긴급 조치가 필요합니다. \n신고자 번호 : ${user?["phone"]}\n현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+    recipients = [user?["phone"]];
+    _sendMMS(file, message, recipients);
+  }
+
+  void _takePhoto() async {
+    ImagePicker()
+        .getImage(
+            source: ImageSource.camera,
+            maxHeight: 1500,
+            maxWidth: 1500,
+            imageQuality: 50)
+        .then((PickedFile? recordedImage) {
+      if (recordedImage != null) {
+        GallerySaver.saveImage(recordedImage.path, albumName: 'Watch OuT')
+            .then((bool? success) {});
+
+        XFile file = XFile(recordedImage!.path);
+        sendReportMessage(file);
+      }
+    });
+  }
+
+  void _showReportDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ReportDialog(_takePhoto);
+        });
+  }
+
+  void _checkForWidgetLaunch() {
+    HomeWidget.initiallyLaunchedFromHomeWidget().then(_launchedFromWidget);
+  }
+
+  void _launchedFromWidget(Uri? uri) {
+    if (uri?.host == 'sos' && !emergencyFromWidget) {
+      sendEmergencyMessage();
+      emergencyFromWidget = true;
+    }
+  }
+
+  void _widgetClicked(Uri? uri) {
+    if (uri?.host == 'sos') {
+      sendEmergencyMessage();
+      emergencyFromWidget = true;
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getKakaoKey();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _checkForWidgetLaunch();
+    HomeWidget.widgetClicked.listen(_widgetClicked);
+  }
+=======
+>>>>>>> Frontend/lib/components/main/main_button_up.dart
 
   @override
   Widget build(BuildContext context) {
