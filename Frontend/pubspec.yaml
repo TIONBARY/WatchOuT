@@ -139,9 +139,6 @@ flutter:
     - family: WdcsB
       fonts:
         - asset: fonts/WandocleanseaB.ttf
-    - family: WdcsR
-      fonts:
-        - asset: fonts/WandocleanseaR.ttf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

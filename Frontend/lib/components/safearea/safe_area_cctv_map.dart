@@ -284,11 +284,13 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   ''');
     accessCode = getRandomString(accessCodeLength);
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AccessCodeMessageChoiceListDialog(
-              sendMessageToEmergencyCallList);
-        });
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AccessCodeMessageChoiceListDialog(
+            sendMessageToEmergencyCallList);
+      },
+    );
     FirebaseFirestore.instance
         .collection("userAccessCode")
         .doc(_auth.currentUser?.uid)
