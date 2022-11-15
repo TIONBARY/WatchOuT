@@ -198,7 +198,7 @@ Future<void> askPermission(
         context,
         MaterialPageRoute(
             builder: (context) => BasicDialog(
-                EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+                EdgeInsets.fromLTRB(2.5.w, 2.5.h, 2.5.w, 1.25.h),
                 25.h,
                 '24시간 무응답 시 응급 상황 전파 기능은\n백그라운드에서 위치 정보를 수신하고,\n자동 문자 전송이 이루어질 수 있습니다.\n이 기능을 원치 않으시면 설정 페이지에서\n 스크린 사용 감지를 off로 바꿔주세요.',
                 null))));
