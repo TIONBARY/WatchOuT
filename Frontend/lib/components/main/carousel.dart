@@ -8,9 +8,6 @@ import '../youtube/models/channel_model.dart';
 import '../youtube/services/api_service.dart';
 
 class Carousel extends StatefulWidget {
-  // final String id;
-  // Carousel({required this.id});
-
   @override
   _CarouselState createState() => _CarouselState();
 }

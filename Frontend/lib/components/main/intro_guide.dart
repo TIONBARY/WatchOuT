@@ -36,7 +36,7 @@ class _MainGuideState extends State<MainGuide> {
                 order: 1,
                 // text: '클릭시 개인 정보 수정 화면',
                 text: Text(
-                  '클릭시 SOS 버튼',
+                  '회원 정보 수정 및 탈퇴',
                 ).data,
                 padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                 onWidgetLoad: () {
@@ -63,7 +63,7 @@ class _MainGuideState extends State<MainGuide> {
                   children: [
                     IntroStepBuilder(
                       order: 2,
-                      text: '클릭 시 홈 화면',
+                      text: '메인화면',
                       padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
@@ -88,7 +88,8 @@ class _MainGuideState extends State<MainGuide> {
                     ),
                     IntroStepBuilder(
                       order: 3,
-                      text: '클릭 시 안전 지도 화면',
+                      text:
+                          '지도에서 주변 안전 인프라 탐색과\nCCTV 정보가 확인 가능하며,\n보호자에게 실시간으로\n나의 귀갓길을 공유할 수 있음',
                       padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
@@ -113,7 +114,7 @@ class _MainGuideState extends State<MainGuide> {
                     ),
                     IntroStepBuilder(
                       order: 4,
-                      text: '클릭 시 귀가 공유 화면',
+                      text: '안전 지도에서 공유받은 코드로\n피보호자의 실시간 귀갓길 확인 ',
                       padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
@@ -138,7 +139,7 @@ class _MainGuideState extends State<MainGuide> {
                     ),
                     IntroStepBuilder(
                       order: 5,
-                      text: '클릭 시 설정 화면',
+                      text: '스마트워치와 앱 설정,\n비상연락처 등록',
                       padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => Expanded(
                         key: key,
@@ -170,20 +171,21 @@ class _MainGuideState extends State<MainGuide> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     Container(
-                      child: Text('가이드 보러가기',
-                          style: TextStyle(
-                            fontFamily: 'HanSan',
-                          )),
                       margin: EdgeInsets.all(8),
+                      child: Text(
+                        '가이드 보러가기',
+                        style: TextStyle(
+                          fontFamily: 'HanSan',
+                        ),
+                      ),
                     ),
                     IntroStepBuilder(
                       order: 6,
-                      text: '클릭 시 가이드 화면',
+                      text: '가이드 화면',
                       padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                       builder: (context, key) => ElevatedButton(
                         key: key,
                         onPressed: () {},
-                        child: Icon(Icons.question_mark, color: yColor),
                         style: IconButton.styleFrom(
                           shape: CircleBorder(),
                           minimumSize: Size.zero,
@@ -191,6 +193,7 @@ class _MainGuideState extends State<MainGuide> {
                           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                           backgroundColor: bColor,
                         ),
+                        child: Icon(Icons.question_mark, color: yColor),
                       ),
                     ),
                   ],
@@ -199,7 +202,7 @@ class _MainGuideState extends State<MainGuide> {
               Expanded(
                 child: IntroStepBuilder(
                   order: 7,
-                  text: '클릭 시 유투브 화면',
+                  text: '안전 교육 영상',
                   padding: EdgeInsets.fromLTRB(1, 1, 1, 1),
                   builder: (context, key) => ClipRRect(
                     borderRadius: BorderRadius.all(
@@ -221,44 +224,40 @@ class _MainGuideState extends State<MainGuide> {
                     children: [
                       Flexible(
                         flex: 3,
-                        child: Container(
-                          child: IntroStepBuilder(
-                            order: 8,
-                            text: '클릭 시 홈캠 화면',
-                            padding: EdgeInsets.fromLTRB(
-                                -2.w, -2.25.h, -2.w, -2.25.h),
-                            builder: (context, key) => AnimatedButton(
-                              key: key,
-                              height: 17.5.h,
-                              width: 50.w,
-                              blurRadius: 7.5,
-                              isOutline: true,
-                              type: PredefinedThemes.light,
-                              onTap: () {},
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      child: Text(
-                                        'C\nA\nM',
-                                        style: TextStyle(
-                                            fontSize: 17.5.sp,
-                                            fontFamily: 'HanSan'),
-                                        textAlign: TextAlign.center,
-                                      ),
+                        child: IntroStepBuilder(
+                          order: 8,
+                          text: '나의 캠과 상대방의 캠을\n공유받은 코드로 연결하여\n필요시 확인',
+                          padding:
+                              EdgeInsets.fromLTRB(-2.w, -2.25.h, -2.w, -2.25.h),
+                          builder: (context, key) => AnimatedButton(
+                            key: key,
+                            height: 17.5.h,
+                            width: 50.w,
+                            blurRadius: 7.5,
+                            isOutline: true,
+                            type: PredefinedThemes.light,
+                            onTap: () {},
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: Text(
+                                    'C\nA\nM',
+                                    style: TextStyle(
+                                        fontSize: 17.5.sp,
+                                        fontFamily: 'HanSan'),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: ClipRRect(
+                                    child: Image.asset(
+                                      "assets/icons/shadowcctvreverse.png",
                                     ),
                                   ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: ClipRRect(
-                                      child: Image.asset(
-                                        "assets/icons/shadowcctvreverse.png",
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -270,7 +269,7 @@ class _MainGuideState extends State<MainGuide> {
                           children: [
                             IntroStepBuilder(
                               order: 9,
-                              text: '클릭 시 안심귀가 서비스 화면',
+                              text: '성범죄자 알림e\n서비스로 이동',
                               padding:
                                   EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, 2),
                               builder: (context, key) => AnimatedButton(
@@ -293,7 +292,7 @@ class _MainGuideState extends State<MainGuide> {
                             ),
                             IntroStepBuilder(
                               order: 10,
-                              text: '클릭 시 성범죄자 알림e 화면',
+                              text: '본인 주소지에 맞는\n구청 번호로 연결',
                               padding:
                                   EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, -1),
                               builder: (context, key) => MainPageAniBtn(
@@ -326,7 +325,7 @@ class _MainGuideState extends State<MainGuide> {
                           children: [
                             IntroStepBuilder(
                               order: 11,
-                              text: '클릭 시 신고 화면',
+                              text: '목격한 현장을\n촬영하면\n바로 112에 신고 문자 발송',
                               padding:
                                   EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, -1),
                               builder: (context, key) => MainPageAniBtn(
@@ -340,7 +339,7 @@ class _MainGuideState extends State<MainGuide> {
                             ),
                             IntroStepBuilder(
                               order: 12,
-                              text: '클릭 시 위기상황 대처메뉴얼 화면',
+                              text: '여러 위기상황에 대한\n대처 매뉴얼',
                               padding:
                                   EdgeInsets.fromLTRB(-2.5.w, -1, -2.5.w, 2),
                               builder: (context, key) => MainPageAniBtn(
@@ -360,7 +359,7 @@ class _MainGuideState extends State<MainGuide> {
                         child: IntroStepBuilder(
                           order: 13,
                           // 화면에 안 나옴
-                          text: '클릭 시 SOS 화면',
+                          text: '5초 후 사이렌과 함께\n비상연락처에 등록 된\n모든 번호로 문자 발송',
                           padding:
                               EdgeInsets.fromLTRB(-2.w, -2.25.h, -2.w, -2.25.h),
                           overlayBuilder: (params) {
@@ -371,7 +370,7 @@ class _MainGuideState extends State<MainGuide> {
                                 children: [
                                   const Text(
                                     // 화면에 나옴
-                                    '클릭 시 SOS 화면',
+                                    '5초 후 사이렌과 함께\n비상연락처에 등록 된\n모든 번호로 문자 발송',
                                     style: TextStyle(color: Colors.white),
                                   ),
                                   Padding(
@@ -415,14 +414,12 @@ class _MainGuideState extends State<MainGuide> {
                                 ),
                                 Expanded(
                                   flex: 1,
-                                  child: Container(
-                                    child: Text(
-                                      'S\nO\nS',
-                                      style: TextStyle(
-                                          fontSize: 17.5.sp,
-                                          fontFamily: 'HanSan'),
-                                      textAlign: TextAlign.center,
-                                    ),
+                                  child: Text(
+                                    'S\nO\nS',
+                                    style: TextStyle(
+                                        fontSize: 17.5.sp,
+                                        fontFamily: 'HanSan'),
+                                    textAlign: TextAlign.center,
                                   ),
                                 ),
                               ],
@@ -434,16 +431,6 @@ class _MainGuideState extends State<MainGuide> {
                   ),
                 ),
               ),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     Navigator.pop(context);
-              //   },
-              //   style: ElevatedButton.styleFrom(backgroundColor: bColor),
-              //   child: Text(
-              //     '돌아가기',
-              //     style: TextStyle(color: yColor),
-              //   ),
-              // ),
             ],
           ),
         ),
