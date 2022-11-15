@@ -54,7 +54,7 @@ void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
     return;
   }
   debugPrint('[백그라운드 헤드리스] Headless event received.');
-  initializeService();
+  initializeNotificationService();
   refreshUsage();
 
   fetch.BackgroundFetch.finish(taskId);
@@ -98,7 +98,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initializeService();
+    initializeNotificationService();
     initUsage();
   }
 
@@ -191,7 +191,7 @@ Future<void> onStart(ServiceInstance service) async {
   final SharedPreferences pref = await SharedPreferences.getInstance();
 
   if (service is AndroidServiceInstance) {
-    onStartWatch(service, flutterLocalNotificationsPlugin, pref);
+    onStartWatch(flutterLocalNotificationsPlugin, pref);
   }
 }
 
@@ -249,7 +249,7 @@ void callbackDispatcher() {
   });
 }
 
-Future<void> _sendSMS(String message, List<String> recipients) async {
+Future<void> sendSMS(String message, List<String> recipients) async {
   // String result = await MethodChannel('com.ssafy.homealone/channel')
   //     .invokeMethod('sendTextMessage', {
   //   'message': message,
@@ -271,7 +271,7 @@ Future<void> sendEmergencyMessage() async {
     print(message);
     print(recipients);
     messageIsSent = true;
-    await _sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
   }
 }
 
