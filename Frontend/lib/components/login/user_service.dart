@@ -251,7 +251,6 @@ class UserService {
       print("해당 번호에 해당하는 유저가 없습니다.");
     else
       result = data[0].data() as Map<String, dynamic>?;
-    print("-------------------------------------------------------$result");
     return result;
   }
 
@@ -266,6 +265,7 @@ class UserService {
       "number": number,
       "appUser": true,
       "uid": uid,
+      "CamActivated": false,
     });
   }
 
