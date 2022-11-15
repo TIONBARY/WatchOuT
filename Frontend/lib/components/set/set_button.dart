@@ -113,7 +113,7 @@ class _SetButtonState extends State<SetButton>
       child: Column(
         children: [
           SetPageRadioButton(
-            texts: 'WearOS 사용',
+            texts: '스마트워치 사용',
             values: Provider.of<SwitchBools>(context, listen: false).useWearOS,
             onchangeds: (value) {
               setState(
