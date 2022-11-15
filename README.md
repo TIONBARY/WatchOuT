@@ -4,21 +4,27 @@
 - **프로젝트 기간** : 2022.10.10 ~ 2022.11.17 (7주)
   - 1인 가구를 위한 치안 앱
 - **주요 기능**
-  1. ㄱ
-  2. ㄴ
-  3. ㄷ
-  4. ㄹ
-  5. ㅁ 
+  1. SOS기능
+     - 사이렌과 함께 등록 된 비상연락처로 문자 발송
+  2. 안전 귀가
+     - 귀갓길 공유대상에게 실시간으로 본인의 위치 공유
+  3. 스마트 워치 연동
+     - 실시간으로 심박수를 체크 해 이상이 있으면 비상연락처로 문자 발송
+  4. 바로 신고
+     - 현장을 목격할 시, 사진만 찍으면 사진과 함께 112에 문자 발송
+  5. 웹캠
+     - 비어있는 집에 괴한이 들어 왔을 때, 감시
+     - 비상연락이 온 상대방의 캠으로 확인
 
 # 팀원 소개
 | 이름   | 역할 | 담당        |
 | ------ | ---- | ----------- |
-| 최윤정 | 팀장 | `Front-end` |
-| 김시언 | 팀원 | `Front-end` |
-| 김준우 | 팀원 | `Front-end` |
-| 윤지환 | 팀원 | `Back-end` |
-| 김도훈 | 팀원 | `Back-end` |
-| 한준수 | 팀원 | `Back-end` |
+| 김도훈 | 팀장 | `Full-stack` |
+| 김시언 | 팀원 | `Full-stack` |
+| 김준우 | 팀원 | `Full-stack` |
+| 윤지환 | 팀원 | `Full-stack` |
+| 최윤정 | 팀원 | `Full-stack` |
+| 한준수 | 팀원 | `Full-stack` |
 
 # 기술 스택
 
@@ -31,14 +37,12 @@
 ### Back-end
 <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=Java&logoColor=white">
 <img src="https://img.shields.io/badge/SpringBoot-6DB33F?style=for-the-badge&logo=SpringBoot&logoColor=white">
-<img src="https://img.shields.io/badge/FastAPI-009185?style=for-the-badge&logo=FastAPI&logoColor=white">
-<img src="https://img.shields.io/badge/MYSQL-4479A1?style=for-the-badge&logo=MYSQL&logoColor=white">
-<img src="https://img.shields.io/badge/SpringSecurity-6DB33F?style=for-the-badge&logo=SpringSecurity&logoColor=white">
-<img src="https://img.shields.io/badge/Gradle-02303A?style=for-the-badge&logo=Gradle&logoColor=white">
+<img src="https://img.shields.io/badge/FIREBASE-ffce2c?style=for-the-badge&logo=FIREBASE&logoColor=white">
 
 ### Front-end
-<img src="https://img.shields.io/badge/Flutter-blue?style=for-the-badge&logo=Flutter&logoColor=white">
-<img src="https://img.shields.io/badge/Dart-blue?style=for-the-badge&logo=Dart&logoColor=white">
+<img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=Flutter&logoColor=white">
+<img src="https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=Dart&logoColor=white">
+<img src="https://img.shields.io/badge/Kotlin-7F52FF?style=for-the-badge&logo=Kotlin&logoColor=white">
 
 ### 서버
 <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
