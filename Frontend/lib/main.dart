@@ -44,29 +44,21 @@ List<String> recipients = [];
 String address = "";
 bool messageIsSent = false;
 
-final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
-StreamSubscription<Position>? _positionStreamSubscription;
-
 const locationCheck = "locationCheck";
 const fetchBackground = "fetchBackground";
 
 const platform = MethodChannel('com.ssafy.homealone/channel');
 
-// [Android-only] This "Headless Task" is run when the Android app is terminated with `enableHeadless: true`
-// Be sure to annotate your callback function to avoid issues in release mode on Flutter >= 3.3.0
 @pragma('vm:entry-point')
 void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
   String taskId = task.taskId;
   bool isTimeout = task.timeout;
   if (isTimeout) {
-    // This task has exceeded its allowed running-time.
-    // You must stop what you're doing and immediately .finish(taskId)
     debugPrint("[백그라운드 헤드리스] Headless task timed-out: $taskId");
     fetch.BackgroundFetch.finish(taskId);
     return;
   }
   debugPrint('[백그라운드 헤드리스] Headless event received.');
-  // Do your work here...
   initializeService();
   refreshUsage();
 
@@ -87,21 +79,8 @@ void main() {
     ),
   );
 
-  // Register to receive BackgroundFetch events after app is terminated.
-  // Requires {stopOnTerminate: false, enableHeadless: true}
   fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
-
-// void initQuickActions() {
-//   final QuickActions _quickActions = new QuickActions();
-//   _quickActions.initialize((navigateRoute);
-//   _quickActions.setShortcutItems([
-//     ShortcutItem(type: "SOS", localizedTitle: "SOS"),
-//     ShortcutItem(type: "SafeHome", localizedTitle: "안심귀가"),
-//     ShortcutItem(type: "성범죄자 알림e", localizedTitle: "알림e"),
-//     ShortcutItem(type: "SafeZone", localizedTitle: "안전구역"),
-//   ]);
-// }
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -111,10 +90,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _enabled = true;
-  int _status = 0;
-  List<DateTime> _events = [];
-
   @override
   void initState() {
     super.initState();
@@ -130,13 +105,6 @@ class _MyAppState extends State<MyApp> {
         constraints: wm.Constraints(
             networkType: wm.NetworkType.not_required,
             requiresDeviceIdle: true));
-    // debugPrint("메인꺼");
-    // SharedPreferences.getInstance().then(
-    //   (value) => {
-    //     debugPrint(value.hashCode.toString()),
-    //     debugPrint(value.getBool("useWearOS").toString())
-    //   },
-    //
   }
 
   @override
