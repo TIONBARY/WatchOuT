@@ -48,7 +48,7 @@ class _GuideBarState extends State<GuideBar> {
                       padding: EdgeInsets.zero,
                       borderRadius: const BorderRadius.all(Radius.circular(4)),
                       maskColor: const Color.fromRGBO(0, 0, 0, .6),
-                      maskClosable: true,
+                      maskClosable: false,
                       buttonTextBuilder: (order) => order == 13 ? '완료' : '다음',
                       child: const MainGuide(),
                     ),
