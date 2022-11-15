@@ -19,6 +19,7 @@ import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:volume_control/volume_control.dart';
@@ -89,6 +90,16 @@ class _MainButtonDownState extends State<MainButtonDown> {
   }
 
   void _sendMMS(XFile file, String message, List<String> recipients) async {
+    await Permission.sms.request();
+    if (await Permission.sms.isDenied) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                15.h, 'SMS 전송 권한이 없어\n 문자를 전송할 수 없습니다.', null);
+          });
+      return;
+    }
     Map<String, dynamic> _result =
         await apiMessage.sendMMSMessage(file, recipients, message);
     if (_result["statusCode"] == 200) {
