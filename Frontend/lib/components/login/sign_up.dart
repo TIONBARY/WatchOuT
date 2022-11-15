@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
+import 'package:homealone/components/dialog/basic_dialog_join.dart';
 import 'package:homealone/components/login/sign_up_text_field_suffix.dart';
 import 'package:homealone/components/login/sign_up_text_field_validate.dart';
 import 'package:homealone/components/login/user_service.dart';
@@ -57,7 +58,7 @@ class _SignupState extends State<SignUp> {
     getCurrentUser();
   }
 
-  Future<void> _register() async {
+  void _register() async {
     _SignupKey.currentState!.save();
     db.collection("user").doc("${loggedUser!.uid}").update({
       "nickname": _nickname,
@@ -372,16 +373,20 @@ class _SignupState extends State<SignUp> {
                   if (_SignupKey.currentState!.validate() &&
                       !checkDupNum &&
                       submitted) {
-                    _register();
+                    showDialog(
+                        context: context,
+                        builder: (context) =>
+                            BasicDialogJoin(() => _register()));
                   } else if (!_SignupKey.currentState!.validate()) {
                     showDialog(
                         context: context,
                         builder: (BuildContext context) {
                           return BasicDialog(
-                              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                              12.5.h,
-                              '회원 정보를 입력해주세요.',
-                              null);
+                            EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                            12.5.h,
+                            '회원 정보를 입력해주세요.',
+                            null,
+                          );
                         });
                   } else if (checkDupNum) {
                     showDialog(
