@@ -60,7 +60,7 @@ class _CamInfoDialogState extends State<CamInfoDialog> {
                           : showDialog(
                               context: context,
                               builder: (BuildContext context) {
-                                return BasicDialog(EdgeInsets.all(10), 10.h,
+                                return BasicDialog(EdgeInsets.all(5.sp), 10.h,
                                     '주소를 확인해주세요.', null);
                               },
                             );
