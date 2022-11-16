@@ -203,7 +203,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
     await getCurrentLocation();
     message =
         "${user?["name"]} 님이 WatchOut 앱에서 신고 버튼을 눌렀습니다. 현재 상황은 위 사진과 같습니다. 긴급 조치가 필요합니다. \n신고자 번호 : ${user?["phone"]}\n현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
-    recipients = [user?["phone"]];
+    recipients = ["112"];
     _sendMMS(file, message, recipients);
   }
 
