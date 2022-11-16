@@ -89,7 +89,6 @@ class _SetButtonState extends State<SetButton>
     if (await Permission.locationAlways.isGranted != true) {
       PermissionService().permissionLocationAlways(context);
     }
-    ;
   }
 
   void setFirstResponderProvider() {
