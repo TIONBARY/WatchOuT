@@ -59,7 +59,7 @@ class AuthService {
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
             print("구글 계정이 확인되었습니다.");
-            print("${FirebaseAuth.instance.currentUser!.uid}");
+            print(FirebaseAuth.instance.currentUser!.uid);
             return handleDetailState(FirebaseAuth.instance.currentUser!.uid);
           } else {
             print("로그아웃 되었습니다.");
@@ -72,7 +72,7 @@ class AuthService {
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection("user")
-          .doc("${googleUID}")
+          .doc(googleUID)
           .snapshots(),
       builder: (BuildContext context,
           AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
@@ -81,11 +81,11 @@ class AuthService {
             child: CircularProgressIndicator(),
           );
         }
-        ;
+
         final userDocs = snapshot.data!.data();
         if (userDocs == null) {
           UserService().registerBasicUserInfo();
-        } else if (userDocs!["activated"]) {
+        } else if (userDocs["activated"]) {
           Provider.of<MyUserInfo>(context, listen: false).setUser(userDocs);
           SharedPreferences.getInstance().then((prefs) async => {
                 await prefs.setString('username',

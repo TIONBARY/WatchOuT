@@ -15,13 +15,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:watch_connectivity/watch_connectivity.dart';
 
 double heartRate = 0.0;
-double minValue = 0.0;
-double maxValue = 300.0;
+double minValue = 60.0;
+double maxValue = 120.0;
 bool pressing = false;
 bool interval = false;
 String emergencyStatus = "";
 String message = "";
 List<String> recipients = [];
+Set<String> switchKeys = {
+  "useWearOS",
+  "useScreen",
+  "useGPS",
+  "useSiren",
+  "useDzone",
+};
 
 // this will be used as notification channel id
 const notificationChannelId = 'emergency_notification';
@@ -32,6 +39,170 @@ const notificationId = 119;
 bool homecamRegistered = false;
 String homecamAccessCode = "";
 String homecamUrl = "";
+
+Future<void> registerHomecamAccessCode() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await FirebaseFirestore.instance
+      .collection("homecamCodeToUserInfo")
+      .doc(homecamAccessCode)
+      .set({
+    "name": preferences.getString("username"),
+    "profileImage": preferences.getString("profileImage"),
+    "url": homecamUrl,
+    "expiredTime": DateTime.now().add(Duration(minutes: 30)),
+  });
+}
+
+Future<void> checkHomecam() async {
+  await Firebase.initializeApp();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  homecamRegistered = false;
+  final homecam = await FirebaseFirestore.instance
+      .collection("user")
+      .doc(preferences.getString('useruid'))
+      .collection("homecam");
+  final result = await homecam.get();
+  homecamUrl = "";
+  result.docs.forEach((value) => {
+        homecamUrl = value.get('url'),
+      });
+  if (homecamUrl.isNotEmpty) {
+    homecamRegistered = true;
+    homecamAccessCode = getRandomString(8);
+    await registerHomecamAccessCode();
+  }
+}
+
+Future<void> prepareMessage(String emergencyStatus) async {
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    await getCurrentLocation();
+    await checkHomecam();
+  }
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  List<String>? list = await preferences.getStringList('contactlist');
+  if (list != null) {
+    recipients = list;
+  }
+  if (homecamRegistered) {
+    message =
+        "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
+    if (recipients.isNotEmpty) {
+      debugPrint(message);
+      debugPrint(recipients.toString());
+      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    }
+    message = "홈캠 입장 코드 : $homecamAccessCode\n홈캠은 워치아웃 앱에서 확인하실 수 있습니다.";
+    if (recipients.isNotEmpty && !interval) {
+      debugPrint(message);
+      debugPrint(recipients.toString());
+      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+      interval = true;
+      // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
+      sleep(Duration(minutes: 30));
+      interval = false;
+    }
+  } else if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    message =
+        "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      messageIsSent = true;
+      await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    }
+  } else {
+    message =
+        "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위도 : $initLat\n현재 예상 경도 : $initLon";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      messageIsSent = true;
+      await sendSMS(message, recipients);
+    }
+  }
+}
+
+Future<void> sendEmergencyMessage() async {
+  await prepareMessage(emergencyStatus);
+  if (recipients.isNotEmpty && !interval) {
+    debugPrint(message);
+    debugPrint(recipients.toString());
+    sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    interval = true;
+    // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
+    sleep(Duration(minutes: 30));
+    interval = false;
+  }
+}
+
+final _chars = '1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
+
+Future<void> showEmergencyNotification(
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+    double heartRate,
+    double minValue,
+    double maxValue) async {
+  if (heartRate > maxValue || heartRate < minValue) {
+    emergencyStatus = "의 심박수가 지정한 범위를 벗어났습니다";
+    flutterLocalNotificationsPlugin.show(
+      notificationId,
+      '워치아웃',
+      '위기 상황 발생!!!\n심박수가 정상 범위에서 벗어났습니다!\n심박수: ${heartRate.toInt()}',
+      // payload: newGap,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          notificationChannelId, '포그라운드 서비스',
+          importance: Importance.max,
+          timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
+          onlyAlertOnce: true,
+          actions: [
+            AndroidNotificationAction("ignore", "무시"),
+            AndroidNotificationAction("expand", "심박수 범위 확장"),
+            AndroidNotificationAction("open", "앱 열기", showsUserInterface: true),
+          ],
+          // playSound: ,
+          // sound:
+        ),
+      ),
+    );
+  } else {
+    flutterLocalNotificationsPlugin.show(
+      notificationId,
+      '워치아웃',
+      '위기 상황 발생!!!\n사용자가 버튼을 눌렀습니다!',
+      // payload: newGap,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          notificationChannelId, '포그라운드 서비스',
+          importance: Importance.max,
+          timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
+          actions: [
+            AndroidNotificationAction("ignore", "무시"),
+            AndroidNotificationAction("open", "앱 열기", showsUserInterface: true),
+          ],
+          // playSound: ,
+          // sound:
+        ),
+      ),
+    );
+    emergencyStatus = "이 응급 버튼을 눌렀습니다";
+  }
+
+  sleep(Duration(seconds: 15));
+  List<ActiveNotification> activeNotifications =
+      await flutterLocalNotificationsPlugin.getActiveNotifications();
+  if (activeNotifications.isNotEmpty) {
+    debugPrint("알림 해제 안 됨");
+    sendEmergencyMessage();
+  }
+}
 
 Future<void> initializeNotificationService() async {
   final service = FlutterBackgroundService();
@@ -99,7 +270,10 @@ void updateHeartRateRange() async {
   await pref.reload();
   maxValue = pref.getDouble("maxValue")!;
   minValue = pref.getDouble("minValue")!;
-  double gapValue = pref.getDouble("gapValue")!;
+  double gapValue = 5;
+  if (pref.getDouble("gapValue") != null) {
+    gapValue = pref.getDouble("gapValue")!;
+  }
   double tmpMax = maxValue;
   double tmpMin = minValue;
   if (heartRate > maxValue) {
@@ -117,15 +291,16 @@ void updateHeartRateRange() async {
 // release 모드에서 동작하기 위해 필요
 @pragma('vm:entry-point')
 void onStartWatch(
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-    SharedPreferences pref) {
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async {
   final watch = WatchConnectivity();
   // var newGap = "0.0";
+  SharedPreferences pref = await SharedPreferences.getInstance();
   bool? useWearOS = pref.getBool("useWearOS");
   Map<String, String> msg = HashMap<String, String>();
 
   watch.messageStream.listen((event) {
-    debugPrint("메세지: ${event.values.last}");
+    print("메세지: ${event.values.last}");
+    // debugPrint("메세지: ${event.values.last}");
     sendEmergencyMessage();
   });
 
@@ -135,12 +310,19 @@ void onStartWatch(
 
   bpmStream.onData(
     (data) async {
+      if (!await watch.isReachable) {
+        return;
+      }
       heartRate = double.parse(data.values.last);
       await pref.reload();
+
+      checkRangeNull(pref);
+
       useWearOS = pref.getBool("useWearOS")!;
       maxValue = pref.getDouble("maxValue")!;
       minValue = pref.getDouble("minValue")!;
-      debugPrint("BPM 심박수 $heartRate");
+      // debugPrint("BPM 심박수 $heartRate");
+      print("BPM 심박수 $heartRate");
       msg.clear();
       msg.addEntries({"HEART_RATE": heartRate.toString()}.entries);
       watch.sendMessage(msg);
@@ -148,180 +330,53 @@ void onStartWatch(
       if (useWearOS!) {
         debugPrint("최대 최소 실시간: $maxValue, $minValue");
         if (heartRate > maxValue || minValue > heartRate) {
-          showEmergencyNotification(flutterLocalNotificationsPlugin, pref);
+          showEmergencyNotification(
+              flutterLocalNotificationsPlugin, heartRate, minValue, maxValue);
         }
       }
     },
   );
 }
 
-Future<void> sendEmergencyMessage() async {
-  SharedPreferences pref = await SharedPreferences.getInstance();
-  maxValue = pref.getDouble("maxValue")!;
-  minValue = pref.getDouble("minValue")!;
-  if (heartRate > maxValue || minValue > heartRate) {
-    emergencyStatus = "의 심박수가 지정한 범위를 벗어났습니다";
-  } else {
-    emergencyStatus = "이 응급 버튼을 눌렀습니다";
-  }
-
-  await prepareMessage(emergencyStatus);
-  if (recipients.isNotEmpty && !interval) {
-    debugPrint(message);
-    debugPrint(recipients.toString());
-    sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-    interval = true;
-    // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
-    sleep(Duration(minutes: 30));
-    interval = false;
-  }
-}
-
-Future<void> prepareMessage(String emergencyStatus) async {
-  var connectivityResult = await (Connectivity().checkConnectivity());
-  if (connectivityResult == ConnectivityResult.mobile ||
-      connectivityResult == ConnectivityResult.wifi) {
-    await getCurrentLocation();
-    await checkHomecam();
-  }
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  List<String>? list = await preferences.getStringList('contactlist');
-  if (list != null) {
-    recipients = list!;
-  }
-  if (homecamRegistered) {
-    message =
-        "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
-    if (recipients.isNotEmpty) {
-      debugPrint(message);
-      debugPrint(recipients.toString());
-      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-    }
-    message = "캠 입장 코드 : $homecamAccessCode\n캠은 워치아웃 앱에서 확인하실 수 있습니다.";
-    if (recipients.isNotEmpty && !interval) {
-      debugPrint(message);
-      debugPrint(recipients.toString());
-      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-      interval = true;
-      // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
-      sleep(Duration(minutes: 30));
-      interval = false;
-    }
-  } else if (connectivityResult == ConnectivityResult.mobile ||
-      connectivityResult == ConnectivityResult.wifi) {
-    message =
-        "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
-    if (recipients.isNotEmpty) {
-      print(message);
-      print(recipients);
-      messageIsSent = true;
-      await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-    }
-  } else {
-    message =
-        "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위도 : $initLat\n현재 예상 경도 : $initLon";
-    if (recipients.isNotEmpty) {
-      print(message);
-      print(recipients);
-      messageIsSent = true;
-      await sendSMS(message, recipients);
+// 초기화
+void checkRangeNull(SharedPreferences pref) {
+  // bool 값들 초기화
+  if (pref.getBool("useWearOS") == null) {
+    for (var key in switchKeys) {
+      if (pref.getBool(key) == null) {
+        pref.setBool(key, true);
+      }
     }
   }
-}
 
-Future<void> checkHomecam() async {
-  await Firebase.initializeApp();
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  homecamRegistered = false;
-  final homecam = await FirebaseFirestore.instance
-      .collection("user")
-      .doc(preferences.getString('useruid'))
-      .collection("homecam");
-  final result = await homecam.get();
-  homecamUrl = "";
-  result.docs.forEach((value) => {
-        homecamUrl = value.get('url'),
-      });
-  if (homecamUrl.isNotEmpty) {
-    homecamRegistered = true;
-    homecamAccessCode = getRandomString(8);
-    await registerHomecamAccessCode();
-  }
-}
+  Set<String> rangeKeys = {
+    "heartRate",
+    "minValue",
+    "maxValue",
+    "gapValue",
+  };
 
-Future<void> registerHomecamAccessCode() async {
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  await FirebaseFirestore.instance
-      .collection("homecamCodeToUserInfo")
-      .doc(homecamAccessCode)
-      .set({
-    "name": preferences.getString("username"),
-    "profileImage": preferences.getString("profileImage"),
-    "url": homecamUrl,
-    "expiredTime": DateTime.now().add(Duration(minutes: 30)),
-  });
-}
-
-final _chars = '1234567890';
-Random _rnd = Random();
-
-String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
-    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
-
-Future<void> showEmergencyNotification(
-    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-    SharedPreferences pref) async {
-  maxValue = pref.getDouble("maxValue")!;
-  minValue = pref.getDouble("minValue")!;
-  if (heartRate > maxValue || heartRate < minValue) {
-    flutterLocalNotificationsPlugin.show(
-      notificationId,
-      '워치아웃',
-      '위기 상황 발생!!!\n심박수가 정상 범위에서 벗어났습니다!\n심박수: ${heartRate.toInt()}',
-      // payload: newGap,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          notificationChannelId, '포그라운드 서비스',
-          importance: Importance.max,
-          timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
-          onlyAlertOnce: true,
-          actions: [
-            AndroidNotificationAction("ignore", "무시"),
-            AndroidNotificationAction("expand", "심박수 범위 확장"),
-            AndroidNotificationAction("open", "앱 열기", showsUserInterface: true),
-          ],
-          // playSound: ,
-          // sound:
-        ),
-      ),
-    );
-  } else {
-    flutterLocalNotificationsPlugin.show(
-      notificationId,
-      '워치아웃',
-      '위기 상황 발생!!!\n사용자가 버튼을 눌렀습니다!',
-      // payload: newGap,
-      const NotificationDetails(
-        android: AndroidNotificationDetails(
-          notificationChannelId, '포그라운드 서비스',
-          importance: Importance.max,
-          timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
-          actions: [
-            AndroidNotificationAction("ignore", "무시"),
-            AndroidNotificationAction("open", "앱 열기", showsUserInterface: true),
-          ],
-          // playSound: ,
-          // sound:
-        ),
-      ),
-    );
-  }
-
-  sleep(Duration(seconds: 15));
-  List<ActiveNotification> activeNotifications =
-      await flutterLocalNotificationsPlugin.getActiveNotifications();
-  if (activeNotifications.isNotEmpty) {
-    debugPrint("알림 해제 안 됨");
-    sendEmergencyMessage();
+  // bool 값들 초기화
+  if (pref.getDouble("maxValue") == null ||
+      pref.getDouble("minValue") == null ||
+      pref.getDouble("gapValue") == null) {
+    for (var key in rangeKeys) {
+      if (pref.getDouble(key) == null) {
+        switch (key) {
+          case "maxValue":
+            pref.setDouble(key, 120);
+            break;
+          case "minValue":
+            pref.setDouble(key, 60);
+            break;
+          case "gapValue":
+            pref.setDouble(key, 5);
+            break;
+          case "heartRate":
+            pref.setDouble(key, 0);
+            break;
+        }
+      }
+    }
   }
 }

@@ -35,12 +35,12 @@ class SwitchBools with ChangeNotifier {
 
   void load() {
     if (pref.getKeys().isEmpty) {
+      save();
       return;
     }
     for (var key in keys) {
       if (pref.getBool(key) == null) {
-        save();
-        return;
+        pref.setBool(key, true);
       }
     }
     useWearOS = pref.getBool("useWearOS")!;
