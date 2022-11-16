@@ -197,11 +197,9 @@ class _MainButtonUpState extends State<MainButtonUp> {
                               builder: (context) => CameraPlayer(),
                             ),
                           )
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CamInfoDialog(),
-                            ),
+                        : showDialog(
+                            context: context,
+                            builder: (context) => CamInfoDialog(),
                           );
                   },
                   child: Text(
