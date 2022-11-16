@@ -176,63 +176,75 @@ class _MainButtonUpState extends State<MainButtonUp> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
-            padding: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 1.25.h),
-            height: 15.h,
+            padding: EdgeInsets.fromLTRB(7.5.w, 1.25.h, 7.5.w, 2.5.h),
+            height: 30.h,
             alignment: Alignment.center,
-            child: Row(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                AnimatedButton(
-                  height: 7.h,
-                  width: 30.w,
-                  blurRadius: 7.5,
-                  isOutline: true,
-                  type: PredefinedThemes.light,
-                  onTap: () async {
-                    bool flag = await UserService().isHomecamRegistered();
-                    flag
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CameraPlayer(),
-                            ),
-                          )
-                        : showDialog(
-                            context: context,
-                            builder: (context) => CamInfoDialog(),
-                          );
-                  },
-                  child: Text(
-                    '나의 캠',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: bColor,
-                      fontFamily: 'HanSan',
+                Flexible(
+                  child: ClipRRect(
+                    child: Image.asset(
+                      "assets/icons/shadowcctvreverse.png",
                     ),
                   ),
                 ),
-                AnimatedButton(
-                  height: 7.h,
-                  width: 30.w,
-                  blurRadius: 7.5,
-                  isOutline: true,
-                  type: PredefinedThemes.light,
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => OtherCamInfo(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    AnimatedButton(
+                      height: 7.h,
+                      width: 30.w,
+                      blurRadius: 7.5,
+                      isOutline: true,
+                      type: PredefinedThemes.light,
+                      onTap: () async {
+                        bool flag = await UserService().isHomecamRegistered();
+                        flag
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CameraPlayer(),
+                                ),
+                              )
+                            : showDialog(
+                                context: context,
+                                builder: (context) => CamInfoDialog(),
+                              );
+                      },
+                      child: Text(
+                        '나의 캠',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: bColor,
+                          fontFamily: 'HanSan',
+                        ),
                       ),
-                    );
-                  },
-                  child: Text(
-                    '상대방 캠',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: bColor,
-                      fontFamily: 'HanSan',
                     ),
-                  ),
+                    AnimatedButton(
+                      height: 7.h,
+                      width: 30.w,
+                      blurRadius: 7.5,
+                      isOutline: true,
+                      type: PredefinedThemes.light,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => OtherCamInfo(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        '상대방 캠',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: bColor,
+                          fontFamily: 'HanSan',
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

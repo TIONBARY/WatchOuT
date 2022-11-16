@@ -701,8 +701,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                             UrlLauncher.launchUrl(Uri.parse("tel:112"));
                           },
                           child: Image.asset(
-                            "assets/icons/shadowsiren.png",
-                            width: 7.5.w,
+                            "assets/icons/shadowsiren1.png",
+                            width: 10.w,
                           ),
                         ),
                       ),
