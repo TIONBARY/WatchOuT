@@ -54,13 +54,12 @@ class ClientDataViewModel(
     /**
      * The list of events from the clients.
      */
-    val events: List<Event> = _events
+//    val events: List<Event> = _events
 
     /**
      * The currently received image (if any), available to display.
      */
-    var image by mutableStateOf<Bitmap?>(null)
-        private set
+    private var image by mutableStateOf<Bitmap?>(null)
 
     private var loadPhotoJob: Job = Job().apply { complete() }
 

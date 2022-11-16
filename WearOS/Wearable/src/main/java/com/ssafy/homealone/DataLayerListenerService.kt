@@ -17,12 +17,10 @@ package com.ssafy.homealone
 
 import android.content.Intent
 import android.util.Log
-import androidx.core.content.ContextCompat.startActivity
 import com.google.android.gms.wearable.DataEventBuffer
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
-import com.ssafy.homealone.MainActivity
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
@@ -78,10 +76,10 @@ class DataLayerListenerService : WearableListenerService() {
             }
             DATA_ITEM_RECEIVED_PATH -> {
 //                Log.d("워치 수령", String(messageEvent.data))
-                var msg = objectFromBytes(messageEvent.data)
+                val msg = objectFromBytes(messageEvent.data)
                 Log.d("워치 수령", msg.toString())
 
-                val jsonObject: JSONObject = JSONObject(msg.toString())
+                val jsonObject = JSONObject(msg.toString())
 
                 Log.d("워치 수령 내부 값", jsonObject["HEART_RATE"].toString())
 //                var received_heart_rate: Double = jsonObject["HEART_RATE"].toString().toDouble()

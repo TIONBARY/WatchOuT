@@ -20,8 +20,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import android.widget.Button
 import android.widget.Toast
@@ -30,7 +28,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.coroutineScope
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.wearable.*
 import com.ssafy.homealone.databinding.ActivityMainBinding
@@ -39,11 +36,6 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
-import java.util.Date
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 
 /**
@@ -88,7 +80,7 @@ class MainActivity : AppCompatActivity() {
 
         emergencyBtn.setOnLongClickListener {
             Toast.makeText(applicationContext, "응급 신호가 전송되었습니다!", Toast.LENGTH_SHORT).show()
-            sendMessage(nodeClient, messageClient, "응급 상황입니다!")
+            sendMessage(nodeClient, messageClient)
             true
         }
 
@@ -132,8 +124,10 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.heartRateBpm.collect {
                 binding.lastMeasuredValue.text = String.format("%d", it.toInt())
-//                변경이 발생할 때마다 전송
-                sendHeartRateData(dataClient, it)
+//                심박수가 0이 아니고 변경이 발생할 때마다 전송
+                if (it.toInt() != 0) {
+                    sendHeartRateData(dataClient, it)
+                }
             }
         }
 
@@ -262,24 +256,23 @@ class MainActivity : AppCompatActivity() {
         }
 
         //데이터 업데이트
-        fun sendHeartRateMessage(nodeClient: NodeClient, messageClient: MessageClient, heartRate: Double) {
-            Log.d("심박수 메세지 전송 호출", heartRate.toString())
-            val messageData = objectToBytes(mutableMapOf(Pair("HEART_RATE", heartRate.toString().trim())))
-
-            nodeClient.connectedNodes.addOnSuccessListener { nodes ->
-                nodes.forEach {
-                    messageClient.sendMessage(it.id, channelName, messageData)
-                    Log.d("메세지 전송", objectFromBytes(messageData).toString())
-
-//                messageClient.sendMessage(it.id, "/$channelName", messageData)
-                }
-            }
-        }
+//        fun sendHeartRateMessage(nodeClient: NodeClient, messageClient: MessageClient, heartRate: Double) {
+//            Log.d("심박수 메세지 전송 호출", heartRate.toString())
+//            val messageData = objectToBytes(mutableMapOf(Pair("HEART_RATE", heartRate.toString().trim())))
+//
+//            nodeClient.connectedNodes.addOnSuccessListener { nodes ->
+//                nodes.forEach {
+//                    messageClient.sendMessage(it.id, channelName, messageData)
+//                    Log.d("메세지 전송", objectFromBytes(messageData).toString())
+//
+////                messageClient.sendMessage(it.id, "/$channelName", messageData)
+//                }
+//            }
+//        }
 
         // 메세지 전송
-        private fun sendMessage(nodeClient: NodeClient, messageClient: MessageClient, message: String) {
-            Log.d("메세지", message)
-            val messageData = objectToBytes(mutableMapOf(Pair("EMERGENCY", message)))
+        private fun sendMessage(nodeClient: NodeClient, messageClient: MessageClient) {
+            val messageData = objectToBytes(mutableMapOf(Pair("EMERGENCY", "응급 상황입니다!")))
 
             nodeClient.connectedNodes.addOnSuccessListener { nodes ->
                 nodes.forEach {
