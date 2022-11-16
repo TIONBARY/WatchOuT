@@ -176,8 +176,14 @@ class _SetButtonState extends State<SetButton>
               ),
               child: localEmergencyCallList.isEmpty
                   ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('비상연락망을 등록해주세요.'),
+                        Text(
+                          '비상연락망을 등록해주세요.',
+                          style: TextStyle(
+                            fontFamily: 'HanSan',
+                          ),
+                        ),
                         IconButton(
                           onPressed: () {
                             _displayTextInputDiaLog(context);
@@ -448,7 +454,7 @@ class _SetButtonState extends State<SetButton>
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
           child: Container(
             padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-            height: 27.5.h,
+            height: 30.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -471,6 +477,8 @@ class _SetButtonState extends State<SetButton>
                   items: localEmergencyCallList
                       .map((e) => MultiSelectItem(e, e["name"]))
                       .toList(),
+                  itemsTextStyle: TextStyle(fontFamily: 'WdcsB'),
+                  selectedItemsTextStyle: TextStyle(fontFamily: 'WdcsB'),
                   chipDisplay: MultiSelectChipDisplay(
                     items: _selectedEmergencyCallList
                         .map((e) => MultiSelectItem(e, e["name"]))
@@ -480,12 +488,13 @@ class _SetButtonState extends State<SetButton>
                         _selectedEmergencyCallList.remove(value);
                       });
                     },
-                    chipColor: yColor,
-                    textStyle: TextStyle(
-                      color: bColor,
-                      fontFamily: 'HanSan',
-                    ),
+                    chipColor: bColor,
+                    textStyle: TextStyle(color: Colors.white),
+                    scroll: true,
+                    scrollBar: HorizontalScrollBar(isAlwaysShown: true),
                   ),
+                  selectedColor: yColor,
+                  checkColor: bColor,
                   listType: MultiSelectListType.LIST,
                   onConfirm: (values) {
                     _selectedEmergencyCallList = values;
@@ -597,7 +606,7 @@ class _SetButtonState extends State<SetButton>
   }
 
   _displayFirstResponderRegister(BuildContext context) async {
-    // Timer(const Duration(s econds: 1), () {
+    // Timer(const Duration(seconds: 1), () {
     //   Navigator.of(context).popUntil((route) => route.isFirst);
     // });
     return showDialog(
@@ -607,7 +616,7 @@ class _SetButtonState extends State<SetButton>
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.5)),
             child: Container(
-              padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+              padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 2.5.h),
               height: 22.5.h,
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -616,10 +625,11 @@ class _SetButtonState extends State<SetButton>
                           Title(
                             color: bColor,
                             child: Text(
-                              'WOT 사용자입니다.',
+                              'WOT 회원입니다.',
                               style: TextStyle(
                                 color: bColor,
                                 fontSize: 15.sp,
+                                fontFamily: 'HanSan',
                               ),
                             ),
                           ),
@@ -634,17 +644,18 @@ class _SetButtonState extends State<SetButton>
                           ),
                           Flexible(
                             flex: 1,
-                            child: Text("홈 캠 기능을 연결할 수 있습니다."),
+                            child: Text('캠 기능을 연결할 수 있습니다.'),
                           )
                         ]
                       : [
                           Title(
                             color: bColor,
                             child: Text(
-                              '미사용 등록자입니다.',
+                              '비회원입니다.',
                               style: TextStyle(
                                 color: bColor,
                                 fontSize: 15.sp,
+                                fontFamily: 'HanSan',
                               ),
                             ),
                           ),
@@ -657,7 +668,10 @@ class _SetButtonState extends State<SetButton>
                               iconType: IconType.check,
                             ),
                           ),
-                          Flexible(flex: 1, child: Text("일부 기능이 제한될 수 있습니다."))
+                          Flexible(
+                            flex: 1,
+                            child: Text('일부 기능이 제한될 수 있습니다.'),
+                          )
                         ]),
             ),
           );
