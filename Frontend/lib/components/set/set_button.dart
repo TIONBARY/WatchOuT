@@ -7,7 +7,6 @@ import 'package:flutter/services.dart';
 import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/login/user_service.dart';
-import 'package:homealone/components/permissionService/permission_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/components/wear/heart_rate_view.dart';
 import 'package:homealone/constants.dart';
@@ -19,6 +18,8 @@ import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+
+import '../permissionService/permission_service.dart';
 
 AuthService authService = AuthService();
 const methodChannel = MethodChannel("com.ssafy.homealone/channel");
@@ -86,7 +87,8 @@ class _SetButtonState extends State<SetButton>
   }
 
   void permitLocationAlways() async {
-    if (await Permission.locationAlways.isGranted != true) {
+    if (await Permission.locationAlways.isGranted != true &&
+        await Permission.location.isGranted) {
       PermissionService().permissionLocationAlways(context);
     }
   }
