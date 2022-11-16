@@ -595,7 +595,7 @@ class _SetButtonState extends State<SetButton>
   }
 
   _displayFirstResponderRegister(BuildContext context) async {
-    // Timer(const Duration(seconds: 1), () {
+    // Timer(const Duration(s econds: 1), () {
     //   Navigator.of(context).popUntil((route) => route.isFirst);
     // });
     return showDialog(
@@ -630,7 +630,10 @@ class _SetButtonState extends State<SetButton>
                               iconType: IconType.check,
                             ),
                           ),
-                          Flexible(flex: 1, child: Text("홈 캠 기능을 연결할 수 있습니다."))
+                          Flexible(
+                            flex: 1,
+                            child: Text("홈 캠 기능을 연결할 수 있습니다."),
+                          )
                         ]
                       : [
                           Title(
