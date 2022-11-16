@@ -45,8 +45,11 @@ class PermissionService {
     }
     _permissionLocationAlwaysOnce = true;
 
-    askPermission(context, Permission.locationAlways,
-        "WatchOuT 백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요.");
+    askPermission(
+        context,
+        Permission.locationAlways,
+        "WatchOuT 백그라운드에서 \n'응급 상황 전파' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'항상 허용'을 선택해 주세요."
+        "\n앱이 종료되었거나 사용 중이 아닐 때에도 \n위치 데이터를 수집하여 기능을 가용합니다.");
   }
 
   bool _permissionLocationsOnce = false;
@@ -62,7 +65,7 @@ class PermissionService {
     _permissionLocationsOnce = true;
 
     askPermission(context, Permission.location,
-        "WatchOuT에서 \n'안전 지도' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.");
+        "WatchOuT에서 \n'안전 지도' 및 '귀갓길 공유' \n등의 기능을 사용할 수 있도록 \n'위치 권한'을 허용해 주세요.\n앱이 사용 중일때만 데이터를 수집합니다.");
   }
 
   bool _permissionLSMSOnce = false;
@@ -77,7 +80,10 @@ class PermissionService {
     }
     _permissionLSMSOnce = true;
 
-    askPermission(context, Permission.sms,
-        "WatchOuT에서 \n'응급 상황 전파', '귀갓길 공유', \n'귀갓길 공유자에게 문자' 기능에서 \n'문자 전송 기능'을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.");
+    askPermission(
+        context,
+        Permission.sms,
+        "WatchOuT에서 \n'응급 상황 전파', '귀갓길 공유', \n'귀갓길 공유자에게 문자' 기능에서 \n'문자 전송 기능'을 사용할 수 있도록 \n'SMS 권한'을 허용해 주세요.\n"
+        "앱이 종료되었거나 사용 중이 아닐 때에도 \n문자 발송 기능을 가용합니다.");
   }
 }
