@@ -36,13 +36,18 @@ android {
 
     defaultConfig {
         applicationId "com.ssafy.homealone"
-        versionCode 27
+        versionCode 28
         versionName "1.0"
-      minSdk 30
+        minSdk 30
 
-      targetSdk 33
+        targetSdk 33
         signingConfig signingConfigs.release
         multiDexEnabled true
+        generatedDensities = []
+    }
+
+    aaptOptions {
+      additionalParameters "--no-version-vectors"
     }
 
     lintOptions {
