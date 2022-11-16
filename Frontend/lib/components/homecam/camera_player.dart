@@ -82,6 +82,7 @@ class _CameraPlayerState extends State<CameraPlayer> {
                         isOutline: true,
                         type: PredefinedThemes.warning,
                         onTap: () {
+                          Navigator.of(context).pop();
                           showDialog(
                             context: context,
                             builder: (context) => CamInfoDialog(),
