@@ -32,6 +32,7 @@ class MainPageAniBtn extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             color: colors,
+            fontFamily: 'HanSan',
           ),
         ),
       ),

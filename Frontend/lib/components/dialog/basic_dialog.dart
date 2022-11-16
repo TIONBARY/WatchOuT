@@ -24,6 +24,8 @@ class BasicDialog extends StatelessWidget {
               color: bColor,
               child: Text(
                 titles,
+                softWrap: true,
+                textAlign: TextAlign.center,
               ),
             ),
             ElevatedButton(
@@ -43,7 +45,10 @@ class BasicDialog extends StatelessWidget {
               },
               child: Text(
                 '확인',
-                style: TextStyle(color: bColor),
+                style: TextStyle(
+                  color: bColor,
+                  fontFamily: 'HanSan',
+                ),
               ),
             ),
           ],

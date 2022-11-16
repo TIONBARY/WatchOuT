@@ -55,7 +55,7 @@ class _AccessCodeMessageChoiceListDialogState
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
         padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-        height: 27.5.h,
+        height: 30.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -66,6 +66,7 @@ class _AccessCodeMessageChoiceListDialogState
                 style: TextStyle(
                   color: bColor,
                   fontSize: 15.sp,
+                  fontFamily: 'HanSan',
                 ),
               ),
             ),
@@ -77,6 +78,8 @@ class _AccessCodeMessageChoiceListDialogState
               items: emergencyCallList
                   .map((e) => MultiSelectItem(e, e["name"]))
                   .toList(),
+              itemsTextStyle: TextStyle(fontFamily: 'WdcsB'),
+              selectedItemsTextStyle: TextStyle(fontFamily: 'WdcsB'),
               chipDisplay: MultiSelectChipDisplay(
                 items: _selectedEmergencyCallList
                     .map((e) => MultiSelectItem(e, e["name"]))
@@ -88,7 +91,11 @@ class _AccessCodeMessageChoiceListDialogState
                 },
                 chipColor: bColor,
                 textStyle: TextStyle(color: Colors.white),
+                scroll: true,
+                scrollBar: HorizontalScrollBar(isAlwaysShown: true),
               ),
+              selectedColor: yColor,
+              checkColor: bColor,
               listType: MultiSelectListType.LIST,
               onConfirm: (values) {
                 _selectedEmergencyCallList = values;
@@ -99,22 +106,32 @@ class _AccessCodeMessageChoiceListDialogState
               ),
               buttonText: Text(
                 "비상연락망",
-                style: TextStyle(color: bColor),
+                style: TextStyle(
+                  color: bColor,
+                  fontFamily: 'HanSan',
+                ),
               ),
               dialogHeight: 25.h,
-              title: Text("귀갓길을 공유할 \n보호자를 선택해주세요.",
+              title: Text('귀갓길을 공유할 \n보호자를 선택해주세요.',
                   style: TextStyle(
                     color: bColor,
                     fontSize: 12.5.sp,
+                    fontFamily: 'HanSan',
                   ),
                   textAlign: TextAlign.center),
               confirmText: Text(
                 "확인",
-                style: TextStyle(color: bColor),
+                style: TextStyle(
+                  color: bColor,
+                  fontFamily: 'HanSan',
+                ),
               ),
               cancelText: Text(
                 "취소",
-                style: TextStyle(color: bColor),
+                style: TextStyle(
+                  color: bColor,
+                  fontFamily: 'HanSan',
+                ),
               ),
             ),
             SizedBox(
@@ -136,7 +153,10 @@ class _AccessCodeMessageChoiceListDialogState
                     },
                     child: Text(
                       '전송',
-                      style: TextStyle(color: bColor),
+                      style: TextStyle(
+                        color: bColor,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                   ElevatedButton(
@@ -152,7 +172,10 @@ class _AccessCodeMessageChoiceListDialogState
                     },
                     child: Text(
                       "취소",
-                      style: TextStyle(color: bColor),
+                      style: TextStyle(
+                        color: bColor,
+                        fontFamily: 'HanSan',
+                      ),
                     ),
                   ),
                 ],

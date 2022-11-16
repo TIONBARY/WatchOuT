@@ -31,6 +31,18 @@ class UserService {
     return documentData;
   }
 
+  Future<Map<String, dynamic>?> getOtherUserInfo(String uid) async {
+    DocumentReference<Map<String, dynamic>> documentReference =
+        db.collection("user").doc(uid);
+    Map<String, dynamic>? documentData;
+    var docSnapshot = await documentReference.get();
+    if (docSnapshot.exists) {
+      documentData = docSnapshot.data();
+    }
+    if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
+    return documentData;
+  }
+
   Future<bool> isDupNum(String number) async {
     bool flag = true;
     await db
@@ -70,6 +82,8 @@ class UserService {
         .doc(name)
         .set({
       "number": number,
+      "appUser": false,
+      "uid": '',
       // "phone": false,
       // "message": false,
       // "activated": false
@@ -219,10 +233,40 @@ class UserService {
       documentData = docSnapshot.data();
     }
     if (documentData == null) {
-      print("등록된 홈캠 정보가 없습니다.");
+      print("등록된 캠 정보가 없습니다.");
       return false;
     }
     return documentData?["registered"];
+  }
+
+  //앱 사용자 간 비상 연락망 검색
+  Future<Map<String, dynamic>?> getUserInfoByNumber(String number) async {
+    // where 쿼리문으로 검색 후 Map 형태로 가공하여 반환하기
+    List<QueryDocumentSnapshot> data;
+    Map<String, dynamic>? result;
+    var querySnapshot =
+        await db.collection("user").where("phone", isEqualTo: number).get();
+    data = querySnapshot.docs;
+    if (data.isEmpty)
+      print("해당 번호에 해당하는 유저가 없습니다.");
+    else
+      result = data[0].data() as Map<String, dynamic>?;
+    return result;
+  }
+
+  //비상 연락망 검색 후 등록
+  void registerExistFirstResponder(String name, String number, String uid) {
+    db
+        .collection("user")
+        .doc("${user?.uid}")
+        .collection("firstResponder")
+        .doc(name)
+        .set({
+      "number": number,
+      "appUser": true,
+      "uid": uid,
+      "CamActivated": false,
+    });
   }
 
   // 위급상황 여부를 나타냄
@@ -252,7 +296,7 @@ class UserService {
   }
 
   // 친구 추천 코드로 추가
-  void registerFirstResponderFromInvite(String inviteCode) async {
+  Future<String> registerFirstResponderFromInvite(String inviteCode) async {
     // 친구정보 가져오기
     DocumentReference<Map<String, dynamic>> documentReference =
         db.collection("user").doc(inviteCode);
@@ -264,7 +308,7 @@ class UserService {
 
     if (documentData == null) {
       debugPrint("초대한 친구가 존재하지 않습니다.");
-      return;
+      return "failed";
     }
     String name = documentData["name"];
     String number = documentData["phone"];
@@ -280,6 +324,7 @@ class UserService {
       // "message": false,
       // "activated": false
     });
+    return "success";
   }
 
   // 내 연락처 중에 웹캠이 있는 사람의 목록(작업중)

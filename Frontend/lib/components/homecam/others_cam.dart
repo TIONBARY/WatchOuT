@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 
@@ -20,7 +19,7 @@ class _OthersCamState extends State<OthersCam> {
   @override
   Widget build(BuildContext context) {
     final String urlValue = widget.url;
-    playerController = VlcPlayerController.network("$urlValue", autoPlay: true);
+    playerController = VlcPlayerController.network(urlValue, autoPlay: true);
     return MaterialApp(
       title: 'Cam',
       home: Scaffold(

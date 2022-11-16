@@ -54,6 +54,7 @@ class _ModifyUserInfoPageState extends State<ModifyUserInfoPage> {
           style: TextStyle(
             color: yColor,
             fontSize: 15.sp,
+            fontFamily: 'HanSan',
           ),
         ),
         backgroundColor: bColor,

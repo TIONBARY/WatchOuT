@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "826546983331",
+    "project_id": "homealone-6ef54",
+    "storage_bucket": "homealone-6ef54.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:826546983331:android:44cada1a2f4fb019c88a16",
+        "android_client_info": {
+          "package_name": "com.ssafy.homealone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "826546983331-7flkqljjgsfo68vksck368rl5rdi0v2d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssafy.homealone",
+            "certificate_hash": "60c8e62110201fd650cc192217ce4f156a2d9375"
+          }
+        },
+        {
+          "client_id": "826546983331-fk7329hqg6aclvrpnkkbvkc9t0r3hagt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssafy.homealone",
+            "certificate_hash": "766a77e21ad8c9163ba52e168f32ef566207ba4d"
+          }
+        },
+        {
+          "client_id": "826546983331-p7lm33bpprf735bif53kbslfpj6h4f7f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ssafy.homealone",
+            "certificate_hash": "0728425d8cd6fcca4a6cb179ea85ecdf3920f70d"
+          }
+        },
+        {
+          "client_id": "826546983331-g9ekroum25pfl0vur6183fmvokguplco.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVao199EgfUag7vqga4ACax-bNgaPLri8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "826546983331-g9ekroum25pfl0vur6183fmvokguplco.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "826546983331-4a8lqls1lupockl3gr20esh06k032l4o.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ssafy.com.homealone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

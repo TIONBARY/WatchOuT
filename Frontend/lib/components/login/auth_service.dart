@@ -46,6 +46,7 @@ class AuthService {
                 await prefs.setStringList('contactlist', temp),
               });
         }
+
         return TabNavBar();
       },
     );
@@ -91,6 +92,11 @@ class AuthService {
                     Provider.of<MyUserInfo>(context, listen: false).name),
                 await prefs.setString('userphone',
                     Provider.of<MyUserInfo>(context, listen: false).phone),
+                await prefs.setString(
+                    'profileImage',
+                    Provider.of<MyUserInfo>(context, listen: false)
+                        .profileImage),
+                await prefs.setString('useruid', googleUID),
               });
           return getFirstResponder();
         } else {

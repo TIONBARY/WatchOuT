@@ -8,9 +8,6 @@ import '../youtube/models/channel_model.dart';
 import '../youtube/services/api_service.dart';
 
 class Carousel extends StatefulWidget {
-  // final String id;
-  // Carousel({required this.id});
-
   @override
   _CarouselState createState() => _CarouselState();
 }
@@ -48,23 +45,24 @@ class _CarouselState extends State<Carousel> {
               ],
             ),
             child: ClipRRect(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(5),
-                ),
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () async {
-                        await launch(
-                            'http://www.youtube.com/watch?v=${video.id}');
-                      },
-                      child: Image(
-                          image: NetworkImage(video.thumbnailUrl),
-                          fit: BoxFit.cover,
-                          width: 1000),
-                    ),
-                  ],
-                )),
+              borderRadius: BorderRadius.all(
+                Radius.circular(5),
+              ),
+              child: Stack(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () async {
+                      await launch(
+                          'http://www.youtube.com/watch?v=${video.id}');
+                    },
+                    child: Image(
+                        image: NetworkImage(video.thumbnailUrl),
+                        fit: BoxFit.cover,
+                        width: 1000),
+                  ),
+                ],
+              ),
+            ),
           ),
         )
         .toList();

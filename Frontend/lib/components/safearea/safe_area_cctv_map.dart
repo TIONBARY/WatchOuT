@@ -24,6 +24,8 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../permissionService/permission_service.dart';
+
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 WebViewController? _mapController;
 String addrName = "";
@@ -126,11 +128,18 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   @override
   void initState() {
     super.initState();
+    permitLocation();
     myFuture ??= _future();
   }
 
+  void permitLocation() async {
+    if (await Permission.location.isDenied) {
+      PermissionService().permissionLocation(context);
+    }
+  }
+
   Future _future() async {
-    LocationPermission permission = await Geolocator.requestPermission();
+    // LocationPermission permission = await Geolocator.requestPermission();
     WidgetsFlutterBinding.ensureInitialized();
     if (defaultTargetPlatform == TargetPlatform.android) {
       locationSettings = AndroidSettings(
@@ -284,11 +293,13 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   ''');
     accessCode = getRandomString(accessCodeLength);
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AccessCodeMessageChoiceListDialog(
-              sendMessageToEmergencyCallList);
-        });
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AccessCodeMessageChoiceListDialog(
+            sendMessageToEmergencyCallList);
+      },
+    );
     FirebaseFirestore.instance
         .collection("userAccessCode")
         .doc(_auth.currentUser?.uid)
@@ -355,6 +366,16 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   }
 
   void _sendSMS(String message, List<String> recipients) async {
+    await Permission.sms.request();
+    if (await Permission.sms.isDenied) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                15.h, 'SMS 전송 권한이 없어\n 귀가 공유 문자를 전송할 수 없습니다.', null);
+          });
+      return;
+    }
     String _result = await platform.invokeMethod(
         'sendTextMessage', {'message': message, 'recipients': recipients});
     if (_result == "sent") {
@@ -362,7 +383,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           context: context,
           builder: (BuildContext context) {
             return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                15.h, '귀갓길 공유 메세지를 전송했습니다.\n지속적인 공유를 위해 앱을 끄지 말아주세요.', null);
+                17.5.h, '귀갓길 공유 메세지를 전송했습니다.\n지속적인 공유를 위해 앱을 끄지 말아주세요.', null);
           });
     } else {
       showDialog(
@@ -616,7 +637,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                           },
                                           child: Text(
                                             safeAreaList[i],
-                                            style: TextStyle(color: bColor),
+                                            style: TextStyle(
+                                              color: bColor,
+                                              fontFamily: 'HanSan',
+                                            ),
                                           ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
@@ -640,7 +664,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                                               },
                                             );
                                           },
-                                          child: Text(safeAreaList[i]),
+                                          child: Text(
+                                            safeAreaList[i],
+                                            style: TextStyle(
+                                              fontFamily: 'HanSan',
+                                            ),
+                                          ),
                                           style: ElevatedButton.styleFrom(
                                             minimumSize: Size.zero,
                                             padding: EdgeInsets.fromLTRB(
@@ -672,8 +701,8 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                             UrlLauncher.launchUrl(Uri.parse("tel:112"));
                           },
                           child: Image.asset(
-                            "assets/siren.png",
-                            width: 7.5.w,
+                            "assets/icons/shadowsiren1.png",
+                            width: 10.w,
                           ),
                         ),
                       ),
@@ -717,7 +746,11 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
                             },
                             child: Text(
                               pressWalkBtn ? "귀가 종료" : "귀가 시작",
-                              style: TextStyle(fontSize: 20, color: bColor),
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: bColor,
+                                fontFamily: 'HanSan',
+                              ),
                             ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: yColor,

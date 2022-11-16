@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/going_home_map_page.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
 import '../components/dialog/basic_dialog.dart';
+import '../components/permissionService/permission_service.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -98,6 +100,13 @@ class _RecordPageState extends State<RecordPage> {
   void initState() {
     super.initState();
     getGoingHomeUserList();
+    permitLocation();
+  }
+
+  void permitLocation() async {
+    if (await Permission.location.isDenied) {
+      PermissionService().permissionLocation(context);
+    }
   }
 
   bool _isValidCode(String val) {
@@ -122,7 +131,10 @@ class _RecordPageState extends State<RecordPage> {
                           alignment: Alignment.center,
                           child: Text(
                             "귀가 중인 사용자가 없습니다.",
-                            style: TextStyle(fontSize: 15.sp),
+                            style: TextStyle(
+                              fontSize: 15.sp,
+                              fontFamily: 'HanSan',
+                            ),
                           ),
                         )
                       : GridView.builder(
@@ -157,14 +169,17 @@ class _RecordPageState extends State<RecordPage> {
                                   flex: 1,
                                   child: Text(
                                     _goingHomeUserList[index]["name"],
-                                    style: TextStyle(fontSize: 12.5.sp),
+                                    style: TextStyle(
+                                      fontSize: 12.5.sp,
+                                      fontFamily: 'HanSan',
+                                    ),
                                   ),
                                 ),
                                 Container(
                                   margin: EdgeInsets.only(bottom: 0.25.h),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: b50Color,
+                                      backgroundColor: bColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(7),
                                       ),
@@ -187,7 +202,10 @@ class _RecordPageState extends State<RecordPage> {
                                                   _goingHomeUserList[index]
                                                       ["phone"])));
                                     },
-                                    child: Text('위치 확인'),
+                                    child: Text(
+                                      '위치 확인',
+                                      style: TextStyle(fontFamily: 'HanSan'),
+                                    ),
                                   ),
                                 ),
                               ],
@@ -281,6 +299,7 @@ class _RecordPageState extends State<RecordPage> {
                           '등록',
                           style: TextStyle(
                             color: bColor,
+                            fontFamily: 'HanSan',
                           ),
                         ),
                       ),
@@ -297,7 +316,10 @@ class _RecordPageState extends State<RecordPage> {
                         },
                         child: Text(
                           '취소',
-                          style: TextStyle(color: bColor),
+                          style: TextStyle(
+                            color: bColor,
+                            fontFamily: 'HanSan',
+                          ),
                         ),
                       ),
                     ],
