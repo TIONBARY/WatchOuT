@@ -17,7 +17,8 @@
 
 <resources>
     <style name="AppTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">#ff0055</item>
+        <item name="colorPrimary">#FF0000</item>
         <item name="colorControlActivated">?colorPrimary</item>
+        <item name="colorSecondary">#FFFFC84B</item>
     </style>
 </resources>

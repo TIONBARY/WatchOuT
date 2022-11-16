@@ -38,4 +38,5 @@
     <string name="measure_status">상태: %1$s</string>
     <string name="heart_rate_not_available">이 단말기에서는 심박수 측정이 불가능합니다.</string>
     <string name="send_emergency">응급 상황을 알립니다</string>
+    <string name="btnMessage">응급</string>
 </resources>
