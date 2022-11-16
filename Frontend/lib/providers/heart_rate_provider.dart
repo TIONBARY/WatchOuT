@@ -21,10 +21,12 @@ class HeartRateProvider with ChangeNotifier {
 
   void load() {
     if (pref.getKeys().isEmpty) {
+      save();
       return;
     }
     for (var key in keys) {
       if (pref.getDouble(key) == null) {
+        save();
         return;
       }
     }
