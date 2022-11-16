@@ -39,7 +39,7 @@ class _OtherCameraPlayerState extends State<OtherCameraPlayer> {
   void checkExpired() {
     if (DateTime.parse(widget.expiredTime.toDate().toString())
         .isBefore(DateTime.now())) {
-      playerController.dispose();
+      playerController.pause();
       showDialog(
           context: context,
           builder: (_) => BasicDialog(
