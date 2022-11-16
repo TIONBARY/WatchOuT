@@ -16,9 +16,11 @@ import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
+import 'package:homealone/components/permissionService/permission_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:volume_control/volume_control.dart';
@@ -69,6 +71,16 @@ class _MainButtonDownState extends State<MainButtonDown> {
   }
 
   void _sendSMS(String message, List<String> recipients) async {
+    await Permission.sms.request();
+    if (await Permission.sms.isDenied) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                15.h, 'SMS 전송 권한이 없어\n 문자를 전송할 수 없습니다.', null);
+          });
+      return;
+    }
     String _result = await platform.invokeMethod(
         'sendTextMessage', {'message': message, 'recipients': recipients});
     if (_result == "sent") {
@@ -283,13 +295,6 @@ class _MainButtonDownState extends State<MainButtonDown> {
                     ),
                   ),
                 ),
-                // MainPageAniBtn(
-                //   margins: EdgeInsets.only(bottom: 4),
-                //   types: PredefinedThemes.warning,
-                //   ontaps: _showReportDialog,
-                //   texts: '신고',
-                //   colors: bColor,
-                // ),
                 MainPageAniBtn(
                   margins: EdgeInsets.only(top: 4),
                   types: PredefinedThemes.warning,
@@ -331,8 +336,11 @@ class _MainButtonDownState extends State<MainButtonDown> {
               blurRadius: 7.5,
               isOutline: true,
               type: PredefinedThemes.danger,
-              onTap: () {
-                return sendEmergencyMessage();
+              onTap: () async {
+                if (await Permission.sms.isGranted != true)
+                  PermissionService().permissionSMS(context);
+                else
+                  return sendEmergencyMessage();
               },
               child: Row(
                 children: [

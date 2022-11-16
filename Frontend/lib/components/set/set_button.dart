@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/login/user_service.dart';
+import 'package:homealone/components/permissionService/permission_service.dart';
 import 'package:homealone/components/set/set_page_radio_button.dart';
 import 'package:homealone/components/wear/heart_rate_view.dart';
 import 'package:homealone/constants.dart';
@@ -15,6 +16,7 @@ import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
 import 'package:icon_animated/widgets/icon_animated.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -87,6 +89,14 @@ class _SetButtonState extends State<SetButton>
         parent: _animationController, curve: Curves.easeInOutCirc));
     setFirstResponderProvider();
     getEmergencyCallList();
+    permitLocationAlways();
+  }
+
+  void permitLocationAlways() async {
+    if (await Permission.locationAlways.isGranted != true) {
+      PermissionService().permissionLocationAlways(context);
+    }
+    ;
   }
 
   void setFirstResponderProvider() {

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/user_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
@@ -24,6 +25,16 @@ class _MessageDialogState extends State<MessageDialog> {
   TextEditingController textController = TextEditingController();
 
   void _sendSMS(String message, List<String> recipients) async {
+    await Permission.sms.request();
+    if (await Permission.sms.isDenied) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                15.h, 'SMS 전송 권한이 없어\n 문자를 전송할 수 없습니다.', null);
+          });
+      return;
+    }
     String _result = await platform.invokeMethod(
         'sendTextMessage', {'message': message, 'recipients': recipients});
     if (_result == "sent") {

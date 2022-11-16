@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:homealone/main.dart';
@@ -14,18 +14,18 @@ double heartRate = 0.0;
 double minValue = 0.0;
 double maxValue = 300.0;
 bool pressing = false;
+bool interval = false;
 String emergencyStatus = "";
 String message = "";
 List<String> recipients = [];
 
 // this will be used as notification channel id
 const notificationChannelId = 'emergency_notification';
-late MethodChannel platform;
 
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 119;
 
-Future<void> initializeService() async {
+Future<void> initializeNotificationService() async {
   final service = FlutterBackgroundService();
   const AndroidNotificationChannel channel = AndroidNotificationChannel(
     notificationChannelId, // id
@@ -50,7 +50,6 @@ Future<void> initializeService() async {
     // 포그라운드에서 알림 수신시 대응할 함수
     onDidReceiveNotificationResponse: onReceiveNotificationResponse,
   );
-
   await service.configure(
     androidConfiguration: AndroidConfiguration(
       // this will be executed when app is in foreground or background in separated isolate
@@ -73,11 +72,12 @@ Future<void> initializeService() async {
 void onReceiveNotificationResponse(NotificationResponse response) {
   // print(response.actionId);
   String value = response.actionId!;
-  debugPrint("호출 $value");
+  debugPrint("push 알림 응답: $value");
   if (value == "expand") {
     if (!pressing) {
       pressing = true;
       updateHeartRateRange();
+      sleep(Duration(seconds: 1));
       pressing = false;
     }
   } else {
@@ -106,31 +106,24 @@ void updateHeartRateRange() async {
 }
 
 // 시작시 Wear OS 리스너 등록
+// release 모드에서 동작하기 위해 필요
+@pragma('vm:entry-point')
 void onStartWatch(
-    ServiceInstance service,
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-    SharedPreferences pref) async {
+    SharedPreferences pref) {
   final watch = WatchConnectivity();
   // var newGap = "0.0";
   bool? useWearOS = pref.getBool("useWearOS");
   Map<String, String> msg = HashMap<String, String>();
 
-  var msgStream = watch.messageStream.listen((event) {
+  watch.messageStream.listen((event) {
     debugPrint("메세지: ${event.values.last}");
-
-    // TODO: 메소드 콜 불가능한 에러 수정
     sendEmergencyMessage();
   });
-  // msgStream.onError((error) => {debugPrint(error.toString())});
-  // var contexts = await watch.receivedApplicationContexts;
-  // heartRate = double.parse(contexts.last.values.last);
-  // debugPrint("BPM 심박수1111 $heartRate");
 
   //처음 1초동안 심박수 체크 안함
   sleep(const Duration(seconds: 1));
-  var bpmStream =
-      watch.contextStream.listen((e) => {debugPrint("메세지: ${e.values.last}")});
-  // bpmStream.onError((error) => {debugPrint(error.toString())});
+  var bpmStream = watch.contextStream.listen((e) => {});
 
   bpmStream.onData(
     (data) async {
@@ -147,60 +140,11 @@ void onStartWatch(
       if (useWearOS!) {
         debugPrint("최대 최소 실시간: $maxValue, $minValue");
         if (heartRate > maxValue || minValue > heartRate) {
-          flutterLocalNotificationsPlugin.show(
-            notificationId,
-            '워치아웃',
-            '위기 상황 발생!!! 심박수: ${heartRate.toInt()}',
-            // payload: newGap,
-            const NotificationDetails(
-              android:
-                  AndroidNotificationDetails(notificationChannelId, '포그라운드 서비스',
-                      icon: 'launch_background',
-                      ongoing: false,
-                      enableVibration: true,
-                      fullScreenIntent: false,
-                      importance: Importance.max,
-                      channelShowBadge: true,
-                      channelDescription: "워치아웃 심박수 알림 채널",
-                      autoCancel: true, // 알림 터치시 해제
-                      timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
-                      actions: [
-                    AndroidNotificationAction("ignore", "무시",
-                        cancelNotification: true),
-                    AndroidNotificationAction(
-                      "expand",
-                      "심박수 범위 확장",
-                      showsUserInterface: false,
-                      cancelNotification: true,
-                      contextual: false,
-                      // inputs: [
-                      //   AndroidNotificationActionInput(
-                      //     choices: ["-5","+5"],
-                      //     allowFreeFormInput: false,
-                      //   )
-                      // ],
-                    ),
-                    AndroidNotificationAction("open", "바로가기",
-                        showsUserInterface: true, cancelNotification: true),
-                  ]
-                      // playSound: ,
-                      // sound:
-                      ),
-            ),
-          );
-          // TODO: 5초간 기다린 뒤에 알림이 해제되지 않았으면 바로 응급알림
-          sendEmergencyMessage();
+          showEmergencyNotification(flutterLocalNotificationsPlugin, pref);
         }
       }
     },
   );
-}
-
-void _sendSMS(String message, List<String> recipients) async {
-  platform = MethodChannel("com.ssafy.homealone/channel");
-  platform.invokeMethod('openEmergencySetting');
-  // await platform.invokeMethod(
-  //     'sendTextMessage', {'message': message, 'recipients': recipients});
 }
 
 Future<void> sendEmergencyMessage() async {
@@ -208,31 +152,88 @@ Future<void> sendEmergencyMessage() async {
   maxValue = pref.getDouble("maxValue")!;
   minValue = pref.getDouble("minValue")!;
   if (heartRate > maxValue || minValue > heartRate) {
-    emergencyStatus = "이 응급 버튼을 눌렀습니다";
-  } else {
     emergencyStatus = "의 심박수가 지정한 범위를 벗어났습니다";
+  } else {
+    emergencyStatus = "이 응급 버튼을 눌렀습니다";
   }
 
   await prepareMessage(emergencyStatus);
-  if (recipients.isNotEmpty) {
+  if (recipients.isNotEmpty && !interval) {
     debugPrint(message);
     debugPrint(recipients.toString());
-    _sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    interval = true;
+    // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
+    sleep(Duration(minutes: 30));
+    interval = false;
   }
-}
-
-Future<void> getCurrentLocation() async {
-  address =
-      await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
 }
 
 Future<void> prepareMessage(String emergencyStatus) async {
   await getCurrentLocation();
   SharedPreferences preferences = await SharedPreferences.getInstance();
   message =
-      "${preferences.getString('username')}님$emergencyStatus. 긴급 조치가 필요합니다.\n현재 예상 위치 : $address\n이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
+      "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
   List<String>? list = preferences.getStringList('contactlist');
   if (list != null) {
-    recipients = list!;
+    recipients = list;
+  }
+}
+
+Future<void> showEmergencyNotification(
+    FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+    SharedPreferences pref) async {
+  maxValue = pref.getDouble("maxValue")!;
+  minValue = pref.getDouble("minValue")!;
+  if (heartRate > maxValue || heartRate < minValue) {
+    flutterLocalNotificationsPlugin.show(
+      notificationId,
+      '워치아웃',
+      '위기 상황 발생!!!\n심박수가 정상 범위에서 벗어났습니다!\n심박수: ${heartRate.toInt()}',
+      // payload: newGap,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          notificationChannelId, '포그라운드 서비스',
+          importance: Importance.max,
+          timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
+          onlyAlertOnce: true,
+          actions: [
+            AndroidNotificationAction("ignore", "무시"),
+            AndroidNotificationAction("expand", "심박수 범위 확장"),
+            AndroidNotificationAction("open", "앱 열기", showsUserInterface: true),
+          ],
+          // playSound: ,
+          // sound:
+        ),
+      ),
+    );
+  } else {
+    flutterLocalNotificationsPlugin.show(
+      notificationId,
+      '워치아웃',
+      '위기 상황 발생!!!\n사용자가 버튼을 눌렀습니다!',
+      // payload: newGap,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          notificationChannelId, '포그라운드 서비스',
+          importance: Importance.max,
+          timeoutAfter: 60 * 60 * 1000, // 1시간 뒤에는 자동으로 해제
+          actions: [
+            AndroidNotificationAction("ignore", "무시"),
+            AndroidNotificationAction("open", "앱 열기", showsUserInterface: true),
+          ],
+          // playSound: ,
+          // sound:
+        ),
+      ),
+    );
+  }
+
+  sleep(Duration(seconds: 15));
+  List<ActiveNotification> activeNotifications =
+      await flutterLocalNotificationsPlugin.getActiveNotifications();
+  if (activeNotifications.isNotEmpty) {
+    debugPrint("알림 해제 안 됨");
+    sendEmergencyMessage();
   }
 }
