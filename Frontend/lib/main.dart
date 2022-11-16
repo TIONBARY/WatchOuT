@@ -91,6 +91,8 @@ void main() {
       constraints: wm.Constraints(
           networkType: wm.NetworkType.not_required, requiresDeviceIdle: true));
   fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  initializeNotificationService();
+  initUsage();
 }
 
 class MyApp extends StatefulWidget {
@@ -104,8 +106,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initializeNotificationService();
-    initUsage();
   }
 
   @override
@@ -187,6 +187,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// release 모드에서 동작하기 위해 필요
 @pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
   // Only available for flutter 3.0.0 and later
@@ -194,10 +195,8 @@ Future<void> onStart(ServiceInstance service) async {
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
-  final SharedPreferences pref = await SharedPreferences.getInstance();
-
   if (service is AndroidServiceInstance) {
-    onStartWatch(flutterLocalNotificationsPlugin, pref);
+    onStartWatch(flutterLocalNotificationsPlugin);
   }
 }
 
