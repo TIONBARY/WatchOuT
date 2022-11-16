@@ -82,11 +82,9 @@ class _CameraPlayerState extends State<CameraPlayer> {
                         isOutline: true,
                         type: PredefinedThemes.warning,
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CamInfoDialog(),
-                            ),
+                          showDialog(
+                            context: context,
+                            builder: (context) => CamInfoDialog(),
                           );
                         },
                         child: Text(

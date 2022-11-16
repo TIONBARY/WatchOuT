@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:background_fetch/background_fetch.dart' as fetch;
 import 'package:background_sms/background_sms.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,6 +47,10 @@ bool messageIsSent = false;
 const locationCheck = "locationCheck";
 const fetchBackground = "fetchBackground";
 
+bool homecamRegistered = false;
+String homecamAccessCode = "";
+String homecamUrl = "";
+
 @pragma('vm:entry-point')
 void backgroundFetchHeadlessTask(fetch.HeadlessTask task) async {
   String taskId = task.taskId;
@@ -83,7 +90,6 @@ void main() {
       initialDelay: Duration(seconds: 60),
       constraints: wm.Constraints(
           networkType: wm.NetworkType.not_required, requiresDeviceIdle: true));
-
   fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 }
 
@@ -267,12 +273,6 @@ Future<void> sendSMS(String message, List<String> recipients) async {
 
 Future<void> sendEmergencyMessage() async {
   await prepareMessage();
-  if (recipients.isNotEmpty) {
-    print(message);
-    print(recipients);
-    messageIsSent = true;
-    await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-  }
 }
 
 Future<void> getCurrentLocation() async {
@@ -281,12 +281,88 @@ Future<void> getCurrentLocation() async {
 }
 
 Future<void> prepareMessage() async {
-  await getCurrentLocation();
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    await getCurrentLocation();
+    await checkHomecam();
+  }
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  message =
-      "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위치 : $address";
   List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
     recipients = list!;
   }
+  if (homecamRegistered) {
+    message =
+        "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위치 : $address";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    }
+    message = "홈캠 입장 코드 : $homecamAccessCode\n홈캠은 워치아웃 앱에서 확인하실 수 있습니다.";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    }
+  } else if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    message =
+        "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위치 : $address";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      messageIsSent = true;
+      await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    }
+  } else {
+    message =
+        "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위도 : $initLat\n현재 예상 경도 : $initLon";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      messageIsSent = true;
+      await sendSMS(message, recipients);
+    }
+  }
 }
+
+Future<void> checkHomecam() async {
+  await Firebase.initializeApp();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  homecamRegistered = false;
+  final homecam = await FirebaseFirestore.instance
+      .collection("user")
+      .doc(preferences.getString('useruid'))
+      .collection("homecam");
+  final result = await homecam.get();
+  homecamUrl = "";
+  result.docs.forEach((value) => {
+        homecamUrl = value.get('url'),
+      });
+  if (homecamUrl.isNotEmpty) {
+    homecamRegistered = true;
+    homecamAccessCode = getRandomString(8);
+    await registerHomecamAccessCode();
+  }
+}
+
+Future<void> registerHomecamAccessCode() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await FirebaseFirestore.instance
+      .collection("homecamCodeToUserInfo")
+      .doc(homecamAccessCode)
+      .set({
+    "name": preferences.getString("username"),
+    "profileImage": preferences.getString("profileImage"),
+    "url": homecamUrl,
+    "expiredTime": DateTime.now().add(Duration(minutes: 30)),
+  });
+}
+
+final _chars = '1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));

@@ -74,13 +74,6 @@ class _SetButtonState extends State<SetButton>
     });
   }
 
-  void _reverseIcon() {
-    _animationController.reverse();
-    setState(() {
-      isAnimationOn = false;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -212,7 +205,7 @@ class _SetButtonState extends State<SetButton>
                             ),
                             IconButton(
                               onPressed: () {
-                                EmergencyCallDialog(context);
+                                emergencyCallDialog(context);
                               },
                               icon: Icon(Icons.delete, size: 20.sp),
                             ),
@@ -278,7 +271,7 @@ class _SetButtonState extends State<SetButton>
                       ),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     height: 7.5.h,
                     child: Row(
                       children: [
@@ -363,7 +356,7 @@ class _SetButtonState extends State<SetButton>
                       ],
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: 40.w,
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -383,9 +376,7 @@ class _SetButtonState extends State<SetButton>
                                 localEmergencyCallList.add(
                                     {"name": _addName, "number": _addContact});
 
-                                if (tmpUser == null ||
-                                    tmpUser.isEmpty ||
-                                    tmpUser.length == 0) {
+                                if (tmpUser == null || tmpUser.isEmpty) {
                                   UserService().registerFirstResponder(
                                       _addName, _addContact);
                                   existUser = false;
@@ -448,7 +439,7 @@ class _SetButtonState extends State<SetButton>
     );
   }
 
-  Future<void> EmergencyCallDialog(BuildContext context) async {
+  Future<void> emergencyCallDialog(BuildContext context) async {
     return showDialog(
       context: context,
       builder: (context) {
@@ -535,7 +526,7 @@ class _SetButtonState extends State<SetButton>
                     ),
                   ),
                 ),
-                Container(
+                SizedBox(
                   width: 37.5.w,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -634,13 +625,11 @@ class _SetButtonState extends State<SetButton>
                           ),
                           Flexible(
                             flex: 2,
-                            child: Container(
-                              child: IconAnimated(
-                                color: Colors.green,
-                                progress: _animation,
-                                size: 100,
-                                iconType: IconType.check,
-                              ),
+                            child: IconAnimated(
+                              color: Colors.green,
+                              progress: _animation,
+                              size: 100,
+                              iconType: IconType.check,
                             ),
                           ),
                           Flexible(flex: 1, child: Text("홈 캠 기능을 연결할 수 있습니다."))
@@ -658,13 +647,11 @@ class _SetButtonState extends State<SetButton>
                           ),
                           Flexible(
                             flex: 2,
-                            child: Container(
-                              child: IconAnimated(
-                                color: Colors.green,
-                                progress: _animation,
-                                size: 100,
-                                iconType: IconType.check,
-                              ),
+                            child: IconAnimated(
+                              color: Colors.green,
+                              progress: _animation,
+                              size: 100,
+                              iconType: IconType.check,
                             ),
                           ),
                           Flexible(flex: 1, child: Text("일부 기능이 제한될 수 있습니다."))
