@@ -142,7 +142,7 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                       ? Container(
                           alignment: Alignment.center,
                           child: Text(
-                            "홈캠을 볼 수 있는 사용자가 없습니다.",
+                            "캠을 볼 수 있는 사용자가 없습니다.",
                             style: TextStyle(
                               fontSize: 15.sp,
                               fontFamily: 'HanSan',
@@ -191,7 +191,7 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                                   margin: EdgeInsets.only(bottom: 0.25.h),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: b50Color,
+                                      backgroundColor: bColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(7),
                                       ),
@@ -204,8 +204,10 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                                                   ["url"]));
                                     },
                                     child: Text(
-                                      '홈캠 확인',
-                                      style: TextStyle(fontFamily: 'HanSan'),
+                                      '캠 확인',
+                                      style: TextStyle(
+                                        fontFamily: 'HanSan',
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -291,10 +293,19 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                           ),
                         ),
                         onPressed: () {
-                          if (_SignupKey.currentState!.validate()) {
-                            addHomecamUser();
-                            Navigator.pop(context);
-                          }
+                          _SignupKey.currentState!.validate()
+                              ? {addHomecamUser(), Navigator.pop(context)}
+                              : showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return BasicDialog(
+                                        EdgeInsets.fromLTRB(
+                                            5.w, 2.5.h, 5.w, 0.5.h),
+                                        12.5.h,
+                                        '코드를 확인해주세요.',
+                                        null);
+                                  },
+                                );
                         },
                         child: Text(
                           '등록',
@@ -312,7 +323,6 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                           ),
                         ),
                         onPressed: () {
-                          // addGoingHomeUser();
                           Navigator.pop(context);
                         },
                         child: Text(

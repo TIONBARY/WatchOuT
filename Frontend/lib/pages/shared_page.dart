@@ -179,7 +179,7 @@ class _RecordPageState extends State<RecordPage> {
                                   margin: EdgeInsets.only(bottom: 0.25.h),
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                      backgroundColor: b50Color,
+                                      backgroundColor: bColor,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(7),
                                       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/components/login/user_service.dart';
@@ -15,6 +16,13 @@ class CamInfoDialog extends StatefulWidget {
 class _CamInfoDialogState extends State<CamInfoDialog> {
   final _signupKey = GlobalKey<FormState>();
   String _code = '';
+
+  @override
+  void initState() {
+    // 세로 화면 고정
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
