@@ -1,7 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
@@ -24,6 +28,10 @@ const notificationChannelId = 'emergency_notification';
 
 // this will be used for notification id, So you can update your custom notification with this id.
 const notificationId = 119;
+
+bool homecamRegistered = false;
+String homecamAccessCode = "";
+String homecamUrl = "";
 
 Future<void> initializeNotificationService() async {
   final service = FlutterBackgroundService();
@@ -170,15 +178,95 @@ Future<void> sendEmergencyMessage() async {
 }
 
 Future<void> prepareMessage(String emergencyStatus) async {
-  await getCurrentLocation();
+  var connectivityResult = await (Connectivity().checkConnectivity());
+  if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    await getCurrentLocation();
+    await checkHomecam();
+  }
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  message =
-      "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
-  List<String>? list = preferences.getStringList('contactlist');
+  List<String>? list = await preferences.getStringList('contactlist');
   if (list != null) {
-    recipients = list;
+    recipients = list!;
+  }
+  if (homecamRegistered) {
+    message =
+        "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
+    if (recipients.isNotEmpty) {
+      debugPrint(message);
+      debugPrint(recipients.toString());
+      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    }
+    message = "홈캠 입장 코드 : $homecamAccessCode\n홈캠은 워치아웃 앱에서 확인하실 수 있습니다.";
+    if (recipients.isNotEmpty && !interval) {
+      debugPrint(message);
+      debugPrint(recipients.toString());
+      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+      interval = true;
+      // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
+      sleep(Duration(minutes: 30));
+      interval = false;
+    }
+  } else if (connectivityResult == ConnectivityResult.mobile ||
+      connectivityResult == ConnectivityResult.wifi) {
+    message =
+        "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      messageIsSent = true;
+      await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    }
+  } else {
+    message =
+        "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위도 : $initLat\n현재 예상 경도 : $initLon";
+    if (recipients.isNotEmpty) {
+      print(message);
+      print(recipients);
+      messageIsSent = true;
+      await sendSMS(message, recipients);
+    }
   }
 }
+
+Future<void> checkHomecam() async {
+  await Firebase.initializeApp();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  homecamRegistered = false;
+  final homecam = await FirebaseFirestore.instance
+      .collection("user")
+      .doc(preferences.getString('useruid'))
+      .collection("homecam");
+  final result = await homecam.get();
+  homecamUrl = "";
+  result.docs.forEach((value) => {
+        homecamUrl = value.get('url'),
+      });
+  if (homecamUrl.isNotEmpty) {
+    homecamRegistered = true;
+    homecamAccessCode = getRandomString(8);
+    await registerHomecamAccessCode();
+  }
+}
+
+Future<void> registerHomecamAccessCode() async {
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  await FirebaseFirestore.instance
+      .collection("homecamCodeToUserInfo")
+      .doc(homecamAccessCode)
+      .set({
+    "name": preferences.getString("username"),
+    "profileImage": preferences.getString("profileImage"),
+    "url": homecamUrl,
+    "expiredTime": DateTime.now().add(Duration(minutes: 30)),
+  });
+}
+
+final _chars = '1234567890';
+Random _rnd = Random();
+
+String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
+    length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
 
 Future<void> showEmergencyNotification(
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,

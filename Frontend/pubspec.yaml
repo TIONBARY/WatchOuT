@@ -95,6 +95,7 @@ dependencies:
   syncfusion_flutter_core: ^20.3.56
   icon_animated: ^0.1.0+1
   background_sms: ^0.0.4
+  connectivity_plus: ^3.0.2
 
 
 dev_dependencies:
