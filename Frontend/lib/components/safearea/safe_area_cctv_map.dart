@@ -280,7 +280,9 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
       }
       _mapController?.runJavascript('''
         markers[markers.length-1].setMap(null);
-        addCurrMarker(new kakao.maps.LatLng(${initLat}, ${initLon}));
+        var locPosition = new kakao.maps.LatLng(${initLat}, ${initLon});
+        addCurrMarker(locPosition);
+        map.panTo(locPosition);
       ''');
     });
     var lat = position.latitude, // 위도
