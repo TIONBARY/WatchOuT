@@ -201,7 +201,10 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                                           context: context,
                                           builder: (_) => OtherCameraPlayer(
                                               url: _homecamUserList[index]
-                                                  ["url"]));
+                                                  ["url"],
+                                              expiredTime:
+                                                  _homecamUserList[index]
+                                                      ["expiredTime"]));
                                     },
                                     child: Text(
                                       '캠 확인',
