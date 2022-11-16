@@ -197,7 +197,7 @@ Future<void> prepareMessage(String emergencyStatus) async {
       debugPrint(recipients.toString());
       sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
     }
-    message = "홈캠 입장 코드 : $homecamAccessCode\n홈캠은 워치아웃 앱에서 확인하실 수 있습니다.";
+    message = "캠 입장 코드 : $homecamAccessCode\n캠은 워치아웃 앱에서 확인하실 수 있습니다.";
     if (recipients.isNotEmpty && !interval) {
       debugPrint(message);
       debugPrint(recipients.toString());

@@ -201,12 +201,15 @@ class _MainButtonUpState extends State<MainButtonUp> {
                       onTap: () async {
                         bool flag = await UserService().isHomecamRegistered();
                         flag
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CameraPlayer(),
+                            ? {
+                                Navigator.of(context).pop(),
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => CameraPlayer(),
+                                  ),
                                 ),
-                              )
+                              }
                             : showDialog(
                                 context: context,
                                 builder: (context) => CamInfoDialog(),

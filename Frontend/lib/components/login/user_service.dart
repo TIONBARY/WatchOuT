@@ -233,7 +233,7 @@ class UserService {
       documentData = docSnapshot.data();
     }
     if (documentData == null) {
-      print("등록된 홈캠 정보가 없습니다.");
+      print("등록된 캠 정보가 없습니다.");
       return false;
     }
     return documentData?["registered"];
