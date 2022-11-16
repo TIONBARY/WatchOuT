@@ -49,23 +49,20 @@
 <img src="https://img.shields.io/badge/Jenkins-white?style=for-the-badge&logo=Jenkins&logoColor=black">
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=NGINX&logoColor=white">
 
-# [와이어 프레임]()
-![와이어프레임]()
+# [와이어 프레임](https://www.figma.com/file/RYgyub2v7cD5SOX8sbwSho/WatchOut?node-id=0%3A1&t=1omgooS8BxJouK6U-0)
+![와이어 프레임](/uploads/0e1c77aeac71ddc1db23f43254493b1c/KakaoTalk_20221116_164041797.png)
 
-# [기능 명세서]()
-![기능명세서]()
+# [기능 명세서](https://docs.google.com/spreadsheets/d/1Rmz9WcaGeFQ0PJOm9KE1XvrQsQdp6v0D_ok7_yyYaC4/edit#gid=0)
+![기능 명세서](/uploads/2c7638340220f54b8d6a4c0a3f6ac4fe/image.png)
 
-# [API 명세서]()
-![API명세서]()
-
-# [ERD]()
-![ERD]()
+# [API 명세서](https://docs.google.com/spreadsheets/d/1Rmz9WcaGeFQ0PJOm9KE1XvrQsQdp6v0D_ok7_yyYaC4/edit#gid=276985241)
+![API 명세서](/uploads/f7218ac86544b6f706c3fc5850d1bae6/image.png)
 
 # 컬러팔레트
-<img src="https://img.shields.io/badge/483434-483434?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/C3B091-C3B091?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/FFE6BC-FFE6BC?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/FFFDF4-FFFDF4?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/323232-323232?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/FFC84B-FFC84B?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/0E54AA-0E54AA?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/E4804E-E4804E?style=for-the-badge&logo=&logoColor=white">
 
 # JIRA
 ![JIRA]()
