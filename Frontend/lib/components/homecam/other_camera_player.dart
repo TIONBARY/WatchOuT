@@ -32,30 +32,19 @@ class _OtherCameraPlayerState extends State<OtherCameraPlayer> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-        child: Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-            padding: const EdgeInsets.all(8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(5),
-                    child: VlcPlayer(
-                      controller: playerController,
-                      aspectRatio: 16 / 9,
-                      placeholder: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            )),
-      ],
-    ));
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(5),
+          child: VlcPlayer(
+            controller: playerController,
+            aspectRatio: 16 / 9,
+            placeholder: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
