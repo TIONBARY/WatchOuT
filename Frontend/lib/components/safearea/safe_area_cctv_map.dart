@@ -24,6 +24,8 @@ import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher.dart' as UrlLauncher;
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../permissionService/permission_service.dart';
+
 final GeolocatorPlatform _geolocatorPlatform = GeolocatorPlatform.instance;
 WebViewController? _mapController;
 String addrName = "";
@@ -126,11 +128,18 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   @override
   void initState() {
     super.initState();
+    permitLocation();
     myFuture ??= _future();
   }
 
+  void permitLocation() async {
+    if (await Permission.location.isDenied) {
+      PermissionService().permissionLocation(context);
+    }
+  }
+
   Future _future() async {
-    LocationPermission permission = await Geolocator.requestPermission();
+    // LocationPermission permission = await Geolocator.requestPermission();
     WidgetsFlutterBinding.ensureInitialized();
     if (defaultTargetPlatform == TargetPlatform.android) {
       locationSettings = AndroidSettings(

@@ -46,6 +46,7 @@ class AuthService {
                 await prefs.setStringList('contactlist', temp),
               });
         }
+
         return TabNavBar();
       },
     );
