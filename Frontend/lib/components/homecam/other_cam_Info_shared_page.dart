@@ -74,11 +74,9 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                 heroTag: "other_cam_info_field_edit",
                 backgroundColor: bColor,
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => CamInfoDialog(),
-                    ),
+                  showDialog(
+                    context: context,
+                    builder: (context) => CamInfoDialog(),
                   );
                 },
                 child: Icon(
