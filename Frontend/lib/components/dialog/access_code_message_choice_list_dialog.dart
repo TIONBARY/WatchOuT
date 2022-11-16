@@ -55,7 +55,7 @@ class _AccessCodeMessageChoiceListDialogState
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.5)),
       child: Container(
         padding: EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
-        height: 27.5.h,
+        height: 30.h,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -78,6 +78,8 @@ class _AccessCodeMessageChoiceListDialogState
               items: emergencyCallList
                   .map((e) => MultiSelectItem(e, e["name"]))
                   .toList(),
+              itemsTextStyle: TextStyle(fontFamily: 'WdcsB'),
+              selectedItemsTextStyle: TextStyle(fontFamily: 'WdcsB'),
               chipDisplay: MultiSelectChipDisplay(
                 items: _selectedEmergencyCallList
                     .map((e) => MultiSelectItem(e, e["name"]))
@@ -89,7 +91,11 @@ class _AccessCodeMessageChoiceListDialogState
                 },
                 chipColor: bColor,
                 textStyle: TextStyle(color: Colors.white),
+                scroll: true,
+                scrollBar: HorizontalScrollBar(isAlwaysShown: true),
               ),
+              selectedColor: yColor,
+              checkColor: bColor,
               listType: MultiSelectListType.LIST,
               onConfirm: (values) {
                 _selectedEmergencyCallList = values;
