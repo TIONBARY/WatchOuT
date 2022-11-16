@@ -46,7 +46,6 @@
 
 ### 서버
 <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
-<img src="https://img.shields.io/badge/Jenkins-white?style=for-the-badge&logo=Jenkins&logoColor=black">
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=NGINX&logoColor=white">
 
 # [와이어 프레임](https://www.figma.com/file/RYgyub2v7cD5SOX8sbwSho/WatchOut?node-id=0%3A1&t=1omgooS8BxJouK6U-0)
