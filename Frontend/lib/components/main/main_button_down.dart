@@ -304,7 +304,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
                   ),
                 ),
                 MainPageAniBtn(
-                  margins: EdgeInsets.only(top: 4),
+                  margins: EdgeInsets.only(bottom: 4),
                   types: PredefinedThemes.warning,
                   ontaps: () {
                     showModalBottomSheet(
