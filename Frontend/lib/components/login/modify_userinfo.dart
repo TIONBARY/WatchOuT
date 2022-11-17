@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:homealone/components/dialog/basic_dialog_join.dart';
 import 'package:homealone/components/login/user_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/providers/user_provider.dart';
@@ -322,20 +323,28 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                 decoration: InputDecoration(
                   isCollapsed: true,
                   hintText: '전화번호',
+                  hintStyle: TextStyle(fontFamily: 'HanSan'),
                   helperText: '숫자만 입력해주세요.',
-                  helperStyle: TextStyle(
-                    fontFamily: 'HanSan',
-                  ),
+                  helperStyle: TextStyle(fontFamily: 'HanSan'),
+                  errorStyle: TextStyle(fontFamily: 'HanSan'),
                   contentPadding: EdgeInsets.fromLTRB(5.w, 1.25.h, 5.w, 1.25.h),
+                  filled: true,
+                  fillColor: Colors.white,
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     borderSide: BorderSide(color: b25Color),
                   ),
-                  filled: true,
-                  fillColor: Colors.white,
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                     borderSide: BorderSide(color: bColor),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderSide: BorderSide(color: b25Color),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    borderSide: BorderSide(color: b25Color),
                   ),
                 ),
                 onChanged: (number) {
@@ -436,7 +445,10 @@ class _ModifyUserInfoState extends State<ModifyUserInfo> {
                     ),
                     onPressed: () {
                       if (_SignupKey.currentState!.validate()) {
-                        _update();
+                        showDialog(
+                            context: context,
+                            builder: (context) => BasicDialogJoin(
+                                '회원정보 수정에 성공했습니다.', () => _update()));
                         Navigator.pop(context);
                       }
                       ;

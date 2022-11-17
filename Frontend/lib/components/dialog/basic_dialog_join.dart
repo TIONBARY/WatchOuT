@@ -3,7 +3,9 @@ import 'package:homealone/constants.dart';
 import 'package:sizer/sizer.dart';
 
 class BasicDialogJoin extends StatefulWidget {
-  const BasicDialogJoin(this.function, {Key? key}) : super(key: key);
+  const BasicDialogJoin(this.texts, this.function, {Key? key})
+      : super(key: key);
+  final String texts;
   final Function function;
   @override
   State<BasicDialogJoin> createState() => _BasicDialogJoinState();
@@ -23,8 +25,7 @@ class _BasicDialogJoinState extends State<BasicDialogJoin> {
             Title(
               color: bColor,
               child: Text(
-                "회원 가입에 성공하셨습니다.",
-                style: TextStyle(fontSize: 13.sp),
+                widget.texts,
               ),
             ),
             Container(
@@ -42,7 +43,10 @@ class _BasicDialogJoinState extends State<BasicDialogJoin> {
                 },
                 child: Text(
                   '확인',
-                  style: TextStyle(color: bColor),
+                  style: TextStyle(
+                    color: bColor,
+                    fontFamily: 'HanSan',
+                  ),
                 ),
               ),
             ),
