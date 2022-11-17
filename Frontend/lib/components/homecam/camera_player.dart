@@ -71,8 +71,7 @@ class _CameraPlayerState extends State<CameraPlayer> {
                     ),
                   ),
                 ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 8),
+                Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
