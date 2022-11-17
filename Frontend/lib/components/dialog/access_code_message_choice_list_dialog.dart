@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:homealone/api/api_message.dart';
 import 'package:homealone/constants.dart';
+import 'package:homealone/providers/user_provider.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 class AccessCodeMessageChoiceListDialog extends StatefulWidget {
@@ -37,8 +39,12 @@ class _AccessCodeMessageChoiceListDialogState
       emergencyCallList = [];
     });
     result.docs.forEach((value) => {
-          emergencyCallList
-              .add({"name": value.id, "number": value.get("number")})
+          if (Provider.of<MyUserInfo>(context, listen: false).phone !=
+              value.get("number"))
+            {
+              emergencyCallList
+                  .add({"name": value.id, "number": value.get("number")})
+            },
         });
     return emergencyCallList;
   }
