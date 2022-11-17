@@ -61,7 +61,8 @@ class SwitchBools with ChangeNotifier {
       Workmanager().registerPeriodicTask(locationCheck, fetchBackground,
           frequency: Duration(minutes: 15),
           constraints: Constraints(
-              networkType: NetworkType.not_required, requiresDeviceIdle: true));
+              networkType: NetworkType.not_required,
+              requiresDeviceIdle: false));
     } else {
       Workmanager().cancelByUniqueName(locationCheck);
     }

@@ -89,7 +89,7 @@ void main() {
       frequency: Duration(minutes: 15),
       initialDelay: Duration(seconds: 60),
       constraints: wm.Constraints(
-          networkType: wm.NetworkType.not_required, requiresDeviceIdle: true));
+          networkType: wm.NetworkType.not_required, requiresDeviceIdle: false));
   fetch.BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   initializeNotificationService();
   initUsage();
@@ -204,7 +204,7 @@ Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
-  // await sendEmergencyMessage();
+  await sendEmergencyMessage();
   count.then((value) async {
     debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
     if (value == 0) {
