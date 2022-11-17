@@ -83,8 +83,8 @@ class _CircularMenuState extends State<CircularMenu>
                 ),
               ),
               Transform.translate(
-                offset: Offset.fromDirection(getRadiansFromDegree(270),
-                    degOneTranslationAnimation.value * 100),
+                offset: Offset.fromDirection(getRadiansFromDegree(255),
+                    degOneTranslationAnimation.value * 75),
                 child: Transform(
                   transform: Matrix4.rotationZ(
                       getRadiansFromDegree(rotationAnimation.value))
@@ -95,7 +95,7 @@ class _CircularMenuState extends State<CircularMenu>
                     widths: 50,
                     colors: nColor,
                     icons: Icon(
-                      Icons.person_add_alt_1,
+                      Icons.share,
                       color: Colors.white,
                     ),
                     onpresseds: () {
@@ -104,31 +104,9 @@ class _CircularMenuState extends State<CircularMenu>
                   ),
                 ),
               ),
-              // Transform.translate(
-              //   offset: Offset.fromDirection(getRadiansFromDegree(225),
-              //       degTwoTranslationAnimation.value * 100),
-              //   child: Transform(
-              //     transform: Matrix4.rotationZ(
-              //         getRadiansFromDegree(rotationAnimation.value))
-              //       ..scale(degTwoTranslationAnimation.value),
-              //     alignment: Alignment.center,
-              //     child: CircularButton(
-              //       heights: 50,
-              //       widths: 50,
-              //       colors: Colors.black,
-              //       icons: Icon(
-              //         Icons.camera_alt,
-              //         color: Colors.white,
-              //       ),
-              //       onpresseds: () {
-              //         print('Second button');
-              //       },
-              //     ),
-              //   ),
-              // ),
               Transform.translate(
-                offset: Offset.fromDirection(getRadiansFromDegree(180),
-                    degThreeTranslationAnimation.value * 100),
+                offset: Offset.fromDirection(getRadiansFromDegree(195),
+                    degThreeTranslationAnimation.value * 75),
                 child: Transform(
                   transform: Matrix4.rotationZ(
                       getRadiansFromDegree(rotationAnimation.value))

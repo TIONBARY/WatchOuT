@@ -375,8 +375,8 @@ class _SignupState extends State<SignUp> {
                       submitted) {
                     showDialog(
                         context: context,
-                        builder: (context) =>
-                            BasicDialogJoin(() => _register()));
+                        builder: (context) => BasicDialogJoin(
+                            '회원가입에 성공했습니다.', () => _register()));
                   } else if (!_SignupKey.currentState!.validate()) {
                     showDialog(
                         context: context,
