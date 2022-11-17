@@ -49,7 +49,7 @@ class _GuideBarState extends State<GuideBar> {
                       borderRadius: const BorderRadius.all(Radius.circular(5)),
                       maskColor: const Color.fromRGBO(0, 0, 0, .5),
                       maskClosable: false,
-                      buttonTextBuilder: (order) => order == 13 ? '완료' : '다음',
+                      buttonTextBuilder: (order) => order == 4 ? '완료' : '다음',
                       child: const MainGuide(),
                     ),
                   ),
