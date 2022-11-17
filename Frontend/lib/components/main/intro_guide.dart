@@ -272,20 +272,23 @@ class _MainGuideState extends State<MainGuide> {
                               text: '성범죄자 알림e\n서비스로 이동',
                               padding:
                                   EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, 2),
-                              builder: (context, key) => AnimatedButton(
-                                key: key,
-                                width: 30.w,
-                                blurRadius: 7.5,
-                                isOutline: true,
-                                type: null,
-                                color: nColor,
-                                onTap: () async {},
-                                child: Text(
-                                  '성범죄자\n알림e',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'HanSan',
+                              builder: (context, key) => Container(
+                                margin: EdgeInsets.only(top: 4),
+                                child: AnimatedButton(
+                                  key: key,
+                                  width: 30.w,
+                                  blurRadius: 7.5,
+                                  isOutline: true,
+                                  type: null,
+                                  color: nColor,
+                                  onTap: () async {},
+                                  child: Text(
+                                    '성범죄자\n알림e',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'HanSan',
+                                    ),
                                   ),
                                 ),
                               ),
@@ -327,24 +330,36 @@ class _MainGuideState extends State<MainGuide> {
                               order: 11,
                               text: '목격한 현장을\n촬영하면\n바로 112에 신고 문자 발송',
                               padding:
-                                  EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, -1),
-                              builder: (context, key) => MainPageAniBtn(
-                                key: key,
-                                margins: EdgeInsets.only(bottom: 4),
-                                types: PredefinedThemes.warning,
-                                ontaps: () {},
-                                texts: '신고',
-                                colors: bColor,
+                                  EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, 2),
+                              builder: (context, key) => Container(
+                                margin: EdgeInsets.only(top: 4),
+                                child: AnimatedButton(
+                                  key: key,
+                                  width: 30.w,
+                                  blurRadius: 7.5,
+                                  isOutline: true,
+                                  type: null,
+                                  color: oColor,
+                                  onTap: () async {},
+                                  child: Text(
+                                    '신고',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: bColor,
+                                      fontFamily: 'HanSan',
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                             IntroStepBuilder(
                               order: 12,
                               text: '여러 위기상황에 대한\n대처 매뉴얼',
                               padding:
-                                  EdgeInsets.fromLTRB(-2.5.w, -1, -2.5.w, 2),
+                                  EdgeInsets.fromLTRB(-2.5.w, 2, -2.5.w, -1),
                               builder: (context, key) => MainPageAniBtn(
                                 key: key,
-                                margins: EdgeInsets.only(top: 4),
+                                margins: EdgeInsets.only(bottom: 4),
                                 types: PredefinedThemes.warning,
                                 ontaps: () {},
                                 texts: '위기상황 \n대처메뉴얼',
