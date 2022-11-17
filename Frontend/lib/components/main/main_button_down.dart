@@ -124,7 +124,15 @@ class _MainButtonDownState extends State<MainButtonDown> {
     prepareMessage();
     timer = Timer(Duration(seconds: 5), () async {
       Navigator.pop(dialogContext);
-      if (recipients.isEmpty) {
+      if (await Permission.location.isDenied) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+                  15.h, '위치 권한이 없어\n응급 상황 전파가 불가능합니다.', null);
+            });
+        return;
+      } else if (recipients.isEmpty) {
         showDialog(
             context: context,
             builder: (BuildContext context) {
