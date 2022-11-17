@@ -8,7 +8,6 @@ const b25Color = Color(0x40323232);
 const yColor = Color(0xFFFFC84B);
 const y75Color = Color(0xBFFFC84B);
 const y50Color = Color(0x80FFC84B);
-const y25Color = Color(0x40FFC84B);
 
 const nColor = Color(0xFF0E54AA);
 const oColor = Color(0xFFE4804E);

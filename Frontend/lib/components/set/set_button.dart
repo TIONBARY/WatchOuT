@@ -612,6 +612,9 @@ class _SetButtonState extends State<SetButton>
     return showDialog(
         context: context,
         builder: (context) {
+          Future.delayed(Duration(seconds: 3), () {
+            Navigator.pop(context);
+          });
           return Dialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.5)),
