@@ -204,7 +204,9 @@ Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
-  await sendEmergencyMessage();
+  if (!messageIsSent) {
+    await sendEmergencyMessage();
+  }
   count.then((value) async {
     debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
     if (value == 0) {
