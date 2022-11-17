@@ -200,10 +200,12 @@ Future<void> onStart(ServiceInstance service) async {
   }
 }
 
+@pragma('vm:entry-point')
 Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
+  print(messageIsSent);
   if (!messageIsSent) {
     await sendEmergencyMessage();
   }
@@ -221,6 +223,7 @@ Future<void> refreshUsage() async {
   });
 }
 
+@pragma('vm:entry-point')
 Future<int> initUsage() async {
   int count = 0;
 
@@ -241,6 +244,7 @@ Future<int> initUsage() async {
   return count;
 }
 
+@pragma('vm:entry-point')
 void callbackDispatcher() {
   wm.Workmanager().executeTask((task, inputData) async {
     switch (task) {
@@ -256,6 +260,7 @@ void callbackDispatcher() {
   });
 }
 
+@pragma('vm:entry-point')
 Future<void> sendSMS(String message, List<String> recipients) async {
   // String result = await MethodChannel('com.ssafy.homealone/channel')
   //     .invokeMethod('sendTextMessage', {
@@ -272,15 +277,18 @@ Future<void> sendSMS(String message, List<String> recipients) async {
   print('success');
 }
 
+@pragma('vm:entry-point')
 Future<void> sendEmergencyMessage() async {
   await prepareMessage();
 }
 
+@pragma('vm:entry-point')
 Future<void> getCurrentLocation() async {
   address =
       await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
 }
 
+@pragma('vm:entry-point')
 Future<void> prepareMessage() async {
   var connectivityResult = await (Connectivity().checkConnectivity());
   if (connectivityResult == ConnectivityResult.mobile ||
@@ -305,6 +313,7 @@ Future<void> prepareMessage() async {
     if (recipients.isNotEmpty) {
       print(message);
       print(recipients);
+      messageIsSent = true;
       await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
     }
   } else if (connectivityResult == ConnectivityResult.mobile ||
@@ -329,6 +338,7 @@ Future<void> prepareMessage() async {
   }
 }
 
+@pragma('vm:entry-point')
 Future<void> checkHomecam() async {
   await Firebase.initializeApp();
   SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -349,6 +359,7 @@ Future<void> checkHomecam() async {
   }
 }
 
+@pragma('vm:entry-point')
 Future<void> registerHomecamAccessCode() async {
   SharedPreferences preferences = await SharedPreferences.getInstance();
   await FirebaseFirestore.instance
@@ -365,5 +376,6 @@ Future<void> registerHomecamAccessCode() async {
 final _chars = '1234567890';
 Random _rnd = Random();
 
+@pragma('vm:entry-point')
 String getRandomString(int length) => String.fromCharCodes(Iterable.generate(
     length, (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length))));
