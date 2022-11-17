@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/package_not_found_dialog.dart';
 import 'package:homealone/components/login/auth_service.dart';
 import 'package:homealone/components/login/user_service.dart';
@@ -13,6 +14,7 @@ import 'package:homealone/constants.dart';
 import 'package:homealone/providers/contact_provider.dart';
 import 'package:homealone/providers/heart_rate_provider.dart';
 import 'package:homealone/providers/switch_provider.dart';
+import 'package:homealone/providers/user_provider.dart';
 import 'package:icon_animated/widgets/icon_animated.dart';
 import 'package:multi_select_flutter/multi_select_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -377,6 +379,22 @@ class _SetButtonState extends State<SetButton>
                           onPressed: () async {
                             Map<String, dynamic>? tmpUser = await UserService()
                                 .getUserInfoByNumber(_addContact);
+                            if (Provider.of<MyUserInfo>(context, listen: false)
+                                    .phone ==
+                                _addContact) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BasicDialog(
+                                      EdgeInsets.fromLTRB(
+                                          5.w, 2.5.h, 5.w, 0.5.h),
+                                      15.h,
+                                      '비상연락처에는 자신의 번호를 \n등록할 수 없습니다.',
+                                      null);
+                                },
+                              );
+                              return;
+                            }
                             setState(
                               () {
                                 localEmergencyCallList.add(
