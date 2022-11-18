@@ -228,7 +228,7 @@ safeOpenBox
 ### SOS 버튼
 <img src="./images/sos1.jpg" width="250" height="500"/>
 <img src="./images/sos2.jpg" width="250" height="500"/>
-<img src="./images/message2.jpg" width="250" height="500"/>
+<img src="./images/message2.jpg" width="500" height="250"/>
  
 
 ### 안전지도
@@ -240,7 +240,7 @@ safeOpenBox
 <img src="./images/sharedgohome2.jpg" width="250" height="500"/>
 
 ### 귀갓길공유(보호자)
-<img src="./images/message1.jpg" width="250" height="500"/>
+<img src="./images/message1.jpg" width="500" height="250"/>
 <img src="./images/sharedgohome4.jpg" width="250" height="500"/>
 <img src="./images/sharedgohome5.jpg" width="250" height="500"/>
 <img src="./images/sharedgohome6.jpg" width="250" height="500"/>
