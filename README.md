@@ -80,26 +80,22 @@
 
 ### 서버
 <img src="https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=Docker&logoColor=white">
-<img src="https://img.shields.io/badge/Jenkins-white?style=for-the-badge&logo=Jenkins&logoColor=black">
 <img src="https://img.shields.io/badge/nginx-009639?style=for-the-badge&logo=NGINX&logoColor=white">
 
-# [와이어 프레임]()
-![와이어프레임]()
+# [와이어 프레임](https://www.figma.com/file/RYgyub2v7cD5SOX8sbwSho/WatchOut?node-id=0%3A1&t=1omgooS8BxJouK6U-0)
+![와이어 프레임](/uploads/0e1c77aeac71ddc1db23f43254493b1c/KakaoTalk_20221116_164041797.png)
 
-# [기능 명세서]()
-![기능명세서]()
+# [기능 명세서](https://docs.google.com/spreadsheets/d/1Rmz9WcaGeFQ0PJOm9KE1XvrQsQdp6v0D_ok7_yyYaC4/edit#gid=0)
+![기능 명세서](/uploads/2c7638340220f54b8d6a4c0a3f6ac4fe/image.png)
 
-# [API 명세서]()
-![API명세서]()
-
-# [ERD]()
-![ERD]()
+# [API 명세서](https://docs.google.com/spreadsheets/d/1Rmz9WcaGeFQ0PJOm9KE1XvrQsQdp6v0D_ok7_yyYaC4/edit#gid=276985241)
+![API 명세서](/uploads/f7218ac86544b6f706c3fc5850d1bae6/image.png)
 
 # 컬러팔레트
-<img src="https://img.shields.io/badge/483434-483434?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/C3B091-C3B091?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/FFE6BC-FFE6BC?style=for-the-badge&logo=&logoColor=white">
-<img src="https://img.shields.io/badge/FFFDF4-FFFDF4?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/323232-323232?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/FFC84B-FFC84B?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/0E54AA-0E54AA?style=for-the-badge&logo=&logoColor=white">
+<img src="https://img.shields.io/badge/E4804E-E4804E?style=for-the-badge&logo=&logoColor=white">
 
 # JIRA
 ![JIRA]()
@@ -169,42 +165,3 @@
 ```
 💡 ex) Feat#Jwt_BE : 백엔드의 Jwt 기능 추가
 ```
-
-## 아침에 일어나서 GIT PULL !!!
-
-- 충돌 방지 최신화 작업
-- 최근 브랜치(작업하고자 하는 브랜치)에서 실행하기!!
-
-## 하위 브랜치 생성
-
-```bash
-git switch -c 브랜치이름
-git checkout -b 브랜치이름
-```
-
-## 원하는 브랜치에 Push 하기
-
-```bash
-git add .
-git commit -m "원하는 메세지를 입력"
-git push
-(git push --set-upstream origin <현재 위치한 branch 이름>)
-(git push origin <현재 위치한 branch 이름>) -> 상위 브랜치로 merge
-```
-
-- Local에서 Git bash작업하는 것 → Git lab에 들어가서 merge 보내는 곳 받는 곳 확인하기.
-- header 확인하기 !!! 내가 작업하고 있는 브랜치가 맞는지 확인하기!!
-- add : local branch에 올리는 것
-- commit : remote 저장소로 이동
-- push : 변경 사항 적용
-
-## Pull 명령어
-
-```bash
-git pull
-```
-
-- 땡겨오고 싶은 브랜치로 이동 후 명령어 실행
-- pull request 확인 후 merge => 깃허브 반영( 작업브랜치 삭제 @체크박스 확인@ )
-- 작업 브랜치 삭제하지 말고 남기기!!
-- 끝나고 삭제할때 git branch -D 브랜치이름
