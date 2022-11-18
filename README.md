@@ -190,6 +190,10 @@ safeOpenBox
 ![JIRA]()
 
 # 기능별 화면
+|### 로그인 화면|
+|--------------|
+|<img src="./images/login1.jpg" width="250" height="500"/>|
+
 ### 로그인화면
 <img src="./images/login1.jpg" width="250" height="500"/>
 
