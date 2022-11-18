@@ -94,6 +94,92 @@
 # [API 명세서](https://docs.google.com/spreadsheets/d/1Rmz9WcaGeFQ0PJOm9KE1XvrQsQdp6v0D_ok7_yyYaC4/edit#gid=276985241)
 ![API 명세서](/uploads/f7218ac86544b6f706c3fc5850d1bae6/image.png)
 
+# [ERD](https://ssafy7seoul.notion.site/DB-fad714211a444348b5272e476abd3e13)
+- user
+```
+{
+  activated: 계정 활성화 여부
+  birth: "940613"
+  blocked: 계정 차단 여부
+  gender: "M"
+  googleUID: "구글 계정의 UID
+  hide: 
+  latitude: "계정의 실시간 현재 위치(위도)
+  longitude: "계정의 실시간 현재 위치(경도)
+  name: "김싸피"
+  phone: "01012345678"
+  profileImage: "최초엔 구글 프로필사진 업로드(추후에 변경 가능)"
+  region: "(06220) 서울 강남구 테헤란로 212"
+}
+```
+codeToUser
+```
+{
+  homeLat: 피보호자의 집(위도)
+  homeLon: 피보호자의 집(경도)
+  name: "김싸피"
+  phone: "01012345678"
+  profileImage: "최초엔 구글 프로필사진 업로드(추후에 변경 가능)"
+}
+```
+homecamCodeToUser
+```
+{
+  expiredTime: 2022년 11월 17일 오후 6시 10분 53초 UTC+9
+  name: "김싸피"
+  profileImage: "최초엔 구글 프로필사진 업로드(추후에 변경 가능)"
+  url: rtsp://watchout:ssafy123@70.12.227.183/stream1
+}
+```
+location
+```
+{
+  latitude: 실시간 현재 위치(위도)
+  longitude: 실시간 현재 위치(경도)
+}
+```
+userAccessCode
+```
+{
+  accessCode: 
+}
+```
+goingHomeUserList
+```
+{
+
+}
+```
+homecamUserList
+```
+{
+
+}
+```
+cctv
+```
+{
+
+}
+```
+emergencyBell
+```
+{
+  WGSXPT: 비상벨 위치(위도)
+  WGSYPT: 비상벨 위치(경도)
+}
+```
+safeOpenBox
+```
+{
+  ADDRDETAIL:
+  ANSIMIADDR: 안심택배 주소
+  ANSIMINM: 안심택배 위치명
+  WGSXPY: 안심택배 위치(위도)
+  WGSYPT: 안심택배 위치(경도)
+}
+```
+
 # 컬러팔레트
 <img src="https://img.shields.io/badge/323232-323232?style=for-the-badge&logo=&logoColor=white">
 <img src="https://img.shields.io/badge/FFC84B-FFC84B?style=for-the-badge&logo=&logoColor=white">
