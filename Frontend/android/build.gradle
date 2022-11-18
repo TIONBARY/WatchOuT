@@ -1,4 +1,4 @@
-    buildscript {
+buildscript {
     ext {
         compileSdkVersion   = 33                // or latest
         targetSdkVersion    = 33                // or latest
@@ -11,11 +11,15 @@
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
-//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
+        classpath 'com.android.tools.build:gradle:7.2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.10"
         classpath 'com.google.gms:google-services:4.3.13'
     }
+}
+
+plugins {
+    id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
 }
 
 allprojects {
