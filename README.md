@@ -210,7 +210,7 @@ safeOpenBox
 <img src="https://img.shields.io/badge/E4804E-E4804E?style=for-the-badge&logo=&logoColor=white">
 
 # JIRA
-![JIRA]()
+![JIRA](/uploads/56ca0065e4670930f8c03236a1df17da/image.png)
 
 # 기능별 화면
 |로그인 화면|
