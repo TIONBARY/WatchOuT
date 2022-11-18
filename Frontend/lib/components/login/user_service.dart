@@ -110,9 +110,9 @@ class UserService {
     }
   }
 
-  void deleteUser() {
-    db.collection("user").doc("${user?.uid}").delete();
-    authentication.signOut();
+  Future<void> deleteUser() async {
+    await db.collection("user").doc("${user?.uid}").delete();
+    await authentication.signOut();
   }
 
   void updateUser(
