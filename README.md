@@ -190,19 +190,13 @@ safeOpenBox
 ![JIRA]()
 
 # 기능별 화면
-|### 로그인화면|
+|로그인화면   |
 |-------------|
 |<img src="./images/login1.jpg" width="250" height="500"/>|
 
-### 로그인화면
-<img src="./images/login1.jpg" width="250" height="500"/>
-
-### 회원가입화면
-<img src="./images/signup1.jpg" width="250" height="500"/>
-<img src="./images/signup2.jpg" width="250" height="500"/>
-
-### 회원
-<img src="./images/modifyuserinfo1.jpg" width="250" height="500"/> 
+|회원 가입   | |회원 정보 수정|
+|-------------|
+|<img src="./images/signup1.jpg" width="250" height="500"/>|<img src="./images/signup2.jpg" width="250" height="500"/>|<img src="./images/modifyuserinfo1.jpg" width="250" height="500"/> |
 
 ### 메인화면
 <img src="./images/main1.jpg" width="250" height="500"/>
