@@ -190,77 +190,57 @@ safeOpenBox
 ![JIRA]()
 
 # 기능별 화면
-### 로그인화면
-<img src="./images/login1.jpg" width="250" height="500"/>
+|로그인 화면|
+|--------------|
+|<img src="./images/login1.jpg" width="250" height="500"/>|
 
-### 회원가입화면
-<img src="./images/signup1.jpg" width="250" height="500"/>
-<img src="./images/signup2.jpg" width="250" height="500"/>
+|회원 가입| |회원 정보 수정|
+|--------|--|-------------|
+|<img src="./images/signup1.jpg" width="250" height="500"/>|<img src="./images/signup2.jpg" width="250" height="500"/>|<img src="./images/modifyuserinfo1.jpg" width="250" height="500"/> |
 
-### 회원
-<img src="./images/modifyuserinfo1.jpg" width="250" height="500"/> 
+|메인 페이지|설명 가이드|
+|----------|-----------|
+|<img src="./images/main1.jpg" width="250" height="500"/>|<img src="./images/guide1.jpg" width="250" height="500"/>|
 
-### 메인화면
-<img src="./images/main1.jpg" width="250" height="500"/>
+|권한 요청|  |
+|--------|--|
+|<img src="./images/auth1.jpg" width="250" height="500"/>|<img src="./images/auth2.jpg" width="250" height="500"/>|
 
-### 권한
-<img src="./images/auth1.jpg" width="250" height="500"/>
-<img src="./images/auth2.jpg" width="250" height="500"/>
+|CAM|성범죄자 알림e|안심귀가 서비스|
+|---|-------------|--------------|
+|<img src="./images/cam1.jpg" width="250" height="500"/>|<img src="./images/nofie1.jpg" width="250" height="500"/>|<img src="./images/safegohome1.jpg" width="250" height="500"/>|
 
-### 가이드화면
-<img src="./images/guide1.jpg" width="250" height="500"/>
+|SOS| | |
+|---|-|-|
+|<img src="./images/sos1.jpg" width="250" height="500"/>|<img src="./images/sos2.jpg" width="250" height="500"/>|<img src="./images/sosMessage.jpg" width="250" height="500"/>|
 
-### CAM 버튼
-<img src="./images/cam1.jpg" width="250" height="500"/>
+|신고|위기상황 대처 메뉴얼|
+|---|--------------------|
+|<img src="./images/notify1.jpg" width="250" height="500"/>|<img src="./images/manual1.jpg" width="250" height="500"/>|
 
-### 성범죄자 알림e 버튼
-<img src="./images/nofie1.jpg" width="250" height="500"/>
+|안전 지도|
+|--------|
+|<img src="./images/safemap1.jpg" width="250" height="500"/>|
 
-### 안심귀가 서비스 버튼
-<img src="./images/safegohome1.jpg" width="250" height="500"/>
+|귀갓길공유(피보호자)| | |
+|-------------------|-|-|
+|<img src="./images/sharedgohome1.jpg" width="250" height="500"/>|<img src="./images/sharedgohome3.jpg" width="250" height="500"/>|<img src="./images/sharedgohome2.jpg" width="250" height="500"/>|
 
-### 신고 버튼
-<img src="./images/notify1.jpg" width="250" height="500"/>
+|귀갓길공유(보호자)| | |
+|-----------------|-|-|
+|<img src="./images/sosMessage.jpg" width="250" height="500"/>|<img src="./images/sharedgohome4.jpg" width="250" height="500"/>|<img src="./images/sharedgohome5.jpg" width="250" height="500"/>|
+|<img src="./images/sharedgohome6.jpg" width="250" height="500"/>|<img src="./images/sharedgohome7.jpg" width="250" height="500"/>|<img src="./images/sharedgohome8.jpg" width="250" height="500"/>|
 
-### 위기상황 대처메뉴얼 버튼
-<img src="./images/manual1.jpg" width="250" height="500"/>
+|설정|응급 설정|
+|---|---------|
+|<img src="./images/setting1.jpg" width="250" height="500"/>|<img src="./images/emergencysetting1.jpg" width="250" height="500"/>|
 
-### SOS 버튼
-<img src="./images/sos1.jpg" width="250" height="500"/>
-<img src="./images/sos2.jpg" width="250" height="500"/>
-<img src="./images/message2.jpg" width="500" height="250"/>
- 
-
-### 안전지도
-<img src="./images/safemap1.jpg" width="250" height="500"/>
-
-### 귀갓길공유(피보호자)
-<img src="./images/sharedgohome1.jpg" width="250" height="500"/>
-<img src="./images/sharedgohome3.jpg" width="250" height="500"/>
-<img src="./images/sharedgohome2.jpg" width="250" height="500"/>
-
-### 귀갓길공유(보호자)
-<img src="./images/message1.jpg" width="500" height="250"/>
-<img src="./images/sharedgohome4.jpg" width="250" height="500"/>
-<img src="./images/sharedgohome5.jpg" width="250" height="500"/>
-<img src="./images/sharedgohome6.jpg" width="250" height="500"/>
-<img src="./images/sharedgohome7.jpg" width="250" height="500"/>
-<img src="./images/sharedgohome8.jpg" width="250" height="500"/>
-
-### 설정
-<img src="./images/setting1.jpg" width="250" height="500"/>
-
-### 응급설정
-<img src="./images/emergencysetting1.jpg" width="250" height="500"/>
-
-### 비상연락처 설정
-<img src="./images/emergencycontact2.jpg" width="250" height="500"/>
-<img src="./images/emergencycontact1.jpg" width="250" height="500"/>
-<img src="./images/emergencycontact3.jpg" width="250" height="500"/>
+|비상 연락처 설정| | |
+|---------------|-|-|
+|<img src="./images/emergencycontact2.jpg" width="250" height="500"/>|<img src="./images/emergencycontact1.jpg" width="250" height="500"/>|<img src="./images/emergencycontact3.jpg" width="250" height="500"/>|
 
 
-
-### Gitmoji의 이모지 설명
+### Gitmoji의 이모지
 
 | Emoji | Code                          | Description              |
 | ----- | ----------------------------- | ------------------------ |
