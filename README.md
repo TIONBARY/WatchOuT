@@ -216,8 +216,7 @@ safeOpenBox
 
 |신고|위기상황 대처 메뉴얼|
 |---|--------------------|
-|<img src="./images/notify1.jpg" width="250" height="500"/>|
-<img src="./images/manual1.jpg" width="250" height="500"/>|
+|<img src="./images/notify1.jpg" width="250" height="500"/>|<img src="./images/manual1.jpg" width="250" height="500"/>|
 
 |안전 지도|
 |--------|
@@ -234,8 +233,7 @@ safeOpenBox
 
 |설정|응급 설정|
 |---|---------|
-|<img src="./images/setting1.jpg" width="250" height="500"/>|
-<img src="./images/emergencysetting1.jpg" width="250" height="500"/>|
+|<img src="./images/setting1.jpg" width="250" height="500"/>|<img src="./images/emergencysetting1.jpg" width="250" height="500"/>|
 
 |비상 연락처 설정| | |
 |---------------|-|-|
