@@ -144,7 +144,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
       SharedPreferences pref = await SharedPreferences.getInstance();
       useSiren =
           pref.getBool('useSiren') == null ? false : pref.getBool('useSiren')!;
-      print('----------------------${pref.getBool('useSiren')}');
+      debugPrint('----------------------${pref.getBool('useSiren')}');
       if (useSiren) {
         await _sosSoundSetting();
         VolumeControl.setVolume(1);
@@ -167,7 +167,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
     try {
       final String result = await platform.invokeMethod('sosSoundSetting');
     } on PlatformException catch (e) {
-      print('sound setting failed');
+      debugPrint('sound setting failed');
     }
   }
 

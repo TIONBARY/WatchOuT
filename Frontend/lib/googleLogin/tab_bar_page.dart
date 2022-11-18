@@ -30,7 +30,7 @@ class _TabNavBarState extends State<TabNavBar> {
   Future<void> checkUserInfo() async {
     check = await UserService().isActivated();
     if (!check) {
-      print("너 왜 가입 안했냐?");
+      debugPrint("너 왜 가입 안했냐?");
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => SignUpPage()));
     }

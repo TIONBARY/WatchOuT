@@ -108,8 +108,8 @@ Future<void> prepareMessage(String emergencyStatus) async {
     message =
         "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
     if (recipients.isNotEmpty) {
-      print(message);
-      print(recipients);
+      debugPrint(message);
+      debugPrint(recipients.toString());
       messageIsSent = true;
       await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
     }
@@ -117,8 +117,8 @@ Future<void> prepareMessage(String emergencyStatus) async {
     message =
         "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위도 : $initLat\n현재 예상 경도 : $initLon";
     if (recipients.isNotEmpty) {
-      print(message);
-      print(recipients);
+      debugPrint(message);
+      debugPrint(recipients.toString());
       messageIsSent = true;
       await sendSMS(message, recipients);
     }

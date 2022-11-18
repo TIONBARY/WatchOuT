@@ -45,10 +45,10 @@ class _SignupState extends State<SignUp> {
       final user = _authentication.currentUser;
       if (user != null) {
         loggedUser = user;
-        print("sign_up.dart에서 user 정보를 잘 받아왔습니다.");
+        debugPrint("sign_up.dart에서 user 정보를 잘 받아왔습니다.");
       }
     } catch (e) {
-      print("sign_up.dart에서 유저 정보를 받아오지 못했습니다.");
+      debugPrint("sign_up.dart에서 유저 정보를 받아오지 못했습니다.");
     }
   }
 
@@ -232,7 +232,7 @@ class _SignupState extends State<SignUp> {
                       submitted = false;
                     });
                   checkDupNum = await UserService().isDupNum(_phone!);
-                  print("\nphone : $_phone $checkDupNum\n");
+                  debugPrint("\nphone : $_phone $checkDupNum\n");
 
                   //중복인 상황
                   if (checkDupNum) {

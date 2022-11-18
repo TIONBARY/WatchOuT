@@ -36,7 +36,6 @@ class ApiKakao {
     final kakaoRestAPIKey = dotenv.get('kakaoRestAPIKey');
     final response = await http
         .get(httpUri, headers: {"Authorization": "KakaoAK ${kakaoRestAPIKey}"});
-    print(response.body);
     final result =
         json.decode(response.body)["documents"][0]['address']['address_name'];
     return result;
