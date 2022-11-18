@@ -16,7 +16,8 @@
 #   public *;
 #}
 -keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { *; }
--keep class org.videolan.libvlc.** { *; }
+
+## Flutter core
 -keep class io.flutter.app.** { *; }
 -keep class io.flutter.plugin.**  { *; }
 -keep class io.flutter.util.**  { *; }
@@ -24,3 +25,10 @@
 -keep class io.flutter.**  { *; }
 -keep class io.flutter.plugins.**  { *; }
 -keep class io.flutter.embedding.**  { *; }
+
+## Flutter watch_connectivity
+-keep class dev.rexios.watch_connectivity.** { *; }
+-keep class dev.rexios.** { *; }
+
+## Flutter vlc player
+-keep class org.videolan.libvlc.** { *; }
