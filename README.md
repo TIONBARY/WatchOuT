@@ -96,7 +96,7 @@
 
 # 파일 위젯 트리
 C:.
-├─api
+├─api\n
 ├─components
 │  ├─dialog
 │  ├─emergencyManual
