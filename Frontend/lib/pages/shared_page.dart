@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/going_home_map_page.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:sizer/sizer.dart';
 
 import '../components/dialog/basic_dialog.dart';
-import '../components/permissionService/permission_service.dart';
 
 class RecordPage extends StatefulWidget {
   const RecordPage({Key? key}) : super(key: key);
@@ -100,13 +98,6 @@ class _RecordPageState extends State<RecordPage> {
   void initState() {
     super.initState();
     getGoingHomeUserList();
-    permitLocation();
-  }
-
-  void permitLocation() async {
-    if (await Permission.location.isDenied) {
-      PermissionService().permissionLocation(context);
-    }
   }
 
   bool _isValidCode(String val) {
