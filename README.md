@@ -94,6 +94,29 @@
 # [API 명세서](https://docs.google.com/spreadsheets/d/1Rmz9WcaGeFQ0PJOm9KE1XvrQsQdp6v0D_ok7_yyYaC4/edit#gid=276985241)
 ![API 명세서](/uploads/f7218ac86544b6f706c3fc5850d1bae6/image.png)
 
+# 파일 위젯 트리
+C:.
+├─api
+├─components
+│  ├─dialog
+│  ├─emergencyManual
+│  ├─homecam
+│  ├─login
+│  ├─main
+│  ├─permissionService
+│  ├─safearea
+│  ├─set
+│  ├─utils
+│  ├─wear
+│  └─youtube
+│      ├─models
+│      ├─services
+│      └─utilities
+├─googleLogin
+├─pages
+└─providers
+
+
 # [ERD](https://ssafy7seoul.notion.site/DB-fad714211a444348b5272e476abd3e13)
 - user
 ```
