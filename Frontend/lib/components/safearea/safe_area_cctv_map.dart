@@ -32,8 +32,8 @@ String addrName = "";
 String kakaoMapKey = "";
 String cctvAPIKey = "";
 String openAPIKey = "";
-double initLat = 0.0;
-double initLon = 0.0;
+double initLat = 37.5013;
+double initLon = 127.0396;
 late LocationSettings locationSettings;
 Timer? timer;
 const sendLocationIntervalSec = 30;
@@ -128,7 +128,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   @override
   void initState() {
     super.initState();
-    permitLocation();
     myFuture ??= _future();
   }
 
@@ -139,7 +138,6 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
   }
 
   Future _future() async {
-    // LocationPermission permission = await Geolocator.requestPermission();
     WidgetsFlutterBinding.ensureInitialized();
     if (defaultTargetPlatform == TargetPlatform.android) {
       locationSettings = AndroidSettings(
@@ -161,6 +159,26 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         accuracy: LocationAccuracy.high,
         distanceFilter: 10,
       );
+    }
+    if (await Permission.location.isGranted != true) {
+      await showDialog(
+          context: context,
+          builder: (context) => BasicDialog(
+              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+              23.h,
+              "WatchOuT에서 '안전 지도' 및 '귀갓길 공유' 등의 기능을 사용할 수 있도록 '위치 권한'을 허용해 주세요.앱이 사용 중일때만 데이터를 수집합니다.",
+              null));
+      await Permission.location.request();
+    }
+    if (await Permission.location.isDenied) {
+      await showDialog(
+          context: context,
+          builder: (context) => BasicDialog(
+              EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
+              15.h,
+              "위치 권한이 없어\n 안전 지도를 사용할 수 없습니다.",
+              null));
+      return kakaoMapKey;
     }
     final userResponse = await FirebaseFirestore.instance
         .collection("userAccessCode")

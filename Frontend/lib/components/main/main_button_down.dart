@@ -16,7 +16,6 @@ import 'package:homealone/api/api_message.dart';
 import 'package:homealone/components/dialog/basic_dialog.dart';
 import 'package:homealone/components/dialog/report_dialog.dart';
 import 'package:homealone/components/dialog/sos_dialog.dart';
-import 'package:homealone/components/permissionService/permission_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
 import 'package:image_picker/image_picker.dart';
@@ -345,10 +344,18 @@ class _MainButtonDownState extends State<MainButtonDown> {
               isOutline: true,
               type: PredefinedThemes.danger,
               onTap: () async {
-                if (await Permission.sms.isGranted != true)
-                  PermissionService().permissionSMS(context);
-                else
-                  return sendEmergencyMessage();
+                if (await Permission.sms.isGranted != true) {
+                  await showDialog(
+                      context: context,
+                      builder: (context) => BasicDialog(
+                          EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 1.25.h),
+                          23.h,
+                          "WatchOuT에서 '응급 상황 전파', '귀갓길 공유', '귀갓길 공유자에게 문자' 기능에서 '문자 전송 기능'을 사용할 수 있도록 'SMS 권한'을 허용해 주세요."
+                          "앱이 종료되었거나 사용 중이 아닐 때에도 문자 발송 기능을 가용합니다.",
+                          null));
+                  await Permission.sms.request();
+                }
+                return sendEmergencyMessage();
               },
               child: Row(
                 children: [
