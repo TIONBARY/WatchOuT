@@ -212,7 +212,7 @@ safeOpenBox
 
 |SOS| | |
 |---|-|-|
-|<img src="./images/sos1.jpg" width="250" height="500"/>|<img src="./images/sos2.jpg" width="250" height="500"/>|<img src="./images/message2.jpg" width="500" height="250"/>|
+|<img src="./images/sos1.jpg" width="250" height="500"/>|<img src="./images/sos2.jpg" width="250" height="500"/>|<img src="./images/sosMessage.jpg" width="500" height="250"/>|
 
 |신고|위기상황 대처 메뉴얼|
 |---|--------------------|
@@ -228,7 +228,7 @@ safeOpenBox
 
 |귀갓길공유(보호자)| | |
 |-----------------|-|-|
-|<img src="./images/message1.jpg" width="500" height="250"/>|<img src="./images/sharedgohome4.jpg" width="250" height="500"/>|<img src="./images/sharedgohome5.jpg" width="250" height="500"/>|
+|<img src="./images/sosMessage.jpg" width="500" height="250"/>|<img src="./images/sharedgohome4.jpg" width="250" height="500"/>|<img src="./images/sharedgohome5.jpg" width="250" height="500"/>|
 |<img src="./images/sharedgohome6.jpg" width="250" height="500"/>|<img src="./images/sharedgohome7.jpg" width="250" height="500"/>|<img src="./images/sharedgohome8.jpg" width="250" height="500"/>|
 
 |설정|응급 설정|
