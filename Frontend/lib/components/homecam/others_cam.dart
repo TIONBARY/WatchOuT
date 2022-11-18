@@ -35,7 +35,7 @@ class _OthersCamState extends State<OthersCam> {
             ),
             ElevatedButton(
               onPressed: () {
-                print("++++++++++++++++++++++++++$urlValue");
+                debugPrint("++++++++++++++++++++++++++$urlValue");
                 playerController.play();
               },
               child: const Text("Play"),

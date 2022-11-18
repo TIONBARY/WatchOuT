@@ -15,7 +15,8 @@ class UserService {
     if (docSnapshot.exists) {
       documentData = docSnapshot.data();
     }
-    if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
+    if (documentData == null)
+      debugPrint("현재 로그인 된 유저가 없음 from auth_service.dart");
     return documentData?["activated"];
   }
 
@@ -27,7 +28,8 @@ class UserService {
     if (docSnapshot.exists) {
       documentData = docSnapshot.data();
     }
-    if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
+    if (documentData == null)
+      debugPrint("현재 로그인 된 유저가 없음 from auth_service.dart");
     return documentData;
   }
 
@@ -39,7 +41,8 @@ class UserService {
     if (docSnapshot.exists) {
       documentData = docSnapshot.data();
     }
-    if (documentData == null) print("현재 로그인 된 유저가 없음 from auth_service.dart");
+    if (documentData == null)
+      debugPrint("현재 로그인 된 유저가 없음 from auth_service.dart");
     return documentData;
   }
 
@@ -50,7 +53,7 @@ class UserService {
         .where("phone", isEqualTo: number)
         .get()
         .then((value) => {
-              print("\nlength ; ${value.docs.length}\n"),
+              debugPrint("\nlength ; ${value.docs.length}\n"),
               if (value.docs.length == 0) {flag = false},
             });
     return flag;
@@ -215,7 +218,7 @@ class UserService {
     }
 
     if (documentData == null) {
-      print("캠 관련 url을 불러오지 못했습니다.");
+      debugPrint("캠 관련 url을 불러오지 못했습니다.");
       return "error";
     }
     return documentData["url"];
@@ -233,7 +236,7 @@ class UserService {
       documentData = docSnapshot.data();
     }
     if (documentData == null) {
-      print("등록된 캠 정보가 없습니다.");
+      debugPrint("등록된 캠 정보가 없습니다.");
       return false;
     }
     return documentData?["registered"];
@@ -247,10 +250,11 @@ class UserService {
     var querySnapshot =
         await db.collection("user").where("phone", isEqualTo: number).get();
     data = querySnapshot.docs;
-    if (data.isEmpty)
-      print("해당 번호에 해당하는 유저가 없습니다.");
-    else
+    if (data.isEmpty) {
+      debugPrint("해당 번호에 해당하는 유저가 없습니다.");
+    } else {
       result = data[0].data() as Map<String, dynamic>?;
+    }
     return result;
   }
 
@@ -353,7 +357,7 @@ class UserService {
     }
 
     if (documentData == null) {
-      print("캠 관련 url을 불러오지 못했습니다.");
+      debugPrint("캠 관련 url을 불러오지 못했습니다.");
       return "error";
     }
     return documentData["url"];

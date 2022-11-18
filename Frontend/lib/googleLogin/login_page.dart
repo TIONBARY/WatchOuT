@@ -63,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
                   onTap: () {
                     _handleSignIn().then(
                       (user) {
-                        print(user);
+                        debugPrint(user.toString());
                       },
                     );
                   },
@@ -92,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                 idToken: googleAuth.idToken,
                 accessToken: googleAuth.accessToken)))
         .user;
-    print("signed in ${user!.displayName!}");
+    debugPrint("signed in ${user!.displayName!}");
     return user!;
   }
 }

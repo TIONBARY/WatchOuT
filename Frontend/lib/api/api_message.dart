@@ -14,7 +14,6 @@ class ApiMessage {
         headers: {"Content-Type": "application/json"},
         body: json.encode({"receivers": receivers, "message": message}));
     final result = json.decode(response.body);
-    print(result);
     return result;
   }
 
@@ -37,10 +36,8 @@ class ApiMessage {
     ));
     var response = await request.send();
     http.Response httpResponse = await http.Response.fromStream(response);
-    print("Result: ${httpResponse.body}");
     String body = httpResponse.body;
     final result = json.decode(body);
-    print(result);
     return result;
   }
 }

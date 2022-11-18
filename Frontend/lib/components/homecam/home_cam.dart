@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:easy_onvif/onvif.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:loggy/loggy.dart';
 import 'package:universal_io/io.dart';
 import 'package:yaml/yaml.dart';
@@ -27,21 +28,21 @@ void main(List<String> arguments) async {
 
   var deviceInfo = await onvif.deviceManagement.getDeviceInformation();
 
-  print('Manufacturer: ${deviceInfo.manufacturer}');
-  print('Model: ${deviceInfo.model}');
+  debugPrint('Manufacturer: ${deviceInfo.manufacturer}');
+  debugPrint('Model: ${deviceInfo.model}');
 
   var capabilities = await onvif.deviceManagement.getCapabilities();
 
-  print(capabilities);
+  // print(capabilities);
 
   var hostname = await onvif.deviceManagement.getHostname();
 
-  print("호스트명: $hostname");
+  debugPrint("호스트명: $hostname");
 
   var networkProtocols = await onvif.deviceManagement.getNetworkProtocols();
 
   for (var networkProtocol in networkProtocols) {
-    print('${networkProtocol.name} ${networkProtocol.port}');
+    debugPrint('${networkProtocol.name} ${networkProtocol.port}');
   }
 
   var newUsers = <User>[
@@ -54,7 +55,7 @@ void main(List<String> arguments) async {
   var users = await onvif.deviceManagement.getUsers();
 
   for (var user in users) {
-    print('${user.username} ${user.userLevel}');
+    debugPrint('${user.username} ${user.userLevel}');
   }
 
   var deleteUsers = ['test_1', 'test_2'];
@@ -64,15 +65,15 @@ void main(List<String> arguments) async {
   users = await onvif.deviceManagement.getUsers();
 
   for (var user in users) {
-    print('${user.username} ${user.userLevel}');
+    debugPrint('${user.username} ${user.userLevel}');
   }
 
   var videoSources = await onvif.media.getVideoSources();
 
   for (var videoSource in videoSources) {
-    print('${videoSource.token} ${videoSource.resolution}');
+    debugPrint('${videoSource.token} ${videoSource.resolution}');
   }
 
   var streamUri = await onvif.media.getStreamUri(profToken_1);
-  print(streamUri.uri);
+  debugPrint(streamUri.uri);
 }

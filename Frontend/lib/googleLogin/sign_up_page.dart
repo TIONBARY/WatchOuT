@@ -28,10 +28,10 @@ class _SignUpPageState extends State<SignUpPage> {
       final user = _authentication.currentUser;
       if (user != null) {
         loggedUser = user;
-        print("userInfoPage.dart에서 user 정보를 잘 받아왔습니다.");
+        debugPrint("userInfoPage.dart에서 user 정보를 잘 받아왔습니다.");
       }
     } catch (e) {
-      print("userInfoPage.dart에서 유저 정보를 받아오지 못했습니다.");
+      debugPrint("userInfoPage.dart에서 유저 정보를 받아오지 못했습니다.");
     }
   }
 

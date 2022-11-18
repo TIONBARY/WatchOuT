@@ -184,7 +184,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         .collection("userAccessCode")
         .doc(_auth.currentUser?.uid)
         .get();
-    print(userResponse.exists);
+    debugPrint(userResponse.exists.toString());
     if (!userResponse.exists) {
       await FirebaseFirestore.instance
           .collection("userAccessCode")
@@ -346,9 +346,9 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
         .doc(accessCode)
         .set({"latitude": initLat, "longitude": initLon});
     timer = Timer.periodic(Duration(seconds: sendLocationIntervalSec), (timer) {
-      print("Interval Activated");
-      print(initLat);
-      print(initLon);
+      debugPrint("Interval Activated");
+      debugPrint(initLat!.toString());
+      debugPrint(initLon!.toString());
       FirebaseFirestore.instance
           .collection("location")
           .doc(accessCode)

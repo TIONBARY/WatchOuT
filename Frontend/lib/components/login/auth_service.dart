@@ -58,11 +58,11 @@ class AuthService {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
-            print("구글 계정이 확인되었습니다.");
-            print(FirebaseAuth.instance.currentUser!.uid);
+            debugPrint("구글 계정이 확인되었습니다.");
+            debugPrint(FirebaseAuth.instance.currentUser!.uid);
             return handleDetailState(FirebaseAuth.instance.currentUser!.uid);
           } else {
-            print("로그아웃 되었습니다.");
+            debugPrint("로그아웃 되었습니다.");
             return LoginPage();
           }
         });
