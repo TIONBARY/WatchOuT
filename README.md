@@ -212,7 +212,7 @@ safeOpenBox
 
 |SOS| | |
 |---|-|-|
-|<img src="./images/sos1.jpg" width="250" height="500"/>|<img src="./images/sos2.jpg" width="250" height="500"/>|<img src="./images/sosMessage.jpg" width="250" height="500"|
+|<img src="./images/sos1.jpg" width="250" height="500"/>|<img src="./images/sos2.jpg" width="250" height="500"/>|<img src="./images/sosMessage.jpg" width="250" height="500"/>|
 
 |신고|위기상황 대처 메뉴얼|
 |---|--------------------|
