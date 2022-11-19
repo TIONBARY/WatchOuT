@@ -218,10 +218,10 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           });
       return kakaoMapKey;
     }
-    await _search(context);
     // await registerCCTV();
     // await registerSafeOpenBox();
     // await registerEmergencyBell();
+    await _search(context);
     await _searchSafeArea(context);
     await _searchSafeOpenBox(context);
     await _searchEmergencyBell(context);
@@ -244,6 +244,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
     }
     await _search(context);
     await _searchSafeArea(context);
+    await _searchEmergencyBell(context);
     _mapController?.runJavascript('''
     for (var i = 0; i < markers.length; i++) {
       markers[i].setMap(null);
@@ -258,6 +259,7 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
           "list": safeAreaCoordList
         })}["list"];
     createSafeAreaMarkers();
+    createAdditionalSafeAreaMarkers();
   ''');
   }
 
@@ -602,6 +604,12 @@ class _SafeAreaCCTVMapState extends State<SafeAreaCCTVMap> {
       }
       function createAdditionalSafeAreaMarkers() {
         for (var i = 4; i < 6; i++) {
+          for (var j = 0; j < markersList[i].length; j++) {
+            markersList[i][j].setMap(null);
+          }
+          markersList[i] = [];
+        }
+        for (var i = 4; i < 6; i++) {
           for (var j = 0; j < _safeAreaCoordList[i].length; j++) {
             addSafeAreaMarker(i, new kakao.maps.LatLng(_safeAreaCoordList[i][j]['WGSXPT'], _safeAreaCoordList[i][j]['WGSYPT']));
           }
@@ -827,9 +835,9 @@ Future<void> registerCCTV() async {
     if (result['safeOpenCCTV']['row'] != null) {
       result['safeOpenCCTV']['row'].forEach((value) => {cctvList.add(value)});
     }
-    for (int i = 1001; i < count; i += 1000) {
+    for (int j = 1001; j < count; j += 1000) {
       final response = await http.get(Uri.parse(
-          'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/${i}/${(i + 1000 - 1)}/${area}/'));
+          'http://openapi.seoul.go.kr:8088/${cctvAPIKey}/json/safeOpenCCTV/${j}/${(j + 1000 - 1)}/${guName[i]}/'));
       print(response.body);
       final result = await json.decode(response.body);
       if (result['safeOpenCCTV'] == null) return;
@@ -862,7 +870,7 @@ Future<void> registerSafeOpenBox() async {
 
 Future<void> registerEmergencyBell() async {
   emergencyBellList = [];
-  for (int i = 0; i < 27; i++) {
+  for (int i = 0; i < 28; i++) {
     final response = await http.get(Uri.parse(
             'http://api.data.go.kr/openapi/tn_pubr_public_safety_emergency_bell_position_api')
         .replace(queryParameters: {
@@ -963,27 +971,13 @@ Future<void> _searchSafeOpenBox(BuildContext context) async {
 
 Future<void> _searchEmergencyBell(BuildContext context) async {
   emergencyBellList = [];
-  final response = await FirebaseFirestore.instance
-      .collection("emergencyBell")
-      .doc("서울특별시")
-      .get();
-  if (!response.exists) {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return BasicDialog(EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-              12.5.h, '비상벨 정보를 불러오지 못했습니다.', null);
-        });
-    return;
-  }
-  final emergencyBellJson = response.data() as Map<String, dynamic>;
-  for (int i = 0; i < emergencyBellJson['data'].length; i++) {
-    if (emergencyBellJson['data'][i]['WGSXPT'] != null &&
-        emergencyBellJson['data'][i]['WGSYPT'] != null &&
-        checkIsDouble(emergencyBellJson['data'][i]['WGSXPT']) &&
-        checkIsDouble(emergencyBellJson['data'][i]['WGSYPT'])) {
-      emergencyBellList.add(emergencyBellJson['data'][i]);
-    }
+  final String response =
+      await rootBundle.loadString('assets/json/emergencyBell.json');
+  final data = await json.decode(response);
+  print(data[0]['WGSXPT'].runtimeType);
+  for (int i = 0; i < data.length; i++) {
+    emergencyBellList
+        .add({'WGSXPT': data[i]['WGSXPT'], 'WGSYPT': data[i]['WGSYPT']});
   }
   getSortedEmergencyBellList();
 }
@@ -1010,11 +1004,10 @@ void getSortedSafeOpenBoxList() {
 }
 
 void getSortedEmergencyBellList() {
-  emergencyBellList.sort((a, b) => (calculateDistance(initLat, initLon,
-          double.parse(a['WGSXPT']), double.parse(a['WGSYPT'])))
-      .compareTo(calculateDistance(initLat, initLon, double.parse(b['WGSXPT']),
-          double.parse(b['WGSYPT']))));
-  sortedEmergencyBellList = emergencyBellList;
+  emergencyBellList.sort((a, b) =>
+      (calculateDistance(initLat, initLon, a['WGSXPT'], a['WGSYPT'])).compareTo(
+          calculateDistance(initLat, initLon, b['WGSXPT'], b['WGSYPT'])));
+  sortedEmergencyBellList = emergencyBellList.sublist(0, 200);
   safeAreaCoordList[5] = sortedEmergencyBellList;
 }
 

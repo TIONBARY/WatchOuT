@@ -134,6 +134,7 @@ flutter:
     - assets/natural_disaster/
     - assets/safety_accident/
     - assets/stalking/
+    - assets/json/
   fonts:
     - family: HanSan
       fonts:
