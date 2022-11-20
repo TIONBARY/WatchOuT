@@ -243,9 +243,13 @@ safeOpenBox
 |--------|--|
 |<img src="./images/auth1.jpg" width="250" height="500"/>|<img src="./images/auth2.jpg" width="250" height="500"/>|
 
-|CAM|나의 캠|성범죄자 알림e|안심귀가 서비스|
-|---|----|-------------|--------------|
-|<img src="./images/cam1.jpg" width="250" height="500"/>|<img src="./images/cam2.jpg" width="250" height="500"/>|<img src="./images/nofie1.jpg" width="250" height="500"/>|<img src="./images/safegohome1.jpg" width="250" height="500"/>|
+|CAM|나의 캠|
+|---|------|
+|<img src="./images/cam1.jpg" width="250" height="500"/>|<img src="./images/cam2.jpg" width="250" height="500"/>|
+
+|성범죄자 알림e|안심귀가 서비스|
+|-------------|---------------|
+|<img src="./images/nofie1.jpg" width="250" height="500"/>|<img src="./images/safegohome1.jpg" width="250" height="500"/>|
 
 |SOS| | |
 |---|-|-|
