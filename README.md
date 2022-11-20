@@ -245,7 +245,7 @@ safeOpenBox
 
 |CAM|나의 캠|성범죄자 알림e|안심귀가 서비스|
 |---|----|-------------|--------------|
-|<img src="./images/cam1.jpg" width="250" height="500"/>|<img src="./images/cam2.jpg" width="500" height="250"/>|<img src="./images/nofie1.jpg" width="250" height="500"/>|<img src="./images/safegohome1.jpg" width="250" height="500"/>|
+|<img src="./images/cam1.jpg" width="250" height="500"/>|<img src="./images/cam2.jpg" width="250" height="500"/>|<img src="./images/nofie1.jpg" width="250" height="500"/>|<img src="./images/safegohome1.jpg" width="250" height="500"/>|
 
 |SOS| | |
 |---|-|-|
