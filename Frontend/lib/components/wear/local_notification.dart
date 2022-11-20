@@ -100,7 +100,7 @@ Future<void> prepareMessage(String emergencyStatus) async {
       sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
       interval = true;
       // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
-      sleep(Duration(minutes: 30));
+      // sleep(Duration(minutes: 30));
       interval = false;
     }
   } else if (connectivityResult == ConnectivityResult.mobile ||
@@ -133,7 +133,7 @@ Future<void> sendEmergencyMessage() async {
     sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
     interval = true;
     // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
-    sleep(Duration(minutes: 30));
+    // sleep(Duration(minutes: 30));
     interval = false;
   }
 }
