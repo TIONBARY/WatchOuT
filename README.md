@@ -164,25 +164,39 @@ location
 userAccessCode
 ```
 {
-  accessCode: 
+  accessCode: 승인 코드
 }
 ```
 goingHomeUserList
 ```
 {
-
+  accessCode: 승인 코드
+  homeLat: 피보호자의 집 주소(위도)
+  homeLon: 피보호자의 집 주소(경도)
+  name: 피보호자 이름
+  phone: 피보호자의 휴대폰 번호
+  profileImage: 피보호자의 프로필 이미지
 }
 ```
 homecamUserList
 ```
 {
-
+  accessCode: 승인 코드
+  expiredTime: 만료시간
+  name: 피보호자 이름
+  profileImage: 피보호자의 프로필 이미지
+  url: 피보호자의 홈캠 주소소
 }
 ```
 cctv
 ```
 {
-
+  SVCAREAID: 주소(구)
+  ADDR: CCTV 위치
+  CCTVUSE: CCTV 용도
+  WGSXPT: CCTV 위치(위도)
+  WGSYPT: CCTV 위치(경도)
+  UPDATE: 갱신일일
 }
 ```
 emergencyBell
