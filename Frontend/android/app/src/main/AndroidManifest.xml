@@ -16,8 +16,7 @@
     <uses-permission android:name="android.permission.SEND_SMS" />
 
     <application
-        tools:replace="android:label"
-        android:label="워치 아웃"
+        android:label="워치아웃"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         android:usesCleartextTraffic="true"
@@ -44,9 +43,6 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <meta-data
-                android:name="com.google.firebase.messaging.default_notification_channel_id"
-                android:value="high_importance_channel" />
             <intent-filter>
                 <action android:name="FLUTTER_NOTIFICATION_CLICK" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -60,19 +56,15 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme="http"
-                    android:host="www.homelaone.kr"
-                    android:pathPrefix="/action" />
-
                 <data android:scheme="https"
                     android:host="www.homelaone.kr"
                     android:pathPrefix="/action" />
-
-                <data android:scheme="watchout"
-                    android:host="action" />
             </intent-filter>
+<!--            <meta-data-->
+<!--                android:name="com.google.firebase.messaging.default_notification_channel_id"-->
+<!--                android:value="high_importance_channel" />-->
         </activity>
-        <receiver android:name="ExampleAppWidgetProvider"
+        <receiver android:name=".ExampleAppWidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
