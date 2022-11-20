@@ -205,6 +205,10 @@ Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
+  if (!pref.getBool("useScreen")!) {
+    wm.Workmanager().cancelByUniqueName(locationCheck);
+    return;
+  }
   // await sendEmergencyMessage();
   count.then((value) async {
     debugPrint('24시간 이내에 사용한 앱 갯수 : $value');
