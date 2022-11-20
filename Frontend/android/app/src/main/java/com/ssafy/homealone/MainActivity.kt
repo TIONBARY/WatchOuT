@@ -25,6 +25,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.FragmentActivity
 import android.util.Log
 import android.telephony.SmsManager
+import androidx.annotation.NonNull
 
 class MainActivity : FlutterActivity() {
     private val CHANNEL = "com.ssafy.homealone/channel"
@@ -33,13 +34,8 @@ class MainActivity : FlutterActivity() {
     lateinit var s: String
     lateinit var inviteCode: String
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        GeneratedPluginRegistrant.registerWith(FlutterEngine(this))
-
-        var intent: Intent = getIntent()
-        inviteCode = parseInvite(intent)
+    override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
+        super.configureFlutterEngine(flutterEngine)
 
         MethodChannel(flutterEngine?.getDartExecutor()?.getBinaryMessenger()!!, CHANNEL).setMethodCallHandler { call, result ->
             if (call.method == "sosSoundSetting") {
@@ -79,6 +75,13 @@ class MainActivity : FlutterActivity() {
                 result.notImplemented()
             }
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        var intent: Intent = getIntent()
+        inviteCode = parseInvite(intent)
     }
 
     private fun openEmergencySetting() {

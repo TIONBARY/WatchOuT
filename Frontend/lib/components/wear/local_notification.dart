@@ -85,43 +85,12 @@ Future<void> prepareMessage(String emergencyStatus) async {
   if (list != null) {
     recipients = list;
   }
-  if (homecamRegistered) {
+  if (homecamRegistered && !interval && recipients.isNotEmpty) {
     message =
         "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
-    if (recipients.isNotEmpty) {
-      debugPrint(message);
-      debugPrint(recipients.toString());
-      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-    }
+    sendSMS(message, recipients); // 분할문자 1
     message = "홈캠 입장 코드 : $homecamAccessCode\n홈캠은 워치아웃 앱에서 확인하실 수 있습니다.";
-    if (recipients.isNotEmpty && !interval) {
-      debugPrint(message);
-      debugPrint(recipients.toString());
-      sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-      interval = true;
-      // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
-      // sleep(Duration(minutes: 30));
-      interval = false;
-    }
-  } else if (connectivityResult == ConnectivityResult.mobile ||
-      connectivityResult == ConnectivityResult.wifi) {
-    message =
-        "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
-    if (recipients.isNotEmpty) {
-      print(message);
-      print(recipients);
-      messageIsSent = true;
-      await sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-    }
-  } else {
-    message =
-        "${preferences.getString('username')} 님이 24시간 동안 응답이 없습니다.\n현재 예상 위도 : $initLat\n현재 예상 경도 : $initLon";
-    if (recipients.isNotEmpty) {
-      print(message);
-      print(recipients);
-      messageIsSent = true;
-      await sendSMS(message, recipients);
-    }
+    sendSMS(message, recipients); // 분할문자 2
   }
 }
 
@@ -130,10 +99,11 @@ Future<void> sendEmergencyMessage() async {
   if (recipients.isNotEmpty && !interval) {
     debugPrint(message);
     debugPrint(recipients.toString());
-    sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+    // sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
     interval = true;
     // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
     // sleep(Duration(minutes: 30));
+    sleep(Duration(seconds: 5));
     interval = false;
   }
 }
