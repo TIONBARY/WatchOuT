@@ -205,7 +205,10 @@ Future<void> refreshUsage() async {
   SharedPreferences pref = await SharedPreferences.getInstance();
   pref.reload();
   Future<int> count = initUsage();
-  print(messageIsSent);
+  if (!pref.getBool("useScreen")!) {
+    wm.Workmanager().cancelByUniqueName(locationCheck);
+    return;
+  }
   if (!messageIsSent) {
     await sendEmergencyMessage();
   }
