@@ -151,8 +151,8 @@ class _MainButtonUpState extends State<MainButtonUp> {
                             builder: (BuildContext context) {
                               return BasicDialog(
                                   EdgeInsets.fromLTRB(5.w, 2.5.h, 5.w, 0.5.h),
-                                  12.5.h,
-                                  '안심귀가 서비스는 \'서울\' 에서만 제공됩니다.',
+                                  15.h,
+                                  '안심귀가 서비스는 \n\'서울\' 에서만 제공됩니다.',
                                   null);
                             },
                           );
