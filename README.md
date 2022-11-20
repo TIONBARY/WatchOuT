@@ -53,6 +53,15 @@
        - 스마트 워치가 감지하는 이상 심박수 기준을 사용자에 맞게 커스터마이징
        - '응급 설정' 버튼 클릭 시 안드로이드가 제공하는 응급 메세지 설정 화면으로 자동 이동 
 
+# 수서 복지관 방문 및 시연
+|수서 복지관|복지사님과 회의|
+|---------|---------------|
+|<img src="./images/building.jpg" width="500" height="500"/>|<img src="./images/conference.jpg" width="500" height="500"/>|
+
+|할머님과 시연| |
+|------------|-|
+|<img src="./images/grandMa_1.jpg" width="500" height="500"/>|<img src="./images/grandMa_2.jpg" width="500" height="500"/>|
+
 # 팀원 소개
 | 이름   | 역할 | 담당        |
 | ------ | ---- | ----------- |
