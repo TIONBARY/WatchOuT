@@ -15,4 +15,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
--keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { *; }
