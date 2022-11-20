@@ -89,13 +89,6 @@ android {
 //            signingConfig signingConfigs.debug
             signingConfig signingConfigs.release
         }
-        debug {
-            signingConfig signingConfigs.debug
-//            signingConfig signingConfigs.release
-        }
-        debug {
-            signingConfig signingConfigs.release
-        }
     }
 }
 
