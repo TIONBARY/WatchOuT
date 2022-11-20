@@ -56,11 +56,11 @@
 # 수서 복지관 방문 및 시연
 |수서 복지관|복지사님과 회의|
 |---------|---------------|
-|<img src="./images/building.jpg" width="500" height="500"/>|<img src="./images/conference.jpg" width="500" height="500"/>|
+|<img src="./images/building.jpg" width="500" height="400"/>|<img src="./images/conference.jpg" width="500" height="400"/>|
 
 |할머님과 시연| |
 |------------|-|
-|<img src="./images/grandMa_1.jpg" width="500" height="500"/>|<img src="./images/grandMa_2.jpg" width="500" height="500"/>|
+|<img src="./images/grandMa_1.jpg" width="500" height="400"/>|<img src="./images/grandMa_2.jpg" width="500" height="400"/>|
 
 # 팀원 소개
 | 이름   | 역할 | 담당        |
