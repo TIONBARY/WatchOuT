@@ -85,27 +85,31 @@ Future<void> prepareMessage(String emergencyStatus) async {
   if (list != null) {
     recipients = list;
   }
-  if (homecamRegistered && !interval && recipients.isNotEmpty) {
+
+  if (!interval && recipients.isNotEmpty) {
     message =
         "${preferences.getString('username')}님$emergencyStatus.\n현재 예상 위치 : $address";
+    print("찐 메세지 1");
     sendSMS(message, recipients); // 분할문자 1
-    message = "홈캠 입장 코드 : $homecamAccessCode\n홈캠은 워치아웃 앱에서 확인하실 수 있습니다.";
-    sendSMS(message, recipients); // 분할문자 2
+    if (homecamRegistered) {
+      message = "홈캠 입장 코드 : $homecamAccessCode\n홈캠은 워치아웃 앱에서 확인하실 수 있습니다.";
+      sendSMS(message, recipients); // 분할문자 2
+    }
   }
 }
 
 Future<void> sendEmergencyMessage() async {
+  print("프리페어");
   await prepareMessage(emergencyStatus);
-  if (recipients.isNotEmpty && !interval) {
-    debugPrint(message);
-    debugPrint(recipients.toString());
-    // sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
-    interval = true;
-    // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
-    // sleep(Duration(minutes: 30));
-    sleep(Duration(seconds: 5));
-    interval = false;
-  }
+  interval = true;
+  print("워치 문자발송");
+  debugPrint(message);
+  debugPrint(recipients.toString());
+  // sendSMS(message, recipients); //테스트할때는 문자전송 막아놈
+  // 30분간 문자 재발송 금지(앱 종료하면 재발송 가능)
+  // sleep(Duration(minutes: 30));
+  sleep(Duration(seconds: 1));
+  // interval = false;
 }
 
 final _chars = '1234567890';
@@ -165,7 +169,7 @@ Future<void> showEmergencyNotification(
     emergencyStatus = "이 응급 버튼을 눌렀습니다";
   }
 
-  sleep(Duration(seconds: 15));
+  sleep(Duration(seconds: 1));
   List<ActiveNotification> activeNotifications =
       await flutterLocalNotificationsPlugin.getActiveNotifications();
   if (activeNotifications.isNotEmpty) {
@@ -300,8 +304,10 @@ void onStartWatch(
       if (useWearOS!) {
         debugPrint("최대 최소 실시간: $maxValue, $minValue");
         if (heartRate > maxValue || minValue > heartRate) {
-          showEmergencyNotification(
-              flutterLocalNotificationsPlugin, heartRate, minValue, maxValue);
+          if (!interval) {
+            showEmergencyNotification(
+                flutterLocalNotificationsPlugin, heartRate, minValue, maxValue);
+          }
         }
       }
     },
