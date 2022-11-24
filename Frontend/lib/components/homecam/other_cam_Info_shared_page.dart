@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/components/dialog/basic_dialogayer.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants.dart';
+import '../dialog/basic_dialog.dart';
 import 'camera_gif.dart';
 
 class OtherCamInfo extends StatefulWidget {
