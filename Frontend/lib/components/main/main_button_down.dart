@@ -19,8 +19,10 @@ import 'package:homealone/components/dialog/sos_dialog.dart';
 import 'package:homealone/components/permissionService/permission_service.dart';
 import 'package:homealone/constants.dart';
 import 'package:homealone/pages/emergency_manual_page.dart';
+import 'package:homealone/providers/switch_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sizer/sizer.dart';
 import 'package:volume_control/volume_control.dart';
@@ -121,9 +123,19 @@ class _MainButtonDownState extends State<MainButtonDown> {
   }
 
   void sendEmergencyMessage() async {
-    prepareMessage();
     timer = Timer(Duration(seconds: 5), () async {
       Navigator.pop(dialogContext);
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      useSiren =
+          pref.getBool('useSiren') == null ? true : pref.getBool('useSiren')!;
+      print('----------------------${pref.getBool('useSiren')}');
+      if (useSiren) {
+        await _sosSoundSetting();
+        VolumeControl.setVolume(1);
+        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
+            audioFocusStrategy:
+                AudioFocusStrategy.request(resumeAfterInterruption: true));
+      }
       if (await Permission.location.isDenied) {
         showDialog(
             context: context,
@@ -141,18 +153,8 @@ class _MainButtonDownState extends State<MainButtonDown> {
             });
         return;
       }
+      await prepareMessage();
       _sendSMS(message, recipients);
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      useSiren =
-          pref.getBool('useSiren') == null ? false : pref.getBool('useSiren')!;
-      print('----------------------${pref.getBool('useSiren')}');
-      if (useSiren) {
-        await _sosSoundSetting();
-        VolumeControl.setVolume(1);
-        assetsAudioPlayer.open(Audio("assets/sounds/siren.mp3"),
-            audioFocusStrategy:
-                AudioFocusStrategy.request(resumeAfterInterruption: true));
-      }
     });
     showDialog(
         context: context,
@@ -180,7 +182,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
         await apiKakao.searchRoadAddr(initLat.toString(), initLon.toString());
   }
 
-  void prepareMessage() async {
+  Future<void> prepareMessage() async {
     await getCurrentLocation();
     message =
         "${user?["name"]} 님이 WatchOut 앱에서 SOS 버튼을 눌렀습니다. 긴급 조치가 필요합니다. \n현재 예상 위치 : ${address}\n 이 메시지는 WatchOut에서 자동 생성한 메시지입니다.";
@@ -275,6 +277,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<SwitchBools>(context, listen: false).onCreate();
     return Container(
       margin: EdgeInsets.symmetric(vertical: 8),
       child: Row(
