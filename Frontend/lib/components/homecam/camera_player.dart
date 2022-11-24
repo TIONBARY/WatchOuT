@@ -54,7 +54,12 @@ class _CameraPlayerState extends State<CameraPlayer> {
             );
           } else {
             url = snapshot.data["url"];
-            playerController = VlcPlayerController.network(url, autoPlay: true);
+            // playerController = VlcPlayerController.network(url, autoPlay: true);
+            // 시연용 영상
+            playerController = VlcPlayerController.asset(
+                "assets/test/loop_cam.mp4",
+                autoPlay: true);
+            // playerController.setLooping(true);
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

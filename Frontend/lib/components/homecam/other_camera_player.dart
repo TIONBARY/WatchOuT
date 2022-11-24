@@ -27,7 +27,11 @@ class _OtherCameraPlayerState extends State<OtherCameraPlayer> {
     super.initState();
     // 가로 화면 고정
     SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
-    playerController = VlcPlayerController.network(widget.url, autoPlay: true);
+    // playerController = VlcPlayerController.network(widget.url, autoPlay: true);
+    // 시연용 영상
+    playerController =
+        VlcPlayerController.asset("assets/test/loop_cam.mp4", autoPlay: true);
+    // playerController.setLooping(true);
     Future.delayed(Duration.zero, () {
       checkExpired();
     });
