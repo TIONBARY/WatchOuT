@@ -41,7 +41,7 @@ class _CameraGifState extends State<CameraGif> {
                 child: Container(
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: AssetImage('assets/test/loopCam.gif'),
+                        image: AssetImage('assets/test/loomCam.gif'),
                         fit: BoxFit.contain),
                   ),
                 )),
