@@ -136,6 +136,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
             audioFocusStrategy:
                 AudioFocusStrategy.request(resumeAfterInterruption: true));
       }
+      await prepareMessage();
       if (await Permission.location.isDenied) {
         showDialog(
             context: context,
@@ -153,7 +154,7 @@ class _MainButtonDownState extends State<MainButtonDown> {
             });
         return;
       }
-      await prepareMessage();
+
       _sendSMS(message, recipients);
     });
     showDialog(
