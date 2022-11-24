@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:homealone/components/dialog/basic_dialog.dart';
-import 'package:homealone/components/homecam/other_camera_player.dart';
+import 'package:homealone/components/dialog/basic_dialogayer.dart';
 import 'package:homealone/components/login/sign_up_text_field.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../constants.dart';
+import 'camera_gif.dart';
 
 class OtherCamInfo extends StatefulWidget {
   const OtherCamInfo({Key? key}) : super(key: key);
@@ -199,12 +199,7 @@ class _OtherCamInfoState extends State<OtherCamInfo> {
                                     onPressed: () {
                                       showDialog(
                                           context: context,
-                                          builder: (_) => OtherCameraPlayer(
-                                              url: _homecamUserList[index]
-                                                  ["url"],
-                                              expiredTime:
-                                                  _homecamUserList[index]
-                                                      ["expiredTime"]));
+                                          builder: (_) => CameraGif());
                                     },
                                     child: Text(
                                       '캠 확인',
