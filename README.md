@@ -1,7 +1,7 @@
 ![WatchOuT_Logo](/uploads/9ca0336067bf12a4e8ed0110bf61d728/WatchOuT_Logo.png "WatchOuT 로고")
 
 ## 당신의 일상이 더욱 안전하고 즐겁게, WatchOuT!
-# 개요
+# 개요 
 - **프로젝트 기간** : 2022.10.10 ~ 2022.11.17 (7주)
   - 1인 가구를 위한 범죄, 건강 응급 상황 관리 어플리케이션
 
